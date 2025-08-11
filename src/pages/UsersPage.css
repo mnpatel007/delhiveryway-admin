@@ -1,0 +1,133 @@
+.users-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.users-header h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.users-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.user-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.user-info h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+}
+
+.user-info p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.user-email {
+    font-size: 0.9rem;
+}
+
+.user-role {
+    font-weight: bold;
+    color: #3498db;
+}
+
+.user-date {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    gap: 15px;
+}
+
+.pagination button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #2980b9;
+}
+
+.error {
+    color: #e74c3c;
+    background-color: #fdf2f2;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e74c3c;
+}
+
+.loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .users-list {
+        grid-template-columns: 1fr;
+    }
+
+    .users-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}

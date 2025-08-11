@@ -31,30 +31,32 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            // For now, we'll use a simple hardcoded admin login
-            // In production, this should be a proper API call
-            if (email === 'admin@delhiveryway.com' && password === 'admin123') {
-                const adminData = {
-                    id: 'admin1',
-                    name: 'Admin',
-                    email: 'admin@delhiveryway.com'
-                };
-                
-                const token = 'admin-token-' + Date.now();
-                localStorage.setItem('adminToken', token);
-                localStorage.setItem('adminData', JSON.stringify(adminData));
-                
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                setAdmin(adminData);
-                
-                return { success: true };
-            } else {
-                return { success: false, message: 'Invalid credentials' };
+            // Make API call to login endpoint
+            const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+                email,
+                password
+            });
+
+            // Check if user has admin role
+            if (response.data.user.role !== 'admin') {
+                return { success: false, message: 'You do not have admin privileges' };
             }
+
+            // Store token and admin data
+            const token = response.data.token;
+            const adminData = response.data.user;
+
+            localStorage.setItem('adminToken', token);
+            localStorage.setItem('adminData', JSON.stringify(adminData));
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setAdmin(adminData);
+
+            return { success: true };
         } catch (error) {
-            return { 
-                success: false, 
-                message: error.response?.data?.message || 'Login failed' 
+            return {
+                success: false,
+                message: error.response?.data?.message || 'Login failed'
             };
         }
     };

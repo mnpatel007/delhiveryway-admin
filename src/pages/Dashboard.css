@@ -20,7 +20,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-left h1 {
@@ -86,7 +86,7 @@
     background: white;
     border-radius: 10px;
     padding: 25px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -117,6 +117,151 @@
     color: var(--primary-color);
 }
 
+.analytics-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.recent-orders h2,
+.order-status-distribution h2 {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.orders-list {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-details {
+    flex: 2;
+}
+
+.order-id {
+    font-weight: bold;
+    margin: 0;
+}
+
+.order-customer,
+.order-shop {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.order-status {
+    flex: 1;
+    text-align: center;
+}
+
+.status-pending {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.status-confirmed {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.status-preparing {
+    color: #9b59b6;
+    font-weight: bold;
+}
+
+.status-ready_for_pickup {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.status-out_for_delivery {
+    color: #34495e;
+    font-weight: bold;
+}
+
+.status-delivered {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.status-cancelled {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.order-total {
+    flex: 1;
+    text-align: right;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.order-status-distribution {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.status-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-label {
+    flex: 1;
+    font-weight: bold;
+}
+
+.status-value {
+    width: 30px;
+    text-align: center;
+}
+
+.status-progress {
+    flex: 3;
+    height: 20px;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.status-progress-fill {
+    height: 100%;
+    background-color: #3498db;
+    border-radius: 10px;
+}
+
+.quick-actions {
+    margin-top: 40px;
+}
+
 .quick-actions h2 {
     margin-bottom: 20px;
     color: var(--text-color);
@@ -132,7 +277,7 @@
     background: white;
     border-radius: 10px;
     padding: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
     text-decoration: none;
     color: inherit;
@@ -142,7 +287,7 @@
 
 .action-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .action-icon {
@@ -167,15 +312,19 @@
         gap: 15px;
         align-items: flex-start;
     }
-    
+
     .dashboard-nav {
         overflow-x: auto;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
+    .analytics-section {
+        grid-template-columns: 1fr;
+    }
+
     .actions-grid {
         grid-template-columns: 1fr;
     }
