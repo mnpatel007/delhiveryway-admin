@@ -31,16 +31,11 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            // Make API call to login endpoint
-            const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+            // Make API call to admin login endpoint
+            const response = await axios.post(`${API_BASE_URL}/admin/login`, {
                 email,
                 password
             });
-
-            // Check if user has admin role
-            if (response.data.user.role !== 'admin') {
-                return { success: false, message: 'You do not have admin privileges' };
-            }
 
             // Store token and admin data
             const token = response.data.token;
