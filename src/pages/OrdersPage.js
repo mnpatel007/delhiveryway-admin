@@ -38,12 +38,7 @@ const OrdersPage = () => {
     const handleUpdateOrderStatus = async (orderId, status) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/orders/${orderId}`,
-                { status },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                }
+                { status }
             );
 
             // Update the order in the state

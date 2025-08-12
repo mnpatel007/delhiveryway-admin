@@ -31,11 +31,7 @@ const ShopsPage = () => {
     const fetchShops = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/shops?page=${page}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axios.get(`${API_BASE_URL}/admin/shops?page=${page}`);
             setShops(response.data.shops);
             setTotalPages(response.data.pagination.pages);
             setLoading(false);
@@ -56,11 +52,7 @@ const ShopsPage = () => {
                 vendorId: 'admin-created' // Placeholder
             };
 
-            const response = await axios.post(`${API_BASE_URL}/admin/shops`, shopData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axios.post(`${API_BASE_URL}/admin/shops`, shopData);
             setShops([response.data, ...shops]);
             setShowCreateForm(false);
             setNewShop({
@@ -82,11 +74,7 @@ const ShopsPage = () => {
     const handleDeleteShop = async (shopId) => {
         if (window.confirm('Are you sure you want to delete this shop?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/shops/${shopId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                });
+                await axios.delete(`${API_BASE_URL}/admin/shops/${shopId}`);
                 setShops(shops.filter(shop => shop._id !== shopId));
             } catch (err) {
                 setError('Failed to delete shop');

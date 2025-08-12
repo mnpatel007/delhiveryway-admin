@@ -23,11 +23,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/admin/stats`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                });
+                const response = await axios.get(`${API_BASE_URL}/admin/stats`);
                 setStats({
                     ...response.data.stats,
                     recentOrders: response.data.recentOrders,

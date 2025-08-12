@@ -20,11 +20,7 @@ const UsersPage = () => {
     const fetchUsers = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/users?page=${page}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axios.get(`${API_BASE_URL}/admin/users?page=${page}`);
             setUsers(response.data.users);
             setTotalPages(response.data.pagination.pages);
             setLoading(false);
@@ -38,11 +34,7 @@ const UsersPage = () => {
     const handleDeleteUser = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/users/${userId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                });
+                await axios.delete(`${API_BASE_URL}/admin/users/${userId}`);
                 setUsers(users.filter(user => user._id !== userId));
             } catch (err) {
                 setError('Failed to delete user');

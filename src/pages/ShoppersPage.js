@@ -20,11 +20,7 @@ const ShoppersPage = () => {
     const fetchShoppers = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/shoppers?page=${page}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axios.get(`${API_BASE_URL}/admin/shoppers?page=${page}`);
             setShoppers(response.data.shoppers);
             setTotalPages(response.data.pagination.pages);
             setLoading(false);
@@ -38,11 +34,7 @@ const ShoppersPage = () => {
     const handleDeleteShopper = async (shopperId) => {
         if (window.confirm('Are you sure you want to delete this shopper?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/shoppers/${shopperId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                });
+                await axios.delete(`${API_BASE_URL}/admin/shoppers/${shopperId}`);
                 setShoppers(shoppers.filter(shopper => shopper._id !== shopperId));
             } catch (err) {
                 setError('Failed to delete shopper');
@@ -54,12 +46,7 @@ const ShoppersPage = () => {
     const handleUpdateShopperStatus = async (shopperId, isOnline) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/admin/shoppers/${shopperId}`,
-                { isOnline },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                }
+                { isOnline }
             );
 
             // Update the shopper in the state
