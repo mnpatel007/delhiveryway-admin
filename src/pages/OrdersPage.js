@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import './OrdersPage.css';
 
 const OrdersPage = () => {
@@ -11,8 +11,6 @@ const OrdersPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
     useEffect(() => {
         fetchOrders(currentPage);
     }, [currentPage]);
@@ -20,11 +18,7 @@ const OrdersPage = () => {
     const fetchOrders = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/orders?page=${page}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axiosInstance.get(`/admin/orders?page=${page}`);
             setOrders(response.data.orders);
             setTotalPages(response.data.pagination.pages);
             setLoading(false);
@@ -37,7 +31,7 @@ const OrdersPage = () => {
 
     const handleUpdateOrderStatus = async (orderId, status) => {
         try {
-            const response = await axios.put(`${API_BASE_URL}/orders/${orderId}`,
+            const response = await axiosInstance.put(`/orders/${orderId}`,
                 { status }
             );
 

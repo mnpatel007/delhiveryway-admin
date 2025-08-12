@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import './ShoppersPage.css';
 
 const ShoppersPage = () => {
@@ -11,8 +11,6 @@ const ShoppersPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
     useEffect(() => {
         fetchShoppers(currentPage);
     }, [currentPage]);
@@ -20,7 +18,7 @@ const ShoppersPage = () => {
     const fetchShoppers = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/shoppers?page=${page}`);
+            const response = await axiosInstance.get(`/admin/shoppers?page=${page}`);
             setShoppers(response.data.shoppers);
             setTotalPages(response.data.pagination.pages);
             setLoading(false);
@@ -34,7 +32,7 @@ const ShoppersPage = () => {
     const handleDeleteShopper = async (shopperId) => {
         if (window.confirm('Are you sure you want to delete this shopper?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/shoppers/${shopperId}`);
+                await axiosInstance.delete(`/admin/shoppers/${shopperId}`);
                 setShoppers(shoppers.filter(shopper => shopper._id !== shopperId));
             } catch (err) {
                 setError('Failed to delete shopper');
@@ -45,7 +43,7 @@ const ShoppersPage = () => {
 
     const handleUpdateShopperStatus = async (shopperId, isOnline) => {
         try {
-            const response = await axios.put(`${API_BASE_URL}/admin/shoppers/${shopperId}`,
+            const response = await axiosInstance.put(`/admin/shoppers/${shopperId}`,
                 { isOnline }
             );
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 
 const AuthContext = createContext();
 
@@ -15,12 +15,9 @@ export const AuthProvider = ({ children }) => {
     const [admin, setAdmin] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
         if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const adminData = localStorage.getItem('adminData');
             if (adminData) {
                 setAdmin(JSON.parse(adminData));
@@ -32,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             // Make API call to admin login endpoint
-            const response = await axios.post(`${API_BASE_URL}/admin/login`, {
+            const response = await axiosInstance.post('/admin/login', {
                 email,
                 password
             });
@@ -44,7 +41,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('adminToken', token);
             localStorage.setItem('adminData', JSON.stringify(adminData));
 
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setAdmin(adminData);
 
             return { success: true };
@@ -59,7 +55,6 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminData');
-        delete axios.defaults.headers.common['Authorization'];
         setAdmin(null);
     };
 

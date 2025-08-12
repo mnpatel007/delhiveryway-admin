@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -18,12 +18,10 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/admin/stats`);
+                const response = await axiosInstance.get('/admin/stats');
                 setStats({
                     ...response.data.stats,
                     recentOrders: response.data.recentOrders,
@@ -38,7 +36,7 @@ const Dashboard = () => {
         };
 
         fetchStats();
-    }, [API_BASE_URL]);
+    }, []);
 
     if (loading) {
         return (
