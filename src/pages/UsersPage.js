@@ -21,8 +21,12 @@ const UsersPage = () => {
         try {
             setLoading(true);
             const response = await axios.get(`${API_BASE_URL}/admin/users?page=${page}`);
-            setUsers(response.data.users);
-            setTotalPages(response.data.pagination.pages);
+            if (response.data.success) {
+                setUsers(response.data.data.users || []);
+                setTotalPages(response.data.data.pagination?.pages || 1);
+            } else {
+                setError(response.data.message || 'Failed to fetch users');
+            }
             setLoading(false);
         } catch (err) {
             setError('Failed to fetch users');

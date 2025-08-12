@@ -19,8 +19,12 @@ const ShoppersPage = () => {
         try {
             setLoading(true);
             const response = await axiosInstance.get(`/admin/shoppers?page=${page}`);
-            setShoppers(response.data.shoppers);
-            setTotalPages(response.data.pagination.pages);
+            if (response.data.success) {
+                setShoppers(response.data.data.shoppers || []);
+                setTotalPages(response.data.data.pagination?.pages || 1);
+            } else {
+                setError(response.data.message || 'Failed to fetch shoppers');
+            }
             setLoading(false);
         } catch (err) {
             setError('Failed to fetch shoppers');

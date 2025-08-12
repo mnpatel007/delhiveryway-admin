@@ -37,8 +37,12 @@ const ProductsPage = () => {
                     'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
                 }
             });
-            setProducts(response.data.products);
-            setTotalPages(response.data.pagination.pages);
+            if (response.data.success) {
+                setProducts(response.data.data.products || []);
+                setTotalPages(response.data.data.pagination?.pages || 1);
+            } else {
+                setError(response.data.message || 'Failed to fetch products');
+            }
             setLoading(false);
         } catch (err) {
             setError('Failed to fetch products');

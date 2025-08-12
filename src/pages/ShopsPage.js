@@ -32,8 +32,12 @@ const ShopsPage = () => {
         try {
             setLoading(true);
             const response = await axios.get(`${API_BASE_URL}/admin/shops?page=${page}`);
-            setShops(response.data.shops);
-            setTotalPages(response.data.pagination.pages);
+            if (response.data.success) {
+                setShops(response.data.data.shops || []);
+                setTotalPages(response.data.data.pagination?.pages || 1);
+            } else {
+                setError(response.data.message || 'Failed to fetch shops');
+            }
             setLoading(false);
         } catch (err) {
             setError('Failed to fetch shops');

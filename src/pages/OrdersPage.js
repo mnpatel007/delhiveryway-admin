@@ -19,8 +19,12 @@ const OrdersPage = () => {
         try {
             setLoading(true);
             const response = await axiosInstance.get(`/admin/orders?page=${page}`);
-            setOrders(response.data.orders);
-            setTotalPages(response.data.pagination.pages);
+            if (response.data.success) {
+                setOrders(response.data.data.orders || []);
+                setTotalPages(response.data.data.pagination?.pages || 1);
+            } else {
+                setError(response.data.message || 'Failed to fetch orders');
+            }
             setLoading(false);
         } catch (err) {
             setError('Failed to fetch orders');
