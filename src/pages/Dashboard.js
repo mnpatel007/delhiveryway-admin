@@ -23,9 +23,13 @@ const Dashboard = () => {
             try {
                 const response = await axiosInstance.get('/admin/stats');
                 setStats({
-                    ...response.data.stats,
-                    recentOrders: response.data.recentOrders,
-                    orderStatusDistribution: response.data.orderStatusDistribution
+                    shopsCount: response.data.totalShops || 0,
+                    productsCount: response.data.totalProducts || 0,
+                    ordersCount: response.data.totalOrders || 0,
+                    usersCount: response.data.totalUsers || 0,
+                    shoppersCount: response.data.totalShoppers || 0,
+                    recentOrders: response.data.recentOrders || [],
+                    orderStatusDistribution: response.data.orderStatusDistribution || []
                 });
                 setLoading(false);
             } catch (err) {
@@ -136,7 +140,7 @@ const Dashboard = () => {
                 <div className="analytics-section">
                     <div className="recent-orders">
                         <h2>Recent Orders</h2>
-                        {stats.recentOrders.length === 0 ? (
+                        {!stats.recentOrders || stats.recentOrders.length === 0 ? (
                             <p>No recent orders</p>
                         ) : (
                             <div className="orders-list">
@@ -161,7 +165,7 @@ const Dashboard = () => {
 
                     <div className="order-status-distribution">
                         <h2>Order Status Distribution</h2>
-                        {stats.orderStatusDistribution.length === 0 ? (
+                        {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
                             <p>No order status data</p>
                         ) : (
                             <div className="status-chart">
