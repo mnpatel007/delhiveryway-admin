@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../utils/axios';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
