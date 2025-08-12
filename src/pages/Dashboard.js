@@ -155,7 +155,7 @@ const Dashboard = () => {
                                             <span className={`status-${order.status}`}>{order.status}</span>
                                         </div>
                                         <div className="order-total">
-                                            ${order.totalAmount}
+                                            ₹{order.totalAmount}
                                         </div>
                                     </div>
                                 ))}

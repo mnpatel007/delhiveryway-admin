@@ -258,8 +258,8 @@ const ProductsPage = () => {
                                 <h3>{product.name}</h3>
                                 <p>{product.description}</p>
                                 <div className="product-pricing">
-                                    <span className="current-price">${product.price}</span>
-                                    <span className="original-price">${product.originalPrice}</span>
+                                    <span className="current-price">₹{product.price}</span>
+                                    <span className="original-price">₹{product.originalPrice}</span>
                                     <span className="discount">{product.discount}% off</span>
                                 </div>
                                 <p className="product-unit">Unit: {product.unit}</p>
