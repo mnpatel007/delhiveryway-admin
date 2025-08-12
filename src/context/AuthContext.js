@@ -28,26 +28,30 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            // Make API call to admin login endpoint
-            const response = await axiosInstance.post('/admin/login', {
-                email,
-                password
-            });
+            // For demo purposes, use hardcoded admin credentials
+            if (email === 'admin@delhiveryway.com' && password === 'admin123') {
+                const token = 'admin-token-' + Date.now();
+                const adminData = {
+                    id: 'admin-1',
+                    name: 'Admin User',
+                    email: 'admin@delhiveryway.com',
+                    role: 'admin'
+                };
 
-            // Store token and admin data
-            const token = response.data.token;
-            const adminData = response.data.user;
-
-            localStorage.setItem('adminToken', token);
-            localStorage.setItem('adminData', JSON.stringify(adminData));
-
-            setAdmin(adminData);
-
-            return { success: true };
+                localStorage.setItem('adminToken', token);
+                localStorage.setItem('adminData', JSON.stringify(adminData));
+                setAdmin(adminData);
+                return { success: true };
+            } else {
+                return {
+                    success: false,
+                    message: 'Invalid admin credentials'
+                };
+            }
         } catch (error) {
             return {
                 success: false,
-                message: error.response?.data?.message || 'Login failed'
+                message: 'Login failed'
             };
         }
     };

@@ -32,7 +32,11 @@ const ProductsPage = () => {
     const fetchProducts = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/products?page=${page}`);
+            const response = await axios.get(`${API_BASE_URL}/admin/products?page=${page}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                }
+            });
             setProducts(response.data.products);
             setTotalPages(response.data.pagination.pages);
             setLoading(false);
@@ -66,7 +70,11 @@ const ProductsPage = () => {
                 discount: parseFloat(newProduct.discount)
             };
 
-            const response = await axios.post(`${API_BASE_URL}/admin/products`, productData);
+            const response = await axios.post(`${API_BASE_URL}/admin/products`, productData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                }
+            });
             setProducts([response.data, ...products]);
             setShowCreateForm(false);
             setNewProduct({
@@ -87,7 +95,11 @@ const ProductsPage = () => {
     const handleDeleteProduct = async (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/products/${productId}`);
+                await axios.delete(`${API_BASE_URL}/admin/products/${productId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
                 setProducts(products.filter(product => product._id !== productId));
             } catch (err) {
                 setError('Failed to delete product');
