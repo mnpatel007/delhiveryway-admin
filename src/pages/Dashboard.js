@@ -21,16 +21,22 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await axiosInstance.get('/admin/stats');
-                setStats({
-                    shopsCount: response.data.totalShops || 0,
-                    productsCount: response.data.totalProducts || 0,
-                    ordersCount: response.data.totalOrders || 0,
-                    usersCount: response.data.totalUsers || 0,
-                    shoppersCount: response.data.totalShoppers || 0,
-                    recentOrders: response.data.recentOrders || [],
-                    orderStatusDistribution: response.data.orderStatusDistribution || []
-                });
+                const response = await axiosInstance.get('/admin/dashboard');
+
+                if (response.data.success) {
+                    const data = response.data.data;
+                    setStats({
+                        shopsCount: data.stats.totalShops || 0,
+                        productsCount: data.stats.totalProducts || 0,
+                        ordersCount: data.stats.totalOrders || 0,
+                        usersCount: data.stats.totalUsers || 0,
+                        shoppersCount: data.stats.totalShoppers || 0,
+                        recentOrders: data.recentOrders || [],
+                        orderStatusDistribution: data.orderStatusStats || []
+                    });
+                } else {
+                    setError(response.data.message || 'Failed to fetch dashboard statistics');
+                }
                 setLoading(false);
             } catch (err) {
                 setError('Failed to fetch dashboard statistics');
@@ -155,7 +161,7 @@ const Dashboard = () => {
                                             <span className={`status-${order.status}`}>{order.status}</span>
                                         </div>
                                         <div className="order-total">
-                                            ₹{order.totalAmount}
+                                            ₹{order.orderValue?.total || 0}
                                         </div>
                                     </div>
                                 ))}

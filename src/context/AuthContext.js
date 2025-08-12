@@ -20,7 +20,16 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             const adminData = localStorage.getItem('adminData');
             if (adminData) {
-                setAdmin(JSON.parse(adminData));
+                try {
+                    const parsedAdmin = JSON.parse(adminData);
+                    setAdmin(parsedAdmin);
+                    // Set axios default header
+                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                } catch (error) {
+                    console.error('Error parsing admin data:', error);
+                    localStorage.removeItem('adminToken');
+                    localStorage.removeItem('adminData');
+                }
             }
         }
         setLoading(false);
@@ -28,30 +37,33 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            // For demo purposes, use hardcoded admin credentials
-            if (email === 'admin@delhiveryway.com' && password === 'admin123') {
-                const token = 'admin-token-' + Date.now();
-                const adminData = {
-                    id: 'admin-1',
-                    name: 'Admin User',
-                    email: 'admin@delhiveryway.com',
-                    role: 'admin'
-                };
+            const response = await axiosInstance.post('/admin/login', {
+                email,
+                password
+            });
+
+            if (response.data.success) {
+                const { user, token } = response.data.data;
 
                 localStorage.setItem('adminToken', token);
-                localStorage.setItem('adminData', JSON.stringify(adminData));
-                setAdmin(adminData);
+                localStorage.setItem('adminData', JSON.stringify(user));
+                setAdmin(user);
+
+                // Set axios default header
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
                 return { success: true };
             } else {
                 return {
                     success: false,
-                    message: 'Invalid admin credentials'
+                    message: response.data.message || 'Login failed'
                 };
             }
         } catch (error) {
+            console.error('Admin login error:', error);
             return {
                 success: false,
-                message: 'Login failed'
+                message: error.response?.data?.message || 'Login failed. Please try again.'
             };
         }
     };
@@ -59,6 +71,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminData');
+        delete axiosInstance.defaults.headers.common['Authorization'];
         setAdmin(null);
     };
 
