@@ -51,10 +51,16 @@ const ShoppersPage = () => {
                 { isOnline }
             );
 
-            // Update the shopper in the state
-            setShoppers(shoppers.map(shopper =>
-                shopper._id === shopperId ? { ...shopper, isOnline: response.data.isOnline } : shopper
-            ));
+            if (response.data.success) {
+                // Update the shopper in the state
+                setShoppers(shoppers.map(shopper =>
+                    shopper._id === shopperId ? { ...shopper, isOnline: response.data.isOnline } : shopper
+                ));
+
+                console.log(`✅ Shopper status updated: ${isOnline ? 'Online' : 'Offline'}`);
+            } else {
+                setError(response.data.message || 'Failed to update shopper status');
+            }
         } catch (err) {
             setError('Failed to update shopper status');
             console.error('Error updating shopper status:', err);
