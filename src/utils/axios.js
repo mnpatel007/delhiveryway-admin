@@ -28,10 +28,15 @@ axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            console.log('❌ Admin: 401 Unauthorized - clearing auth data');
+            console.log('❌ Admin: 401 Unauthorized - clearing auth data and redirecting to login');
             localStorage.removeItem('adminToken');
             localStorage.removeItem('adminData');
-            window.location.href = '/login';
+            // Clear axios header
+            delete axiosInstance.defaults.headers.common['Authorization'];
+            // Force redirect to login
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }
