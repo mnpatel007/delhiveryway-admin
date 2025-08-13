@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { useAuth } from '../context/AuthContext';
 import './ProductsPage.css';
 
@@ -22,7 +22,7 @@ const ProductsPage = () => {
         shopId: ''
     });
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 
     useEffect(() => {
         fetchProducts(currentPage);
@@ -32,11 +32,7 @@ const ProductsPage = () => {
     const fetchProducts = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/products?page=${page}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axiosInstance.get(`/admin/products?page=${page}`);
             if (response.data.success) {
                 setProducts(response.data.data.products || []);
                 setTotalPages(response.data.data.pagination?.pages || 1);
@@ -53,11 +49,7 @@ const ProductsPage = () => {
 
     const fetchShops = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/admin/shops`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axiosInstance.get(`/admin/shops`);
             setShops(response.data.shops);
         } catch (err) {
             console.error('Error fetching shops:', err);
@@ -74,11 +66,7 @@ const ProductsPage = () => {
                 discount: parseFloat(newProduct.discount)
             };
 
-            const response = await axios.post(`${API_BASE_URL}/admin/products`, productData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                }
-            });
+            const response = await axiosInstance.post(`/admin/products`, productData);
             setProducts([response.data, ...products]);
             setShowCreateForm(false);
             setNewProduct({
@@ -99,11 +87,7 @@ const ProductsPage = () => {
     const handleDeleteProduct = async (productId) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/products/${productId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                });
+                await axiosInstance.delete(`/admin/products/${productId}`);
                 setProducts(products.filter(product => product._id !== productId));
             } catch (err) {
                 setError('Failed to delete product');

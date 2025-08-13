@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import './UsersPage.css';
 
 const UsersPage = () => {
@@ -11,7 +11,7 @@ const UsersPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 
     useEffect(() => {
         fetchUsers(currentPage);
@@ -20,7 +20,7 @@ const UsersPage = () => {
     const fetchUsers = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/users?page=${page}`);
+            const response = await axiosInstance.get(`/admin/users?page=${page}`);
             if (response.data.success) {
                 setUsers(response.data.data.users || []);
                 setTotalPages(response.data.data.pagination?.pages || 1);
@@ -38,7 +38,7 @@ const UsersPage = () => {
     const handleDeleteUser = async (userId) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/users/${userId}`);
+                await axiosInstance.delete(`/admin/users/${userId}`);
                 setUsers(users.filter(user => user._id !== userId));
             } catch (err) {
                 setError('Failed to delete user');

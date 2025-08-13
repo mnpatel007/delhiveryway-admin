@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import './ShopsPage.css';
 
 const ShopsPage = () => {
@@ -22,7 +22,7 @@ const ShopsPage = () => {
         }
     });
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 
     useEffect(() => {
         fetchShops(currentPage);
@@ -31,7 +31,7 @@ const ShopsPage = () => {
     const fetchShops = async (page) => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/admin/shops?page=${page}`);
+            const response = await axiosInstance.get(`/admin/shops?page=${page}`);
             if (response.data.success) {
                 setShops(response.data.data.shops || []);
                 setTotalPages(response.data.data.pagination?.pages || 1);
@@ -56,7 +56,7 @@ const ShopsPage = () => {
                 vendorId: 'admin-created' // Placeholder
             };
 
-            const response = await axios.post(`${API_BASE_URL}/admin/shops`, shopData);
+            const response = await axiosInstance.post(`/admin/shops`, shopData);
             setShops([response.data, ...shops]);
             setShowCreateForm(false);
             setNewShop({
@@ -78,7 +78,7 @@ const ShopsPage = () => {
     const handleDeleteShop = async (shopId) => {
         if (window.confirm('Are you sure you want to delete this shop?')) {
             try {
-                await axios.delete(`${API_BASE_URL}/admin/shops/${shopId}`);
+                await axiosInstance.delete(`/admin/shops/${shopId}`);
                 setShops(shops.filter(shop => shop._id !== shopId));
             } catch (err) {
                 setError('Failed to delete shop');
