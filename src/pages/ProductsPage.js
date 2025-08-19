@@ -226,7 +226,7 @@ const ProductsPage = () => {
                                     <option value="">Select a shop</option>
                                     {shops?.map(shop => (
                                         <option key={shop._id} value={shop._id}>
-                                            {shop.name}
+                                            {shop.name} ({shop._id})
                                         </option>
                                     ))}
                                 </select>
