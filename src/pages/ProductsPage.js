@@ -68,7 +68,8 @@ const ProductsPage = () => {
             };
 
             const response = await axiosInstance.post(`/admin/products`, productData);
-            setProducts([response.data, ...products]);
+            const newProductData = response.data.data || response.data;
+            setProducts([newProductData, ...products]);
             setShowCreateForm(false);
             setNewProduct({
                 name: '',
