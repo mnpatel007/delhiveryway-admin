@@ -50,9 +50,10 @@ const ProductsPage = () => {
     const fetchShops = async () => {
         try {
             const response = await axiosInstance.get(`/admin/shops`);
-            setShops(response.data.shops);
+            setShops(response.data.data?.shops || []);
         } catch (err) {
             console.error('Error fetching shops:', err);
+            setShops([]);
         }
     };
 
@@ -222,7 +223,7 @@ const ProductsPage = () => {
                                     required
                                 >
                                     <option value="">Select a shop</option>
-                                    {shops.map(shop => (
+                                    {shops?.map(shop => (
                                         <option key={shop._id} value={shop._id}>
                                             {shop.name}
                                         </option>
