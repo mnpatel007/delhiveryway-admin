@@ -14,12 +14,18 @@ const ShopsPage = () => {
     const [newShop, setNewShop] = useState({
         name: '',
         description: '',
+        category: 'grocery',
         address: {
             street: '',
             city: '',
             state: '',
-            zipCode: ''
-        }
+            zipCode: '',
+            coordinates: {
+                lat: 0,
+                lng: 0
+            }
+        },
+        vendorId: 'admin-created'
     });
 
 
@@ -49,25 +55,30 @@ const ShopsPage = () => {
     const handleCreateShop = async (e) => {
         e.preventDefault();
         try {
-            // For now, we'll use a placeholder vendor ID since this is an admin function
-            // In a real implementation, you might want to assign shops to specific vendors
-            const shopData = {
-                ...newShop,
-                vendorId: 'admin-created' // Placeholder
-            };
+            // Validate coordinates
+            if (!newShop.address.coordinates.lat || !newShop.address.coordinates.lng) {
+                setError('Please provide valid coordinates (latitude and longitude)');
+                return;
+            }
 
-            const response = await axiosInstance.post(`/admin/shops`, shopData);
+            const response = await axiosInstance.post(`/admin/shops`, newShop);
             setShops([response.data, ...shops]);
             setShowCreateForm(false);
             setNewShop({
                 name: '',
                 description: '',
+                category: 'grocery',
                 address: {
                     street: '',
                     city: '',
                     state: '',
-                    zipCode: ''
-                }
+                    zipCode: '',
+                    coordinates: {
+                        lat: 0,
+                        lng: 0
+                    }
+                },
+                vendorId: 'admin-created'
             });
         } catch (err) {
             setError('Failed to create shop');
@@ -89,7 +100,19 @@ const ShopsPage = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name.includes('address.')) {
+        if (name.includes('address.coordinates.')) {
+            const coordField = name.split('.')[2];
+            setNewShop({
+                ...newShop,
+                address: {
+                    ...newShop.address,
+                    coordinates: {
+                        ...newShop.address.coordinates,
+                        [coordField]: parseFloat(value) || 0
+                    }
+                }
+            });
+        } else if (name.includes('address.')) {
             const addressField = name.split('.')[1];
             setNewShop({
                 ...newShop,
@@ -160,6 +183,29 @@ const ShopsPage = () => {
                         </div>
 
                         <div className="form-group">
+                            <label htmlFor="category">Category</label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={newShop.category}
+                                onChange={handleInputChange}
+                                required
+                            >
+                                <option value="grocery">Grocery</option>
+                                <option value="pharmacy">Pharmacy</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="bakery">Bakery</option>
+                                <option value="books">Books</option>
+                                <option value="sports">Sports</option>
+                                <option value="beauty">Beauty</option>
+                                <option value="home">Home</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
                             <label htmlFor="street">Street</label>
                             <input
                                 type="text"
@@ -203,6 +249,34 @@ const ShopsPage = () => {
                                     id="zipCode"
                                     name="address.zipCode"
                                     value={newShop.address.zipCode}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="lat">Latitude</label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    id="lat"
+                                    name="address.coordinates.lat"
+                                    value={newShop.address.coordinates.lat}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="lng">Longitude</label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    id="lng"
+                                    name="address.coordinates.lng"
+                                    value={newShop.address.coordinates.lng}
                                     onChange={handleInputChange}
                                     required
                                 />
