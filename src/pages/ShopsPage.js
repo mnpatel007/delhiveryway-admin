@@ -25,7 +25,7 @@ const ShopsPage = () => {
                 lng: 0
             }
         },
-        vendorId: 'admin-created'
+        vendorId: null
     });
 
 
@@ -62,7 +62,11 @@ const ShopsPage = () => {
             }
 
             const response = await axiosInstance.post(`/admin/shops`, newShop);
-            setShops([response.data, ...shops]);
+            console.log('Shop creation response:', response.data);
+            
+            // Handle different response formats
+            const newShopData = response.data.data || response.data;
+            setShops([newShopData, ...shops]);
             setShowCreateForm(false);
             setNewShop({
                 name: '',
@@ -78,11 +82,13 @@ const ShopsPage = () => {
                         lng: 0
                     }
                 },
-                vendorId: 'admin-created'
+                vendorId: null
             });
         } catch (err) {
-            setError('Failed to create shop');
+            const errorMessage = err.response?.data?.message || 'Failed to create shop';
+            setError(errorMessage);
             console.error('Error creating shop:', err);
+            console.error('Response data:', err.response?.data);
         }
     };
 
