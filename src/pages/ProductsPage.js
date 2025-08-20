@@ -165,8 +165,8 @@ const ProductsPage = () => {
                 inStock: true
             });
         } catch (err) {
-            setError('Failed to update product');
             console.error('Error updating product:', err);
+            setError('Failed to update product: ' + (err.response?.data?.message || err.message));
         }
     };
 
