@@ -12,6 +12,8 @@ const ProductsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
     const [newProduct, setNewProduct] = useState({
         name: '',
         description: '',
@@ -19,7 +21,11 @@ const ProductsPage = () => {
         originalPrice: '',
         discount: '',
         unit: '',
-        shopId: ''
+        shopId: '',
+        stockQuantity: '',
+        category: '',
+        tags: '',
+        inStock: true
     });
 
 
@@ -97,6 +103,70 @@ const ProductsPage = () => {
                 setError('Failed to delete product');
                 console.error('Error deleting product:', err);
             }
+        }
+    };
+
+    const handleEditProduct = (product) => {
+        setEditingProduct(product);
+        setNewProduct({
+            name: product.name || '',
+            description: product.description || '',
+            price: product.price?.toString() || '',
+            originalPrice: product.originalPrice?.toString() || '',
+            discount: product.discount?.toString() || '',
+            unit: product.unit || '',
+            shopId: product.shopId?._id || product.shopId || '',
+            stockQuantity: product.stockQuantity?.toString() || '',
+            category: product.category || '',
+            tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
+            inStock: product.inStock !== false
+        });
+        setShowEditForm(true);
+        setShowCreateForm(false);
+    };
+
+    const handleUpdateProduct = async (e) => {
+        e.preventDefault();
+        try {
+            const productData = {
+                ...newProduct,
+                price: parseFloat(newProduct.price),
+                originalPrice: newProduct.originalPrice ? parseFloat(newProduct.originalPrice) : null,
+                discount: newProduct.discount ? parseFloat(newProduct.discount) : 0,
+                stockQuantity: parseInt(newProduct.stockQuantity) || 0,
+                tags: newProduct.tags ? newProduct.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+                inStock: newProduct.inStock
+            };
+
+            console.log('Updating product with data:', productData);
+            const response = await axiosInstance.put(`/admin/products/${editingProduct._id}`, productData);
+            console.log('Product update response:', response.data);
+
+            // Update the product in the list
+            setProducts(products.map(product =>
+                product._id === editingProduct._id
+                    ? { ...product, ...response.data.data }
+                    : product
+            ));
+
+            setShowEditForm(false);
+            setEditingProduct(null);
+            setNewProduct({
+                name: '',
+                description: '',
+                price: '',
+                originalPrice: '',
+                discount: '',
+                unit: '',
+                shopId: '',
+                stockQuantity: '',
+                category: '',
+                tags: '',
+                inStock: true
+            });
+        } catch (err) {
+            setError('Failed to update product');
+            console.error('Error updating product:', err);
         }
     };
 
@@ -235,7 +305,227 @@ const ProductsPage = () => {
                             </div>
                         </div>
 
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="stockQuantity">Stock Quantity</label>
+                                <input
+                                    type="number"
+                                    id="stockQuantity"
+                                    name="stockQuantity"
+                                    value={newProduct.stockQuantity}
+                                    onChange={handleInputChange}
+                                    required
+                                    min="0"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="category">Category</label>
+                                <input
+                                    type="text"
+                                    id="category"
+                                    name="category"
+                                    value={newProduct.category}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., Vegetables, Fruits, Dairy"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="tags">Tags (comma-separated)</label>
+                                <input
+                                    type="text"
+                                    id="tags"
+                                    name="tags"
+                                    value={newProduct.tags}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., organic, fresh, local"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="inStock"
+                                    checked={newProduct.inStock}
+                                    onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
+                                />
+                                In Stock
+                            </label>
+                        </div>
+
                         <button type="submit" className="submit-btn">Create Product</button>
+                    </form>
+                </div>
+            )}
+
+            {showEditForm && editingProduct && (
+                <div className="create-product-form">
+                    <h2>Edit Product</h2>
+                    <form onSubmit={handleUpdateProduct}>
+                        <div className="form-group">
+                            <label htmlFor="name">Product Name</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={newProduct.name}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="description">Description</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={newProduct.description}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="price">Price</label>
+                                <input
+                                    type="number"
+                                    id="price"
+                                    name="price"
+                                    value={newProduct.price}
+                                    onChange={handleInputChange}
+                                    required
+                                    step="0.01"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="originalPrice">Original Price</label>
+                                <input
+                                    type="number"
+                                    id="originalPrice"
+                                    name="originalPrice"
+                                    value={newProduct.originalPrice}
+                                    onChange={handleInputChange}
+                                    required
+                                    step="0.01"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="discount">Discount (%)</label>
+                                <input
+                                    type="number"
+                                    id="discount"
+                                    name="discount"
+                                    value={newProduct.discount}
+                                    onChange={handleInputChange}
+                                    required
+                                    min="0"
+                                    max="100"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="unit">Unit</label>
+                                <input
+                                    type="text"
+                                    id="unit"
+                                    name="unit"
+                                    value={newProduct.unit}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="shopId">Shop</label>
+                                <select
+                                    id="shopId"
+                                    name="shopId"
+                                    value={newProduct.shopId}
+                                    onChange={handleInputChange}
+                                    required
+                                >
+                                    <option value="">Select a shop</option>
+                                    {shops?.map(shop => (
+                                        <option key={shop._id} value={shop._id}>
+                                            {shop.name} ({shop._id})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="stockQuantity">Stock Quantity</label>
+                                <input
+                                    type="number"
+                                    id="stockQuantity"
+                                    name="stockQuantity"
+                                    value={newProduct.stockQuantity}
+                                    onChange={handleInputChange}
+                                    required
+                                    min="0"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="category">Category</label>
+                                <input
+                                    type="text"
+                                    id="category"
+                                    name="category"
+                                    value={newProduct.category}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., Vegetables, Fruits, Dairy"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="tags">Tags (comma-separated)</label>
+                                <input
+                                    type="text"
+                                    id="tags"
+                                    name="tags"
+                                    value={newProduct.tags}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., organic, fresh, local"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="inStock"
+                                    checked={newProduct.inStock}
+                                    onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
+                                />
+                                In Stock
+                            </label>
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" className="submit-btn">Update Product</button>
+                            <button
+                                type="button"
+                                className="cancel-btn"
+                                onClick={() => {
+                                    setShowEditForm(false);
+                                    setEditingProduct(null);
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </form>
                 </div>
             )}
@@ -251,13 +541,37 @@ const ProductsPage = () => {
                                 <p>{product.description}</p>
                                 <div className="product-pricing">
                                     <span className="current-price">₹{product.price}</span>
-                                    <span className="original-price">₹{product.originalPrice}</span>
-                                    <span className="discount">{product.discount}% off</span>
+                                    {product.originalPrice && product.originalPrice > product.price && (
+                                        <span className="original-price">₹{product.originalPrice}</span>
+                                    )}
+                                    {product.discount > 0 && (
+                                        <span className="discount">{product.discount}% off</span>
+                                    )}
                                 </div>
-                                <p className="product-unit">Unit: {product.unit}</p>
-                                <p className="product-shop">Shop: {product.shopId?.name || 'Unknown'}</p>
+                                <div className="product-details">
+                                    <p className="product-unit">Unit: {product.unit}</p>
+                                    <p className="product-stock">Stock: {product.stockQuantity || 0} {product.unit}</p>
+                                    <p className="product-status">
+                                        Status: <span className={product.inStock ? 'in-stock' : 'out-of-stock'}>
+                                            {product.inStock ? 'In Stock' : 'Out of Stock'}
+                                        </span>
+                                    </p>
+                                    {product.category && (
+                                        <p className="product-category">Category: {product.category}</p>
+                                    )}
+                                    {product.tags && product.tags.length > 0 && (
+                                        <p className="product-tags">Tags: {product.tags.join(', ')}</p>
+                                    )}
+                                    <p className="product-shop">Shop: {product.shopId?.name || 'Unknown'}</p>
+                                </div>
                             </div>
                             <div className="product-actions">
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => handleEditProduct(product)}
+                                >
+                                    Edit
+                                </button>
                                 <button
                                     className="delete-btn"
                                     onClick={() => handleDeleteProduct(product._id)}
