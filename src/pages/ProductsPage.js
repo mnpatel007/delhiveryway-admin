@@ -67,7 +67,9 @@ const ProductsPage = () => {
                 discount: parseFloat(newProduct.discount)
             };
 
+            console.log('Creating product with data:', productData);
             const response = await axiosInstance.post(`/admin/products`, productData);
+            console.log('Product creation response:', response.data);
             const newProductData = response.data.data || response.data;
             setProducts([newProductData, ...products]);
             setShowCreateForm(false);
