@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../utils/axios';
+import OrderMonitoring from '../components/OrderMonitoring';
 import './Dashboard.css';
 
 const Dashboard = () => {
     const { admin, logout } = useAuth();
+    const [activeView, setActiveView] = useState('dashboard');
     const [stats, setStats] = useState({
         shopsCount: 0,
         productsCount: 0,
@@ -73,42 +75,36 @@ const Dashboard = () => {
                 <header className="dashboard-header">
                     <div className="header-left">
                         <h1>Admin Dashboard</h1>
-                        <p className="error">{error}</p>
-                    </div>
-                    <div className="header-right">
-                        <button className="logout-btn" onClick={logout}>
-                            Logout
-                        </button>
                     </div>
                 </header>
+                <OrderMonitoring />
             </div>
         );
     }
 
     return (
-        <div className="dashboard">
+        <div className="dashboard-container">
             <header className="dashboard-header">
-                <div className="header-left">
+                <div className="header-content">
                     <h1>Admin Dashboard</h1>
-                    <p>Welcome back, {admin?.name}</p>
-                </div>
-                <div className="header-right">
-                    <button className="logout-btn" onClick={logout}>
-                        Logout
-                    </button>
+                    <div className="header-actions">
+                        <span>Welcome, {admin?.name || 'Admin'}</span>
+                        <button onClick={logout} className="logout-btn">Logout</button>
+                    </div>
                 </div>
             </header>
 
-            <nav className="dashboard-nav">
-                <Link to="/dashboard" className="nav-link active">Dashboard</Link>
-                <Link to="/shops" className="nav-link">Shops</Link>
-                <Link to="/products" className="nav-link">Products</Link>
-                <Link to="/orders" className="nav-link">Orders</Link>
-                <Link to="/users" className="nav-link">Users</Link>
-                <Link to="/shoppers" className="nav-link">Shoppers</Link>
-            </nav>
+            <main className="dashboard-main">
+                <nav className="dashboard-nav">
+                    <Link to="/dashboard" className="nav-link active">Dashboard</Link>
+                    <Link to="/shops" className="nav-link">Shops</Link>
+                    <Link to="/products" className="nav-link">Products</Link>
+                    <Link to="/orders" className="nav-link">Orders</Link>
+                    <Link to="/users" className="nav-link">Users</Link>
+                    <Link to="/shoppers" className="nav-link">Shoppers</Link>
+                </nav>
 
-            <main className="dashboard-content">
+                <div className="dashboard-content">
                 <div className="stats-grid">
                     <div className="stat-card">
                         <div className="stat-icon">🏪</div>
@@ -213,6 +209,12 @@ const Dashboard = () => {
                             <p>View and update orders</p>
                         </Link>
 
+                        <div className="action-card" onClick={() => setActiveView('order-monitoring')}>
+                            <div className="action-icon">📊</div>
+                            <h3>Order Monitoring</h3>
+                            <p>Real-time order workflow tracking</p>
+                        </div>
+
                         <Link to="/users" className="action-card">
                             <div className="action-icon">👥</div>
                             <h3>Manage Users</h3>
@@ -225,6 +227,7 @@ const Dashboard = () => {
                             <p>View and manage shoppers</p>
                         </Link>
                     </div>
+                </div>
                 </div>
             </main>
         </div>
