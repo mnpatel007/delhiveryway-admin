@@ -25,6 +25,15 @@ const ShopsPage = () => {
                 lng: 0
             }
         },
+        operatingHours: {
+            monday: { open: '09:00', close: '21:00', closed: false },
+            tuesday: { open: '09:00', close: '21:00', closed: false },
+            wednesday: { open: '09:00', close: '21:00', closed: false },
+            thursday: { open: '09:00', close: '21:00', closed: false },
+            friday: { open: '09:00', close: '21:00', closed: false },
+            saturday: { open: '09:00', close: '21:00', closed: false },
+            sunday: { open: '10:00', close: '20:00', closed: false }
+        },
         vendorId: 'admin-created'
     });
 
@@ -82,6 +91,15 @@ const ShopsPage = () => {
                         lng: 0
                     }
                 },
+                operatingHours: {
+                    monday: { open: '09:00', close: '21:00', closed: false },
+                    tuesday: { open: '09:00', close: '21:00', closed: false },
+                    wednesday: { open: '09:00', close: '21:00', closed: false },
+                    thursday: { open: '09:00', close: '21:00', closed: false },
+                    friday: { open: '09:00', close: '21:00', closed: false },
+                    saturday: { open: '09:00', close: '21:00', closed: false },
+                    sunday: { open: '10:00', close: '20:00', closed: false }
+                },
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -118,6 +136,19 @@ const ShopsPage = () => {
                     }
                 }
             });
+        } else if (name.startsWith('operatingHours.')) {
+            // operatingHours.monday.open | operatingHours.monday.close | operatingHours.monday.closed
+            const [, day, field] = name.split('.');
+            setNewShop(prev => ({
+                ...prev,
+                operatingHours: {
+                    ...prev.operatingHours,
+                    [day]: {
+                        ...prev.operatingHours[day],
+                        [field]: field === 'closed' ? e.target.checked : value
+                    }
+                }
+            }));
         } else if (name.includes('address.')) {
             const addressField = name.split('.')[1];
             setNewShop({
@@ -287,6 +318,46 @@ const ShopsPage = () => {
                                     required
                                 />
                             </div>
+                        </div>
+
+                        {/* Operating Hours Section */}
+                        <div className="form-group">
+                            <h3>Operating Hours</h3>
+                            {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                                <div className="form-row" key={day}>
+                                    <div className="form-group">
+                                        <label style={{ textTransform: 'capitalize' }}>{day}</label>
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                            <input
+                                                type="time"
+                                                name={`operatingHours.${day}.open`}
+                                                value={newShop.operatingHours[day].open}
+                                                onChange={handleInputChange}
+                                                disabled={newShop.operatingHours[day].closed}
+                                                required={!newShop.operatingHours[day].closed}
+                                            />
+                                            <span>to</span>
+                                            <input
+                                                type="time"
+                                                name={`operatingHours.${day}.close`}
+                                                value={newShop.operatingHours[day].close}
+                                                onChange={handleInputChange}
+                                                disabled={newShop.operatingHours[day].closed}
+                                                required={!newShop.operatingHours[day].closed}
+                                            />
+                                            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    name={`operatingHours.${day}.closed`}
+                                                    checked={!!newShop.operatingHours[day].closed}
+                                                    onChange={handleInputChange}
+                                                />
+                                                Closed
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
                         <button type="submit" className="submit-btn">Create Shop</button>
