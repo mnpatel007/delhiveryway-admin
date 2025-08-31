@@ -34,6 +34,7 @@ const ShopsPage = () => {
             saturday: { open: '09:00', close: '21:00', closed: false },
             sunday: { open: '10:00', close: '20:00', closed: false }
         },
+        deliveryFee: 30,
         vendorId: 'admin-created'
     });
 
@@ -100,6 +101,7 @@ const ShopsPage = () => {
                     saturday: { open: '09:00', close: '21:00', closed: false },
                     sunday: { open: '10:00', close: '20:00', closed: false }
                 },
+                deliveryFee: 30,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -320,6 +322,20 @@ const ShopsPage = () => {
                             </div>
                         </div>
 
+                        <div className="form-group">
+                            <label htmlFor="deliveryFee">Delivery Fee (₹)</label>
+                            <input
+                                type="number"
+                                id="deliveryFee"
+                                name="deliveryFee"
+                                value={newShop.deliveryFee}
+                                onChange={handleInputChange}
+                                min="0"
+                                step="1"
+                                placeholder="Enter delivery fee (0 for free delivery)"
+                            />
+                        </div>
+
                         {/* Operating Hours Section */}
                         <div className="form-group">
                             <h3>Operating Hours</h3>
@@ -376,6 +392,9 @@ const ShopsPage = () => {
                                 <p>{shop.description}</p>
                                 <p className="shop-address">
                                     {shop.address.street}, {shop.address.city}, {shop.address.state} {shop.address.zipCode}
+                                </p>
+                                <p className="shop-delivery-fee">
+                                    Delivery Fee: {shop.deliveryFee === 0 ? 'Free' : `₹${shop.deliveryFee}`}
                                 </p>
                             </div>
                             <div className="shop-actions">
