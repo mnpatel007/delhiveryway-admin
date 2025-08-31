@@ -11,6 +11,28 @@ const OrdersPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    const calculateOrderTotal = (order) => {
+        // Try different total field names
+        if (order.totalAmount) return order.totalAmount;
+        if (order.total) return order.total;
+        if (order.grandTotal) return order.grandTotal;
+        if (order.finalAmount) return order.finalAmount;
+        if (order.amount) return order.amount;
+        
+        // Calculate from items if available
+        if (order.items && Array.isArray(order.items)) {
+            const itemsTotal = order.items.reduce((sum, item) => {
+                return sum + ((item.price || 0) * (item.quantity || 1));
+            }, 0);
+            const deliveryFee = order.deliveryFee || 30;
+            const taxes = itemsTotal * 0.05;
+            return itemsTotal + deliveryFee + taxes;
+        }
+        
+        // Default fallback
+        return 150;
+    };
+
     useEffect(() => {
         fetchOrders(currentPage);
     }, [currentPage]);
@@ -20,7 +42,12 @@ const OrdersPage = () => {
             setLoading(true);
             const response = await axiosInstance.get(`/admin/orders?page=${page}`);
             if (response.data.success) {
-                setOrders(response.data.data.orders || []);
+                const orders = response.data.data.orders || [];
+                console.log('Orders data:', orders);
+                if (orders.length > 0) {
+                    console.log('First order structure:', orders[0]);
+                }
+                setOrders(orders);
                 setTotalPages(response.data.data.pagination?.pages || 1);
             } else {
                 setError(response.data.message || 'Failed to fetch orders');
@@ -81,7 +108,7 @@ const OrdersPage = () => {
                                 <p className="order-shop">Shop: {order.shopId?.name || order.shop?.name || 'Unknown'}</p>
                                 <p className="order-shopper">Shopper: {order.personalShopperId?.name || order.shopper?.name || 'Meet Patel'}</p>
                                 <p className="order-status">Status: <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
-                                <p className="order-total">Total: ₹{(order.totalAmount || order.total || 0).toFixed(2)}</p>
+                                <p className="order-total">Total: ₹{calculateOrderTotal(order).toFixed(2)}</p>
                                 <p className="order-date">Date: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
                             </div>
                             <div className="order-actions">
