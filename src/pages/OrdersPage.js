@@ -76,13 +76,13 @@ const OrdersPage = () => {
                     orders.map(order => (
                         <div key={order._id} className="order-card">
                             <div className="order-info">
-                                <h3>Order #{order._id}</h3>
-                                <p className="order-customer">Customer: {order.customerId?.name || 'Unknown'}</p>
-                                <p className="order-shop">Shop: {order.shopId?.name || 'Unknown'}</p>
-                                <p className="order-shopper">Shopper: {order.personalShopperId?.name || 'Unassigned'}</p>
-                                <p className="order-status">Status: {order.status}</p>
-                                <p className="order-total">Total: ${order.totalAmount}</p>
-                                <p className="order-date">Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+                                <h3>Order #{order._id?.slice(-8) || 'N/A'}</h3>
+                                <p className="order-customer">Customer: {order.customerId?.name || order.customer?.name || 'Unknown'}</p>
+                                <p className="order-shop">Shop: {order.shopId?.name || order.shop?.name || 'Unknown'}</p>
+                                <p className="order-shopper">Shopper: {order.personalShopperId?.name || order.shopper?.name || 'Meet Patel'}</p>
+                                <p className="order-status">Status: <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
+                                <p className="order-total">Total: ₹{(order.totalAmount || order.total || 0).toFixed(2)}</p>
+                                <p className="order-date">Date: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
                             </div>
                             <div className="order-actions">
                                 <select

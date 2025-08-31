@@ -66,6 +66,62 @@
     color: #888;
 }
 
+.status-pending {
+    color: #f39c12;
+    background: #fef9e7;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.status-confirmed {
+    color: #3498db;
+    background: #ebf3fd;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.status-preparing {
+    color: #9b59b6;
+    background: #f4ecf7;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.status-ready_for_pickup {
+    color: #e67e22;
+    background: #fdf2e9;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.status-out_for_delivery {
+    color: #2980b9;
+    background: #eaf2f8;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.status-delivered {
+    color: #27ae60;
+    background: #eafaf1;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+.status-cancelled {
+    color: #e74c3c;
+    background: #fdf2f2;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
 .order-actions {
     display: flex;
     flex-direction: column;
