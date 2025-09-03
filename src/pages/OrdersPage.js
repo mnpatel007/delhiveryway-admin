@@ -18,17 +18,17 @@ const OrdersPage = () => {
         if (order.grandTotal) return order.grandTotal;
         if (order.finalAmount) return order.finalAmount;
         if (order.amount) return order.amount;
-        
+
         // Calculate from items if available
         if (order.items && Array.isArray(order.items)) {
             const itemsTotal = order.items.reduce((sum, item) => {
                 return sum + ((item.price || 0) * (item.quantity || 1));
             }, 0);
             const deliveryFee = order.deliveryFee || 30;
-            const taxes = itemsTotal * 0.05;
-            return itemsTotal + deliveryFee + taxes;
+            // NO TAXES - ONLY subtotal + delivery fee
+            return itemsTotal + deliveryFee;
         }
-        
+
         // Default fallback
         return 150;
     };
