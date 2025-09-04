@@ -73,8 +73,8 @@ const OrderMonitoring = () => {
     const filteredOrders = orders.filter(order => {
         const matchesFilter = filter === 'all' || order.status === filter;
         const matchesSearch = order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            order.customerId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            order.personalShopperId?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+            order.customerId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order.personalShopperId?.name?.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesFilter && matchesSearch;
     });
 
@@ -176,7 +176,7 @@ const OrderMonitoring = () => {
                     <div className="col-time">Time</div>
                     <div className="col-actions">Actions</div>
                 </div>
-                
+
                 <div className="table-body">
                     {filteredOrders.map(order => (
                         <div key={order._id} className="table-row">
@@ -189,7 +189,7 @@ const OrderMonitoring = () => {
                             <div className="col-customer">
                                 <div className="customer-info">
                                     <span className="customer-name">{order.customerId?.name || 'N/A'}</span>
-                                    <span className="customer-phone">{order.customerId?.phone || 'N/A'}</span>
+                                    <span className="customer-phone">{order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}</span>
                                 </div>
                             </div>
                             <div className="col-shopper">
@@ -203,7 +203,7 @@ const OrderMonitoring = () => {
                                 </div>
                             </div>
                             <div className="col-status">
-                                <span 
+                                <span
                                     className="status-badge"
                                     style={{ backgroundColor: getStatusColor(order.status) }}
                                 >
@@ -233,7 +233,7 @@ const OrderMonitoring = () => {
                                 </div>
                             </div>
                             <div className="col-actions">
-                                <button 
+                                <button
                                     className="action-btn view"
                                     onClick={() => window.open(`/admin/orders/${order._id}`, '_blank')}
                                 >

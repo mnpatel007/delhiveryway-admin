@@ -107,7 +107,7 @@ const OrdersPage = () => {
                     orders.map(order => (
                         <div key={order._id} className="order-card">
                             <div className="order-header">
-                                <h3>Order #{order._id?.slice(-8) || 'N/A'}</h3>
+                                <h3>Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}</h3>
                                 <div className="order-actions">
                                     <select
                                         value={order.status}
