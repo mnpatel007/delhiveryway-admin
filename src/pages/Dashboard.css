@@ -207,11 +207,28 @@
     font-weight: bold;
 }
 
-.order-total {
+.order-totals {
     flex: 1;
     text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.original-total {
     font-weight: bold;
     color: #27ae60;
+    font-size: 1rem;
+}
+
+.revised-total {
+    font-weight: 600;
+    color: #f39c12;
+    font-size: 0.9rem;
+    padding: 2px 8px;
+    background-color: #fef9e7;
+    border-radius: 12px;
+    border: 1px solid #f39c12;
 }
 
 .order-status-distribution {
