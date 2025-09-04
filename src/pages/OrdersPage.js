@@ -4,7 +4,6 @@ import axiosInstance from '../utils/axios';
 import './OrdersPage.css';
 
 const OrdersPage = () => {
-    const { admin } = useAuth();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -62,14 +61,19 @@ const OrdersPage = () => {
 
     const handleUpdateOrderStatus = async (orderId, status) => {
         try {
-            const response = await axiosInstance.put(`/orders/${orderId}`,
+            const response = await axiosInstance.put(`/admin/orders/${orderId}/status`,
                 { status }
             );
 
-            // Update the order in the state
-            setOrders(orders.map(order =>
-                order._id === orderId ? { ...order, status: response.data.status } : order
-            ));
+            if (response.data.success) {
+                // Update the order in the state
+                setOrders(orders.map(order =>
+                    order._id === orderId ? { ...order, status } : order
+                ));
+                setError(''); // Clear any previous errors
+            } else {
+                setError(response.data.message || 'Failed to update order status');
+            }
         } catch (err) {
             setError('Failed to update order status');
             console.error('Error updating order status:', err);
