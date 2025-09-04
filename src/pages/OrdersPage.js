@@ -102,29 +102,118 @@ const OrdersPage = () => {
                 ) : (
                     orders.map(order => (
                         <div key={order._id} className="order-card">
-                            <div className="order-info">
+                            <div className="order-header">
                                 <h3>Order #{order._id?.slice(-8) || 'N/A'}</h3>
-                                <p className="order-customer">Customer: {order.customerId?.name || order.customer?.name || 'Unknown'}</p>
-                                <p className="order-shop">Shop: {order.shopId?.name || order.shop?.name || 'Unknown'}</p>
-                                <p className="order-shopper">Shopper: {order.personalShopperId?.name || order.shopper?.name || 'Meet Patel'}</p>
-                                <p className="order-status">Status: <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
-                                <p className="order-total">Total: ₹{calculateOrderTotal(order).toFixed(2)}</p>
-                                <p className="order-date">Date: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
+                                <div className="order-actions">
+                                    <select
+                                        value={order.status}
+                                        onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
+                                        className="status-select"
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="preparing">Preparing</option>
+                                        <option value="ready_for_pickup">Ready for Pickup</option>
+                                        <option value="out_for_delivery">Out for Delivery</option>
+                                        <option value="delivered">Delivered</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div className="order-actions">
-                                <select
-                                    value={order.status}
-                                    onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
-                                    className="status-select"
-                                >
-                                    <option value="pending">Pending</option>
-                                    <option value="confirmed">Confirmed</option>
-                                    <option value="preparing">Preparing</option>
-                                    <option value="ready_for_pickup">Ready for Pickup</option>
-                                    <option value="out_for_delivery">Out for Delivery</option>
-                                    <option value="delivered">Delivered</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
+
+                            <div className="order-details">
+                                <div className="order-basic-info">
+                                    <p><strong>Customer:</strong> {order.customerId?.name || order.customer?.name || 'Unknown'}</p>
+                                    <p><strong>Shop:</strong> {order.shopId?.name || order.shop?.name || 'Unknown'}</p>
+                                    <p><strong>Shopper:</strong> {order.personalShopperId?.name || order.shopper?.name || 'Not Assigned'}</p>
+                                    <p><strong>Status:</strong> <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
+                                    <p><strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
+                                </div>
+
+                                {/* Original Order Details */}
+                                <div className="order-breakdown">
+                                    <div className="original-order">
+                                        <h4>Original Order</h4>
+                                        {order.items && order.items.length > 0 ? (
+                                            <div className="items-list">
+                                                {order.items.map((item, index) => (
+                                                    <div key={index} className="item-row">
+                                                        <span className="item-name">{item.name || 'Unknown Item'}</span>
+                                                        <span className="item-details">
+                                                            {item.quantity || 1} × ₹{item.price || 0} = ₹{(item.quantity || 1) * (item.price || 0)}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>No items found</p>
+                                        )}
+                                        <div className="order-totals">
+                                            <div className="total-row">
+                                                <span>Subtotal:</span>
+                                                <span>₹{order.orderValue?.subtotal || 0}</span>
+                                            </div>
+                                            <div className="total-row">
+                                                <span>Delivery Fee:</span>
+                                                <span>₹{order.orderValue?.deliveryFee || 0}</span>
+                                            </div>
+                                            <div className="total-row grand-total">
+                                                <span>Total:</span>
+                                                <span>₹{order.orderValue?.total || calculateOrderTotal(order)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Revised Order Details (if exists) */}
+                                    {order.revisedOrderValue && (
+                                        <div className="revised-order">
+                                            <h4>Revised Order</h4>
+                                            {order.revisedItems && order.revisedItems.length > 0 ? (
+                                                <div className="items-list">
+                                                    {order.revisedItems.map((item, index) => (
+                                                        <div key={index} className="item-row">
+                                                            <span className="item-name">
+                                                                {item.name || 'Unknown Item'}
+                                                                {item.isAvailable === false && <span className="unavailable"> (Unavailable)</span>}
+                                                            </span>
+                                                            <span className="item-details">
+                                                                {item.revisedQuantity !== undefined ? item.revisedQuantity : item.quantity || 1} ×
+                                                                ₹{item.revisedPrice !== undefined ? item.revisedPrice : item.price || 0} =
+                                                                ₹{(item.revisedQuantity !== undefined ? item.revisedQuantity : item.quantity || 1) *
+                                                                    (item.revisedPrice !== undefined ? item.revisedPrice : item.price || 0)}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p>No revised items</p>
+                                            )}
+                                            <div className="order-totals">
+                                                <div className="total-row">
+                                                    <span>Subtotal:</span>
+                                                    <span>₹{order.revisedOrderValue?.subtotal || 0}</span>
+                                                </div>
+                                                <div className="total-row">
+                                                    <span>Delivery Fee:</span>
+                                                    <span>₹{order.revisedOrderValue?.deliveryFee || order.orderValue?.deliveryFee || 0}</span>
+                                                </div>
+                                                <div className="total-row grand-total">
+                                                    <span>Total:</span>
+                                                    <span>₹{order.revisedOrderValue?.total || 0}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Shopper Commission */}
+                                    <div className="shopper-commission">
+                                        <h4>Shopper Earnings</h4>
+                                        <div className="total-row">
+                                            <span>Commission:</span>
+                                            <span>₹{order.shopperCommission || order.orderValue?.deliveryFee || 0}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))
