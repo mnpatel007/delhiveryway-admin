@@ -344,16 +344,15 @@ const ProductsPage = () => {
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    name="inStock"
-                                    checked={newProduct.inStock}
-                                    onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
-                                />
-                                In Stock
-                            </label>
+                        <div className="checkbox-group">
+                            <input
+                                type="checkbox"
+                                id="inStock-create"
+                                name="inStock"
+                                checked={newProduct.inStock}
+                                onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
+                            />
+                            <label htmlFor="inStock-create">In Stock</label>
                         </div>
 
                         <button type="submit" className="submit-btn">Create Product</button>
@@ -501,16 +500,15 @@ const ProductsPage = () => {
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label className="checkbox-label">
-                                <input
-                                    type="checkbox"
-                                    name="inStock"
-                                    checked={newProduct.inStock}
-                                    onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
-                                />
-                                In Stock
-                            </label>
+                        <div className="checkbox-group">
+                            <input
+                                type="checkbox"
+                                id="inStock-edit"
+                                name="inStock"
+                                checked={newProduct.inStock}
+                                onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
+                            />
+                            <label htmlFor="inStock-edit">In Stock</label>
                         </div>
 
                         <div className="form-actions">
@@ -551,11 +549,9 @@ const ProductsPage = () => {
                                 <div className="product-details">
                                     <p className="product-unit">Unit: {product.unit}</p>
                                     <p className="product-stock">Stock: {product.stockQuantity || 0} {product.unit}</p>
-                                    <p className="product-status">
-                                        Status: <span className={product.inStock ? 'in-stock' : 'out-of-stock'}>
-                                            {product.inStock ? 'In Stock' : 'Out of Stock'}
-                                        </span>
-                                    </p>
+                                    <div className={`stock-status ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
+                                        {product.inStock ? 'In Stock' : 'Out of Stock'}
+                                    </div>
                                     {product.category && (
                                         <p className="product-category">Category: {product.category}</p>
                                     )}
