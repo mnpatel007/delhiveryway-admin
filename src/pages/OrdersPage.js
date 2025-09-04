@@ -189,6 +189,23 @@ const OrdersPage = () => {
                                                         </div>
                                                     ))}
                                                 </div>
+                                            ) : order.items && order.items.length > 0 ? (
+                                                <div className="items-list">
+                                                    {order.items.map((item, index) => (
+                                                        <div key={index} className="item-row">
+                                                            <span className="item-name">
+                                                                {item.name || 'Unknown Item'}
+                                                                {item.isAvailable === false && <span className="unavailable"> (Unavailable)</span>}
+                                                            </span>
+                                                            <span className="item-details">
+                                                                {item.revisedQuantity !== undefined ? item.revisedQuantity : item.quantity || 1} ×
+                                                                ₹{item.revisedPrice !== undefined ? item.revisedPrice : item.price || 0} =
+                                                                ₹{(item.revisedQuantity !== undefined ? item.revisedQuantity : item.quantity || 1) *
+                                                                    (item.revisedPrice !== undefined ? item.revisedPrice : item.price || 0)}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             ) : (
                                                 <p>No revised items</p>
                                             )}
