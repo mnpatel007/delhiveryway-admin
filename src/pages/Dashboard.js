@@ -149,7 +149,7 @@ const Dashboard = () => {
                                     {stats.recentOrders.slice(0, 4).map(order => (
                                         <div key={order._id} className="order-item">
                                             <div className="order-details">
-                                                <p className="order-id">Order #{order._id?.slice(-8) || 'N/A'}</p>
+                                                <p className="order-id">Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}</p>
                                                 <p className="order-customer">{order.customerId?.name || 'Unknown'}</p>
                                                 <p className="order-shop">{order.shopId?.name || 'Unknown'}</p>
                                             </div>
