@@ -127,11 +127,45 @@ const OrdersPage = () => {
 
                             <div className="order-details">
                                 <div className="order-basic-info">
-                                    <p><strong>Customer:</strong> {order.customerId?.name || order.customer?.name || 'Unknown'}</p>
-                                    <p><strong>Shop:</strong> {order.shopId?.name || order.shop?.name || 'Unknown'}</p>
-                                    <p><strong>Shopper:</strong> {order.personalShopperId?.name || order.shopper?.name || 'Not Assigned'}</p>
-                                    <p><strong>Status:</strong> <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
-                                    <p><strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
+                                    <div className="info-section">
+                                        <h5>Customer Information</h5>
+                                        <p><strong>Name:</strong> {order.customerId?.name || order.customer?.name || 'Unknown'}</p>
+                                        <p><strong>Phone:</strong> {order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}</p>
+                                        <p><strong>Email:</strong> {order.customerId?.email || 'N/A'}</p>
+                                    </div>
+
+                                    <div className="info-section">
+                                        <h5>Delivery Information</h5>
+                                        <p><strong>Address:</strong> {order.deliveryAddress?.street || 'N/A'}, {order.deliveryAddress?.city || 'N/A'}, {order.deliveryAddress?.state || 'N/A'} {order.deliveryAddress?.zipCode || ''}</p>
+                                        {order.deliveryAddress?.instructions && (
+                                            <p><strong>Instructions:</strong> {order.deliveryAddress.instructions}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="info-section">
+                                        <h5>Shop Information</h5>
+                                        <p><strong>Shop:</strong> {order.shopId?.name || order.shop?.name || 'Unknown'}</p>
+                                        <p><strong>Shop Address:</strong> {order.shopId?.address?.street || 'N/A'}, {order.shopId?.address?.city || 'N/A'}</p>
+                                    </div>
+
+                                    <div className="info-section">
+                                        <h5>Shopper Information</h5>
+                                        <p><strong>Name:</strong> {order.personalShopperId?.name || order.shopper?.name || 'Not Assigned'}</p>
+                                        <p><strong>Phone:</strong> {order.personalShopperId?.phone || order.shopper?.phone || 'N/A'}</p>
+                                        <p><strong>Rating:</strong> {order.personalShopperId?.rating?.average || 'N/A'}</p>
+                                    </div>
+
+                                    <div className="info-section">
+                                        <h5>Order Timeline</h5>
+                                        <p><strong>Order Placed:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}</p>
+                                        <p><strong>Status:</strong> <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
+                                        {order.deliveredAt && (
+                                            <p><strong>Delivered At:</strong> {new Date(order.deliveredAt).toLocaleString()}</p>
+                                        )}
+                                        {order.actualDeliveryTime && (
+                                            <p><strong>Actual Delivery Time:</strong> {new Date(order.actualDeliveryTime).toLocaleString()}</p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Original Order Details */}
