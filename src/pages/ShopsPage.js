@@ -11,6 +11,8 @@ const ShopsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [editingShop, setEditingShop] = useState(null);
     const [newShop, setNewShop] = useState({
         name: '',
         description: '',
@@ -121,6 +123,93 @@ const ShopsPage = () => {
                 setError('Failed to delete shop');
                 console.error('Error deleting shop:', err);
             }
+        }
+    };
+
+    const handleEditShop = (shop) => {
+        setEditingShop(shop);
+        setNewShop({
+            name: shop.name || '',
+            description: shop.description || '',
+            category: shop.category || 'grocery',
+            address: {
+                street: shop.address?.street || '',
+                city: shop.address?.city || '',
+                state: shop.address?.state || '',
+                zipCode: shop.address?.zipCode || '',
+                coordinates: {
+                    lat: shop.address?.coordinates?.lat || 0,
+                    lng: shop.address?.coordinates?.lng || 0
+                }
+            },
+            operatingHours: shop.operatingHours || {
+                monday: { open: '09:00', close: '21:00', closed: false },
+                tuesday: { open: '09:00', close: '21:00', closed: false },
+                wednesday: { open: '09:00', close: '21:00', closed: false },
+                thursday: { open: '09:00', close: '21:00', closed: false },
+                friday: { open: '09:00', close: '21:00', closed: false },
+                saturday: { open: '09:00', close: '21:00', closed: false },
+                sunday: { open: '10:00', close: '20:00', closed: false }
+            },
+            deliveryFee: shop.deliveryFee || 30,
+            vendorId: 'admin-created'
+        });
+        setShowEditForm(true);
+        setShowCreateForm(false);
+    };
+
+    const handleUpdateShop = async (e) => {
+        e.preventDefault();
+        try {
+            // Validate coordinates
+            if (!newShop.address.coordinates.lat || !newShop.address.coordinates.lng) {
+                setError('Please provide valid coordinates (latitude and longitude)');
+                return;
+            }
+
+            const response = await axiosInstance.put(`/admin/shops/${editingShop._id}`, newShop);
+            console.log('Shop update response:', response.data);
+
+            // Update the shop in the list
+            setShops(shops.map(shop =>
+                shop._id === editingShop._id
+                    ? { ...shop, ...response.data.data }
+                    : shop
+            ));
+
+            setShowEditForm(false);
+            setEditingShop(null);
+            setNewShop({
+                name: '',
+                description: '',
+                category: 'grocery',
+                address: {
+                    street: '',
+                    city: '',
+                    state: '',
+                    zipCode: '',
+                    coordinates: {
+                        lat: 0,
+                        lng: 0
+                    }
+                },
+                operatingHours: {
+                    monday: { open: '09:00', close: '21:00', closed: false },
+                    tuesday: { open: '09:00', close: '21:00', closed: false },
+                    wednesday: { open: '09:00', close: '21:00', closed: false },
+                    thursday: { open: '09:00', close: '21:00', closed: false },
+                    friday: { open: '09:00', close: '21:00', closed: false },
+                    saturday: { open: '09:00', close: '21:00', closed: false },
+                    sunday: { open: '10:00', close: '20:00', closed: false }
+                },
+                deliveryFee: 30,
+                vendorId: 'admin-created'
+            });
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || 'Failed to update shop';
+            setError(errorMessage);
+            console.error('Error updating shop:', err);
+            console.error('Response data:', err.response?.data);
         }
     };
 
@@ -381,6 +470,205 @@ const ShopsPage = () => {
                 </div>
             )}
 
+            {showEditForm && editingShop && (
+                <div className="create-shop-form">
+                    <h2>Edit Shop</h2>
+                    <form onSubmit={handleUpdateShop}>
+                        <div className="form-group">
+                            <label htmlFor="name">Shop Name</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={newShop.name}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="description">Description</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={newShop.description}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="category">Category</label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={newShop.category}
+                                onChange={handleInputChange}
+                                required
+                            >
+                                <option value="grocery">Grocery</option>
+                                <option value="pharmacy">Pharmacy</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="bakery">Bakery</option>
+                                <option value="books">Books</option>
+                                <option value="sports">Sports</option>
+                                <option value="beauty">Beauty</option>
+                                <option value="home">Home</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="street">Street</label>
+                            <input
+                                type="text"
+                                id="street"
+                                name="address.street"
+                                value={newShop.address.street}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="city">City</label>
+                                <input
+                                    type="text"
+                                    id="city"
+                                    name="address.city"
+                                    value={newShop.address.city}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="state">State</label>
+                                <input
+                                    type="text"
+                                    id="state"
+                                    name="address.state"
+                                    value={newShop.address.state}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="zipCode">Zip Code</label>
+                                <input
+                                    type="text"
+                                    id="zipCode"
+                                    name="address.zipCode"
+                                    value={newShop.address.zipCode}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="lat">Latitude</label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    id="lat"
+                                    name="address.coordinates.lat"
+                                    value={newShop.address.coordinates.lat}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="lng">Longitude</label>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    id="lng"
+                                    name="address.coordinates.lng"
+                                    value={newShop.address.coordinates.lng}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="deliveryFee">Delivery Fee (₹)</label>
+                            <input
+                                type="number"
+                                id="deliveryFee"
+                                name="deliveryFee"
+                                value={newShop.deliveryFee}
+                                onChange={handleInputChange}
+                                min="0"
+                                step="1"
+                                placeholder="Enter delivery fee (0 for free delivery)"
+                            />
+                        </div>
+
+                        {/* Operating Hours Section */}
+                        <div className="form-group">
+                            <h3>Operating Hours</h3>
+                            {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                                <div className="form-row" key={day}>
+                                    <div className="form-group">
+                                        <label style={{ textTransform: 'capitalize' }}>{day}</label>
+                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                            <input
+                                                type="time"
+                                                name={`operatingHours.${day}.open`}
+                                                value={newShop.operatingHours[day].open}
+                                                onChange={handleInputChange}
+                                                disabled={newShop.operatingHours[day].closed}
+                                                required={!newShop.operatingHours[day].closed}
+                                            />
+                                            <span>to</span>
+                                            <input
+                                                type="time"
+                                                name={`operatingHours.${day}.close`}
+                                                value={newShop.operatingHours[day].close}
+                                                onChange={handleInputChange}
+                                                disabled={newShop.operatingHours[day].closed}
+                                                required={!newShop.operatingHours[day].closed}
+                                            />
+                                            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    name={`operatingHours.${day}.closed`}
+                                                    checked={!!newShop.operatingHours[day].closed}
+                                                    onChange={handleInputChange}
+                                                />
+                                                Closed
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" className="submit-btn">Update Shop</button>
+                            <button
+                                type="button"
+                                className="cancel-btn"
+                                onClick={() => {
+                                    setShowEditForm(false);
+                                    setEditingShop(null);
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
             <div className="shops-list">
                 {shops.length === 0 ? (
                     <p>No shops found.</p>
@@ -398,6 +686,12 @@ const ShopsPage = () => {
                                 </p>
                             </div>
                             <div className="shop-actions">
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => handleEditShop(shop)}
+                                >
+                                    Edit
+                                </button>
                                 <button
                                     className="delete-btn"
                                     onClick={() => handleDeleteShop(shop._id)}
