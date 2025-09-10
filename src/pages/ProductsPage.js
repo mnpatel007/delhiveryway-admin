@@ -59,19 +59,43 @@ const ProductsPage = () => {
 
     const handleCreateProduct = async (e) => {
         e.preventDefault();
+        setError(''); // Clear any existing errors
         try {
+            // Validate required fields
+            if (!newProduct.name?.trim()) {
+                setError('Product name is required');
+                return;
+            }
+            if (!newProduct.shopId) {
+                setError('Please select a shop');
+                return;
+            }
+            if (!newProduct.category?.trim()) {
+                setError('Category is required');
+                return;
+            }
+            if (!newProduct.price || isNaN(parseFloat(newProduct.price))) {
+                setError('Valid price is required');
+                return;
+            }
+
+            // Validate unit
+            const allowedUnits = ['piece', 'kg', 'gram', 'liter', 'ml', 'dozen', 'pack', 'box', 'bottle', 'can', 'strip'];
+            const unit = newProduct.unit?.toLowerCase() || 'piece';
+            const validUnit = allowedUnits.includes(unit) ? unit : 'piece';
+
             const productData = {
-                name: newProduct.name,
-                description: newProduct.description,
+                name: newProduct.name?.trim(),
+                description: newProduct.description?.trim(),
                 shopId: newProduct.shopId,
-                category: newProduct.category,
+                category: newProduct.category?.trim(),
                 price: parseFloat(newProduct.price),
-                originalPrice: newProduct.originalPrice ? parseFloat(newProduct.originalPrice) : null,
-                discount: newProduct.discount ? parseFloat(newProduct.discount) : 0,
+                originalPrice: newProduct.originalPrice && newProduct.originalPrice !== '' ? parseFloat(newProduct.originalPrice) : null,
+                discount: newProduct.discount && newProduct.discount !== '' ? parseFloat(newProduct.discount) : 0,
                 stockQuantity: parseInt(newProduct.stockQuantity) || 0,
-                unit: newProduct.unit,
+                unit: validUnit,
                 tags: newProduct.tags ? newProduct.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
-                inStock: newProduct.inStock
+                inStock: newProduct.inStock !== false
             };
 
             console.log('Creating product with data:', productData);
@@ -228,14 +252,25 @@ const ProductsPage = () => {
                         <div className="form-row">
                             <div className="form-group">
                                 <label htmlFor="unit">Unit</label>
-                                <input
-                                    type="text"
+                                <select
                                     id="unit"
                                     name="unit"
                                     value={newProduct.unit}
                                     onChange={handleInputChange}
                                     required
-                                />
+                                >
+                                    <option value="piece">Piece</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="gram">Gram</option>
+                                    <option value="liter">Liter</option>
+                                    <option value="ml">Milliliter (ml)</option>
+                                    <option value="dozen">Dozen</option>
+                                    <option value="pack">Pack</option>
+                                    <option value="box">Box</option>
+                                    <option value="bottle">Bottle</option>
+                                    <option value="can">Can</option>
+                                    <option value="strip">Strip</option>
+                                </select>
                             </div>
 
                             <div className="form-group">
