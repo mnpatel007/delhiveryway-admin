@@ -61,10 +61,17 @@ const ProductsPage = () => {
         e.preventDefault();
         try {
             const productData = {
-                ...newProduct,
+                name: newProduct.name,
+                description: newProduct.description,
+                shopId: newProduct.shopId,
+                category: newProduct.category,
                 price: parseFloat(newProduct.price),
-                originalPrice: parseFloat(newProduct.originalPrice),
-                discount: parseFloat(newProduct.discount)
+                originalPrice: newProduct.originalPrice ? parseFloat(newProduct.originalPrice) : null,
+                discount: newProduct.discount ? parseFloat(newProduct.discount) : 0,
+                stockQuantity: parseInt(newProduct.stockQuantity) || 0,
+                unit: newProduct.unit,
+                tags: newProduct.tags ? newProduct.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [],
+                inStock: newProduct.inStock
             };
 
             console.log('Creating product with data:', productData);
@@ -80,10 +87,14 @@ const ProductsPage = () => {
                 originalPrice: '',
                 discount: '',
                 unit: '',
-                shopId: ''
+                shopId: '',
+                stockQuantity: '',
+                category: '',
+                tags: '',
+                inStock: true
             });
         } catch (err) {
-            setError('Failed to create product');
+            setError('Failed to create product: ' + (err.response?.data?.message || err.message));
             console.error('Error creating product:', err);
         }
     };
@@ -161,6 +172,19 @@ const ProductsPage = () => {
                             />
                         </div>
 
+                        <div className="form-group">
+                            <label htmlFor="category">Category</label>
+                            <input
+                                type="text"
+                                id="category"
+                                name="category"
+                                value={newProduct.category}
+                                onChange={handleInputChange}
+                                placeholder="e.g., Vegetables, Fruits, Dairy"
+                                required
+                            />
+                        </div>
+
                         <div className="form-row">
                             <div className="form-group">
                                 <label htmlFor="price">Price</label>
@@ -183,7 +207,6 @@ const ProductsPage = () => {
                                     name="originalPrice"
                                     value={newProduct.originalPrice}
                                     onChange={handleInputChange}
-                                    required
                                     step="0.01"
                                 />
                             </div>
@@ -196,7 +219,6 @@ const ProductsPage = () => {
                                     name="discount"
                                     value={newProduct.discount}
                                     onChange={handleInputChange}
-                                    required
                                     min="0"
                                     max="100"
                                 />
