@@ -386,6 +386,44 @@ const ProductsPage = () => {
                             </div>
                         </div>
 
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="stockQuantity">Stock Quantity</label>
+                                <input
+                                    type="number"
+                                    id="stockQuantity"
+                                    name="stockQuantity"
+                                    value={newProduct.stockQuantity}
+                                    onChange={handleInputChange}
+                                    required
+                                    min="0"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="tags">Tags (comma-separated)</label>
+                                <input
+                                    type="text"
+                                    id="tags"
+                                    name="tags"
+                                    value={newProduct.tags}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., organic, fresh, local"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="checkbox-group">
+                            <input
+                                type="checkbox"
+                                id="inStock-create"
+                                name="inStock"
+                                checked={newProduct.inStock}
+                                onChange={(e) => setNewProduct({ ...newProduct, inStock: e.target.checked })}
+                            />
+                            <label htmlFor="inStock-create">In Stock</label>
+                        </div>
+
                         <button type="submit" className="submit-btn">Create Product</button>
                     </form>
                 </div>
