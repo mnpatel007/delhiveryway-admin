@@ -88,7 +88,7 @@ const Dashboard = () => {
             <header className="dashboard-header">
                 <div className="header-content">
                     <div className="header-left">
-                        <Logo size="medium" showText={true} />
+                        <Logo size="large" showText={true} />
                         <h1>Admin Dashboard</h1>
                     </div>
                     <div className="header-actions">
