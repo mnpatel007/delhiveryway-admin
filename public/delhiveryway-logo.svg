@@ -1,14 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 605 415">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#22d3ee"/>
-    </linearGradient>
+    <style>
+      .brand-text { font-family: Arial, sans-serif; font-weight: bold; font-size: 48px; }
+    </style>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#g)"/>
-  <!-- Stylized "D" -->
-  <path d="M18 20 H30 A12 12 0 0 1 30 44 H18" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Stylized "W" -->
-  <path d="M36 20 L40 44 L44 32 L48 44 L52 20" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Gray background -->
+  <rect width="605" height="415" fill="#c0c0c0"/>
+  
+  <!-- Top dot -->
+  <circle cx="312.5" cy="70" r="8" fill="#000000"/>
+  
+  <!-- Top horizontal line -->
+  <rect x="37.5" y="92" width="550" height="8" fill="#000000"/>
+  
+  <!-- Brand text -->
+  <text x="40" y="210" class="brand-text" fill="#000000">DELHIVERYWAY</text>
+  
+  <!-- Registered trademark -->
+  <text x="570" y="175" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold;" fill="#000000">®</text>
+  
+  <!-- Bottom horizontal line -->
+  <rect x="37.5" y="235" width="550" height="8" fill="#000000"/>
+  
+  <!-- Bottom dot -->
+  <circle cx="312.5" cy="265" r="8" fill="#000000"/>
 </svg>
 
