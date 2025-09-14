@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../utils/axios';
 import OrderMonitoring from '../components/OrderMonitoring';
+import Logo from '../components/Logo';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -86,7 +87,10 @@ const Dashboard = () => {
         <div className="dashboard-container">
             <header className="dashboard-header">
                 <div className="header-content">
-                    <h1>Admin Dashboard</h1>
+                    <div className="header-left">
+                        <Logo size="medium" showText={true} />
+                        <h1>Admin Dashboard</h1>
+                    </div>
                     <div className="header-actions">
                         <span>Welcome, {admin?.name || 'Admin'}</span>
                         <button onClick={logout} className="logout-btn">Logout</button>
