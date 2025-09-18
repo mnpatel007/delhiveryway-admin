@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { ORDER_STATUS_OPTIONS, getStatusLabel, getStatusMeta } from '../constants/orderStatus';
 import './OrderMonitoring.css';
 
 const OrderMonitoring = () => {
@@ -28,47 +29,38 @@ const OrderMonitoring = () => {
         }
     };
 
-    const getStatusColor = (status) => {
-        const colors = {
-            'pending_shopper': '#ffc107',
-            'accepted_by_shopper': '#17a2b8',
-            'shopper_at_shop': '#fd7e14',
-            'shopping_in_progress': '#6f42c1',
-            'shopper_revised_order': '#e83e8c',
-            'customer_reviewing_revision': '#20c997',
-            'customer_approved_revision': '#28a745',
-            'final_shopping': '#6f42c1',
-            'bill_uploaded': '#ffc107',
-            'bill_approved': '#28a745',
-            'bill_rejected': '#dc3545',
-            'out_for_delivery': '#007bff',
-            'delivered': '#28a745',
-            'cancelled': '#6c757d',
-            'refunded': '#dc3545'
+    const getStatusStyle = (status) => {
+        const meta = getStatusMeta(status);
+        return {
+            backgroundColor: meta.background,
+            color: meta.color
         };
-        return colors[status] || '#6c757d';
     };
 
-    const getStatusText = (status) => {
-        const statusTexts = {
-            'pending_shopper': 'Waiting for Shopper',
-            'accepted_by_shopper': 'Shopper Assigned',
-            'shopper_at_shop': 'Shopper at Shop',
-            'shopping_in_progress': 'Shopping in Progress',
-            'shopper_revised_order': 'Order Revised',
-            'customer_reviewing_revision': 'Customer Reviewing',
-            'customer_approved_revision': 'Revision Approved',
-            'final_shopping': 'Final Shopping',
-            'bill_uploaded': 'Bill Uploaded',
-            'bill_approved': 'Bill Approved',
-            'bill_rejected': 'Bill Rejected',
-            'out_for_delivery': 'Out for Delivery',
-            'delivered': 'Delivered',
-            'cancelled': 'Cancelled',
-            'refunded': 'Refunded'
-        };
-        return statusTexts[status] || status;
-    };
+    const IN_PROGRESS_STATUSES = [
+        'accepted_by_shopper',
+        'shopper_at_shop',
+        'shopping_in_progress',
+        'shopper_revised_order',
+        'customer_reviewing_revision',
+        'customer_approved_revision',
+        'revision_rejected',
+        'final_shopping',
+        'bill_uploaded',
+        'bill_approved',
+        'bill_rejected',
+        'out_for_delivery'
+    ];
+
+    const ATTENTION_STATUSES = [
+        'shopper_revised_order',
+        'customer_reviewing_revision',
+        'revision_rejected',
+        'bill_uploaded',
+        'bill_rejected'
+    ];
+
+    const CANCELLED_STATUSES = ['cancelled', 'refunded'];
 
     const filteredOrders = orders.filter(order => {
         const matchesFilter = filter === 'all' || order.status === filter;
@@ -82,10 +74,10 @@ const OrderMonitoring = () => {
         const stats = {
             total: orders.length,
             pending: orders.filter(o => o.status === 'pending_shopper').length,
-            inProgress: orders.filter(o => ['accepted_by_shopper', 'shopper_at_shop', 'shopping_in_progress', 'final_shopping'].includes(o.status)).length,
-            needsAttention: orders.filter(o => ['shopper_revised_order', 'customer_reviewing_revision', 'bill_uploaded'].includes(o.status)).length,
+            inProgress: orders.filter(o => IN_PROGRESS_STATUSES.includes(o.status)).length,
+            needsAttention: orders.filter(o => ATTENTION_STATUSES.includes(o.status)).length,
             completed: orders.filter(o => o.status === 'delivered').length,
-            cancelled: orders.filter(o => ['cancelled', 'refunded'].includes(o.status)).length
+            cancelled: orders.filter(o => CANCELLED_STATUSES.includes(o.status)).length
         };
         return stats;
     };
@@ -154,14 +146,11 @@ const OrderMonitoring = () => {
                         className="filter-select"
                     >
                         <option value="all">All Orders</option>
-                        <option value="pending_shopper">Pending Assignment</option>
-                        <option value="shopping_in_progress">Shopping</option>
-                        <option value="shopper_revised_order">Revised Orders</option>
-                        <option value="customer_reviewing_revision">Customer Review</option>
-                        <option value="bill_uploaded">Bill Review</option>
-                        <option value="out_for_delivery">Out for Delivery</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
+                        {ORDER_STATUS_OPTIONS.map(({ value, label }) => (
+                            <option key={value} value={value}>
+                                {label}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>
@@ -205,9 +194,9 @@ const OrderMonitoring = () => {
                             <div className="col-status">
                                 <span
                                     className="status-badge"
-                                    style={{ backgroundColor: getStatusColor(order.status) }}
+                                    style={getStatusStyle(order.status)}
                                 >
-                                    {getStatusText(order.status)}
+                                    {getStatusLabel(order.status)}
                                 </span>
                             </div>
                             <div className="col-amount">
@@ -257,3 +246,10 @@ const OrderMonitoring = () => {
 };
 
 export default OrderMonitoring;
+
+
+
+
+
+
+
