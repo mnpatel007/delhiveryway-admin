@@ -2,6 +2,7 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+}
 
 .orders-header {
     display: flex;
@@ -348,96 +349,60 @@
     color: #888;
 }
 
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 2px 10px;
-    border-radius: 999px;
+.status-pending {
+    color: #f39c12;
+    background: #fef9e7;
+    padding: 2px 8px;
+    border-radius: 12px;
     font-size: 0.85rem;
-    font-weight: 600;
-    line-height: 1.2;
 }
 
-.status-pending_shopper {
-    color: #B58105;
-    background: #FFF3CD;
+.status-confirmed {
+    color: #3498db;
+    background: #ebf3fd;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
 }
 
-.status-accepted_by_shopper {
-    color: #0F6674;
-    background: #D1ECF1;
+.status-preparing {
+    color: #9b59b6;
+    background: #f4ecf7;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
 }
 
-.status-shopper_at_shop {
-    color: #AA5B0E;
-    background: #FDEBD0;
-}
-
-.status-shopping_in_progress {
-    color: #563D7C;
-    background: #EDE7F6;
-}
-
-.status-shopper_revised_order {
-    color: #8A1644;
-    background: #FAD7E0;
-}
-
-.status-customer_reviewing_revision {
-    color: #0F5132;
-    background: #D1E7DD;
-}
-
-.status-customer_approved_revision {
-    color: #0F5132;
-    background: #D1E7DD;
-}
-
-.status-revision_rejected {
-    color: #842029;
-    background: #F8D7DA;
-}
-
-.status-final_shopping {
-    color: #4C1D95;
-    background: #EDE9FE;
-}
-
-.status-bill_uploaded {
-    color: #B58105;
-    background: #FFF3CD;
-}
-
-.status-bill_approved {
-    color: #0F5132;
-    background: #D1E7DD;
-}
-
-.status-bill_rejected {
-    color: #842029;
-    background: #F8D7DA;
+.status-ready_for_pickup {
+    color: #e67e22;
+    background: #fdf2e9;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
 }
 
 .status-out_for_delivery {
-    color: #0B5ED7;
-    background: #CFE2FF;
+    color: #2980b9;
+    background: #eaf2f8;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
 }
 
 .status-delivered {
-    color: #0F5132;
-    background: #D1E7DD;
+    color: #27ae60;
+    background: #eafaf1;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
 }
 
 .status-cancelled {
-    color: #495057;
-    background: #E9ECEF;
-}
-
-.status-refunded {
-    color: #842029;
-    background: #F8D7DA;
-}
+    color: #e74c3c;
+    background: #fdf2f2;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
 }
 
 .order-actions {
@@ -523,5 +488,3 @@
         text-align: left;
     }
 }
-
-

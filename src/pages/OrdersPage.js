@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../utils/axios';
-import { ORDER_STATUS_OPTIONS, getStatusLabel } from '../constants/orderStatus';
 import './OrdersPage.css';
 
 const OrdersPage = () => {
@@ -252,11 +251,12 @@ const OrdersPage = () => {
                             className="sort-select"
                         >
                             <option value="all">All Statuses</option>
-                            {ORDER_STATUS_OPTIONS.map(({ value, label }) => (
-                                <option key={value} value={value}>
-                                    {label}
-                                </option>
-                            ))}
+                            <option value="pending_shopper">Pending Shopper</option>
+                            <option value="accepted_by_shopper">Accepted</option>
+                            <option value="shopping_in_progress">Shopping</option>
+                            <option value="out_for_delivery">Out for Delivery</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
                         </select>
                     </div>
 
@@ -287,7 +287,7 @@ const OrdersPage = () => {
                         <span className="search-info">• Filtered by: "{searchTerm}"</span>
                     )}
                     {statusFilter !== 'all' && (
-                        <span className="filter-info">• Status: {getStatusLabel(statusFilter)}</span>
+                        <span className="filter-info">• Status: {statusFilter}</span>
                     )}
                 </div>
             </div>
@@ -306,11 +306,13 @@ const OrdersPage = () => {
                                         onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
                                         className="status-select"
                                     >
-                                        {ORDER_STATUS_OPTIONS.map(({ value, label }) => (
-                                            <option key={value} value={value}>
-                                                {label}
-                                            </option>
-                                        ))}
+                                        <option value="pending">Pending</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="preparing">Preparing</option>
+                                        <option value="ready_for_pickup">Ready for Pickup</option>
+                                        <option value="out_for_delivery">Out for Delivery</option>
+                                        <option value="delivered">Delivered</option>
+                                        <option value="cancelled">Cancelled</option>
                                     </select>
                                 </div>
                             </div>
@@ -381,7 +383,7 @@ const OrdersPage = () => {
                                         <div className="info-section">
                                             <h5>Order Timeline</h5>
                                             <p><strong>Order Placed:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}</p>
-                                            <p><strong>Status:</strong> <span className={`status-badge status-${order.status}`}>{getStatusLabel(order.status)}</span></p>
+                                            <p><strong>Status:</strong> <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
                                             {order.deliveredAt && (
                                                 <p><strong>Delivered At:</strong> {new Date(order.deliveredAt).toLocaleString()}</p>
                                             )}
@@ -521,12 +523,3 @@ const OrdersPage = () => {
 };
 
 export default OrdersPage;
-
-
-
-
-
-
-
-
-
