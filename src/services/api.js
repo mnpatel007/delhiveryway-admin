@@ -24,6 +24,9 @@ api.interceptors.request.use(
         const token = localStorage.getItem('adminToken');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
+            console.log('🔑 Admin token found and added to request');
+        } else {
+            console.log('❌ No admin token found in localStorage');
         }
 
         console.log(`🔄 API Request: ${config.method?.toUpperCase()} ${config.url}`);

@@ -15,7 +15,8 @@ const NoticesPage = () => {
         type: 'info',
         priority: 'medium',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        refreshEvery15Min: false
     });
 
     useEffect(() => {
@@ -25,12 +26,19 @@ const NoticesPage = () => {
     const fetchNotices = async () => {
         try {
             setLoading(true);
+            console.log('🔄 Fetching notices...');
+            console.log('🔑 Admin token exists:', !!localStorage.getItem('adminToken'));
+            console.log('👤 Admin user:', admin?.name || 'Unknown');
+
             const response = await adminAPI.getNotices();
             if (response.data.success) {
+                console.log('✅ Notices fetched successfully:', response.data.data.notices.length);
                 setNotices(response.data.data.notices);
             }
         } catch (error) {
             console.error('Error fetching notices:', error);
+            console.error('Error status:', error.response?.status);
+            console.error('Error data:', error.response?.data);
             alert('Failed to fetch notices: ' + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
@@ -40,19 +48,27 @@ const NoticesPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Prepare data with refresh interval
+            const submitData = {
+                ...formData,
+                refreshEvery15Min: formData.refreshEvery15Min
+            };
+
             if (editingNotice) {
                 // Update existing notice
-                const response = await adminAPI.updateNotice(editingNotice._id, formData);
+                const response = await adminAPI.updateNotice(editingNotice._id, submitData);
                 if (response.data.success) {
-                    alert('Notice updated successfully!');
+                    const refreshMsg = formData.refreshEvery15Min ? ' This notice will refresh every 15 minutes.' : '';
+                    alert('Notice updated successfully!' + refreshMsg);
                     fetchNotices();
                     resetForm();
                 }
             } else {
                 // Create new notice
-                const response = await adminAPI.createNotice(formData);
+                const response = await adminAPI.createNotice(submitData);
                 if (response.data.success) {
-                    alert('Notice created successfully! All customers will see this alert.');
+                    const refreshMsg = formData.refreshEvery15Min ? ' This notice will refresh every 15 minutes for maximum visibility!' : '';
+                    alert('Notice created successfully! All customers will see this alert.' + refreshMsg);
                     fetchNotices();
                     resetForm();
                 }
@@ -71,7 +87,8 @@ const NoticesPage = () => {
             type: notice.type,
             priority: notice.priority,
             startDate: notice.startDate ? new Date(notice.startDate).toISOString().slice(0, 16) : '',
-            endDate: notice.endDate ? new Date(notice.endDate).toISOString().slice(0, 16) : ''
+            endDate: notice.endDate ? new Date(notice.endDate).toISOString().slice(0, 16) : '',
+            refreshEvery15Min: notice.refreshInterval === 15
         });
         setShowCreateModal(true);
     };
@@ -93,14 +110,19 @@ const NoticesPage = () => {
 
     const toggleStatus = async (notice) => {
         try {
+            console.log('🔄 Toggling notice status for:', notice._id, 'to:', !notice.isActive);
+            console.log('🔑 Admin token exists:', !!localStorage.getItem('adminToken'));
+
             const response = await adminAPI.updateNotice(notice._id, {
                 isActive: !notice.isActive
             });
             if (response.data.success) {
+                console.log('✅ Notice status updated successfully');
                 fetchNotices();
             }
         } catch (error) {
             console.error('Error toggling notice status:', error);
+            console.error('Error details:', error.response?.data);
             alert('Failed to update notice status: ' + (error.response?.data?.message || error.message));
         }
     };
@@ -112,7 +134,8 @@ const NoticesPage = () => {
             type: 'info',
             priority: 'medium',
             startDate: '',
-            endDate: ''
+            endDate: '',
+            refreshEvery15Min: false
         });
         setEditingNotice(null);
         setShowCreateModal(false);
@@ -187,6 +210,11 @@ const NoticesPage = () => {
                                         <span className={`badge status-badge ${notice.isActive ? 'active' : 'inactive'}`}>
                                             {notice.isActive ? 'ACTIVE' : 'INACTIVE'}
                                         </span>
+                                        {notice.refreshInterval && (
+                                            <span className="badge refresh-badge">
+                                                🔄 REFRESHES EVERY {notice.refreshInterval}MIN
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="notice-actions">
@@ -309,6 +337,22 @@ const NoticesPage = () => {
                                         value={formData.endDate}
                                         onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                                     />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <div className="checkbox-group">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.refreshEvery15Min}
+                                            onChange={(e) => setFormData({ ...formData, refreshEvery15Min: e.target.checked })}
+                                        />
+                                        <span className="checkbox-text">
+                                            🔄 Refresh every 15 minutes
+                                            <small>Notice will reappear every 15 minutes even if dismissed by customers</small>
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
 
