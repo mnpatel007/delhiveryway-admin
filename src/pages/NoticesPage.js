@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import api, { adminAPI } from '../services/api';
 import './NoticesPage.css';
 
 const NoticesPage = () => {
+    const { admin } = useAuth();
     const [notices, setNotices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -23,13 +25,13 @@ const NoticesPage = () => {
     const fetchNotices = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/notices');
+            const response = await adminAPI.getNotices();
             if (response.data.success) {
                 setNotices(response.data.data.notices);
             }
         } catch (error) {
             console.error('Error fetching notices:', error);
-            alert('Failed to fetch notices');
+            alert('Failed to fetch notices: ' + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
         }
@@ -40,7 +42,7 @@ const NoticesPage = () => {
         try {
             if (editingNotice) {
                 // Update existing notice
-                const response = await api.put(`/notices/${editingNotice._id}`, formData);
+                const response = await adminAPI.updateNotice(editingNotice._id, formData);
                 if (response.data.success) {
                     alert('Notice updated successfully!');
                     fetchNotices();
@@ -48,7 +50,7 @@ const NoticesPage = () => {
                 }
             } else {
                 // Create new notice
-                const response = await api.post('/notices', formData);
+                const response = await adminAPI.createNotice(formData);
                 if (response.data.success) {
                     alert('Notice created successfully! All customers will see this alert.');
                     fetchNotices();
@@ -77,21 +79,21 @@ const NoticesPage = () => {
     const handleDelete = async (noticeId) => {
         if (window.confirm('Are you sure you want to delete this notice?')) {
             try {
-                const response = await api.delete(`/notices/${noticeId}`);
+                const response = await adminAPI.deleteNotice(noticeId);
                 if (response.data.success) {
                     alert('Notice deleted successfully!');
                     fetchNotices();
                 }
             } catch (error) {
                 console.error('Error deleting notice:', error);
-                alert('Failed to delete notice');
+                alert('Failed to delete notice: ' + (error.response?.data?.message || error.message));
             }
         }
     };
 
     const toggleStatus = async (notice) => {
         try {
-            const response = await api.put(`/notices/${notice._id}`, {
+            const response = await adminAPI.updateNotice(notice._id, {
                 isActive: !notice.isActive
             });
             if (response.data.success) {
@@ -99,7 +101,7 @@ const NoticesPage = () => {
             }
         } catch (error) {
             console.error('Error toggling notice status:', error);
-            alert('Failed to update notice status');
+            alert('Failed to update notice status: ' + (error.response?.data?.message || error.message));
         }
     };
 
