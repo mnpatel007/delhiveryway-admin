@@ -21,17 +21,12 @@ api.interceptors.request.use(
         };
 
         // Add auth token if available
-        const auth = localStorage.getItem('adminAuth');
-        if (auth) {
-            try {
-                const { token } = JSON.parse(auth);
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-            } catch (error) {
-                console.error('Error parsing auth token:', error);
-                localStorage.removeItem('adminAuth');
-            }
+        const token = localStorage.getItem('adminToken');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+            console.log('🔑 Admin token found and added to request');
+        } else {
+            console.log('❌ No admin token found in localStorage');
         }
 
         console.log(`🔄 API Request: ${config.method?.toUpperCase()} ${config.url}`);
@@ -57,7 +52,8 @@ api.interceptors.response.use(
         // Handle authentication errors
         if (error.response?.status === 401) {
             console.log('🔐 Authentication error - clearing auth data');
-            localStorage.removeItem('adminAuth');
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminData');
 
             // Only redirect if not already on auth pages
             if (!window.location.pathname.includes('/login')) {
@@ -80,27 +76,33 @@ export const adminAPI = {
     getShoppers: () => api.get('/admin/shoppers'),
     getProducts: () => api.get('/admin/products'),
     getAnalytics: () => api.get('/admin/analytics'),
-    
+
     // Order management
     updateOrderStatus: (orderId, data) => api.put(`/admin/orders/${orderId}/status`, data),
-    
+
     // User management
     updateUserStatus: (userId, data) => api.put(`/admin/users/${userId}/status`, data),
     deleteUser: (userId) => api.delete(`/admin/users/${userId}`),
-    
+
     // Shop management
     createShop: (data) => api.post('/admin/shops', data),
     updateShopStatus: (shopId, data) => api.put(`/admin/shops/${shopId}/status`, data),
     deleteShop: (shopId) => api.delete(`/admin/shops/${shopId}`),
-    
+
     // Product management
     createProduct: (data) => api.post('/admin/products', data),
     updateProduct: (productId, data) => api.put(`/admin/products/${productId}`, data),
     deleteProduct: (productId) => api.delete(`/admin/products/${productId}`),
-    
+
     // Shopper management
     updateShopperStatus: (shopperId, data) => api.put(`/admin/shoppers/${shopperId}`, data),
     deletePersonalShopper: (shopperId) => api.delete(`/admin/shoppers/${shopperId}`),
+
+    // Notice management
+    getNotices: (params) => api.get('/notices', { params }),
+    createNotice: (data) => api.post('/notices', data),
+    updateNotice: (noticeId, data) => api.put(`/notices/${noticeId}`, data),
+    deleteNotice: (noticeId) => api.delete(`/notices/${noticeId}`),
 };
 
 // Error handling utility
