@@ -106,6 +106,7 @@ const Dashboard = () => {
                     <Link to="/orders" className="nav-link">Orders</Link>
                     <Link to="/users" className="nav-link">Users</Link>
                     <Link to="/shoppers" className="nav-link">Shoppers</Link>
+                    <Link to="/notices" className="nav-link">📢 Notices</Link>
                 </nav>
 
                 <div className="dashboard-content">

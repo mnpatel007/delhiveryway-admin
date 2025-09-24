@@ -9,6 +9,7 @@ import ProductsPage from './pages/ProductsPage';
 import OrdersPage from './pages/OrdersPage';
 import UsersPage from './pages/UsersPage';
 import ShoppersPage from './pages/ShoppersPage';
+import NoticesPage from './pages/NoticesPage';
 import './App.css';
 
 // Private route component
@@ -53,6 +54,11 @@ function App() {
               <Route path="/shoppers" element={
                 <PrivateRoute>
                   <ShoppersPage />
+                </PrivateRoute>
+              } />
+              <Route path="/notices" element={
+                <PrivateRoute>
+                  <NoticesPage />
                 </PrivateRoute>
               } />
               <Route path="/" element={<Navigate to="/dashboard" />} />
