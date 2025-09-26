@@ -14,9 +14,9 @@ const NoticesPage = () => {
         message: '',
         type: 'info',
         priority: 'medium',
+        displayType: 'one-time',
         startDate: '',
-        endDate: '',
-        refreshEvery15Min: false
+        endDate: ''
     });
 
     useEffect(() => {
@@ -48,18 +48,15 @@ const NoticesPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Prepare data with refresh interval
             const submitData = {
-                ...formData,
-                refreshEvery15Min: formData.refreshEvery15Min
+                ...formData
             };
 
             if (editingNotice) {
                 // Update existing notice
                 const response = await adminAPI.updateNotice(editingNotice._id, submitData);
                 if (response.data.success) {
-                    const refreshMsg = formData.refreshEvery15Min ? ' This notice will refresh every 15 minutes.' : '';
-                    alert('Notice updated successfully!' + refreshMsg);
+                    alert('Notice updated successfully!');
                     fetchNotices();
                     resetForm();
                 }
@@ -67,8 +64,7 @@ const NoticesPage = () => {
                 // Create new notice
                 const response = await adminAPI.createNotice(submitData);
                 if (response.data.success) {
-                    const refreshMsg = formData.refreshEvery15Min ? ' This notice will refresh every 15 minutes for maximum visibility!' : '';
-                    alert('Notice created successfully! All customers will see this alert.' + refreshMsg);
+                    alert('Notice created successfully! All customers will see this alert immediately.');
                     fetchNotices();
                     resetForm();
                 }
@@ -86,9 +82,9 @@ const NoticesPage = () => {
             message: notice.message,
             type: notice.type,
             priority: notice.priority,
+            displayType: notice.displayType || 'one-time',
             startDate: notice.startDate ? new Date(notice.startDate).toISOString().slice(0, 16) : '',
-            endDate: notice.endDate ? new Date(notice.endDate).toISOString().slice(0, 16) : '',
-            refreshEvery15Min: notice.refreshInterval === 15
+            endDate: notice.endDate ? new Date(notice.endDate).toISOString().slice(0, 16) : ''
         });
         setShowCreateModal(true);
     };
@@ -133,9 +129,9 @@ const NoticesPage = () => {
             message: '',
             type: 'info',
             priority: 'medium',
+            displayType: 'one-time',
             startDate: '',
-            endDate: '',
-            refreshEvery15Min: false
+            endDate: ''
         });
         setEditingNotice(null);
         setShowCreateModal(false);
@@ -210,11 +206,9 @@ const NoticesPage = () => {
                                         <span className={`badge status-badge ${notice.isActive ? 'active' : 'inactive'}`}>
                                             {notice.isActive ? 'ACTIVE' : 'INACTIVE'}
                                         </span>
-                                        {notice.refreshInterval && (
-                                            <span className="badge refresh-badge">
-                                                🔄 REFRESHES EVERY {notice.refreshInterval}MIN
-                                            </span>
-                                        )}
+                                        <span className={`badge display-badge ${notice.displayType === 'permanent' ? 'permanent' : 'one-time'}`}>
+                                            {notice.displayType === 'permanent' ? '📌 PERMANENT' : '⚡ ONE-TIME'}
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="notice-actions">
@@ -320,6 +314,22 @@ const NoticesPage = () => {
                                 </div>
                             </div>
 
+                            <div className="form-group">
+                                <label>Display Type</label>
+                                <select
+                                    value={formData.displayType}
+                                    onChange={(e) => setFormData({ ...formData, displayType: e.target.value })}
+                                    required
+                                >
+                                    <option value="one-time">⚡ One-time Notice (Dismissible Alert)</option>
+                                    <option value="permanent">📌 Permanent Notice (Always visible on dashboard)</option>
+                                </select>
+                                <small style={{ color: '#666', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                                    One-time: Shows as full-screen alert, can be dismissed by users<br />
+                                    Permanent: Shows as small banner on dashboard, always visible
+                                </small>
+                            </div>
+
                             <div className="form-row">
                                 <div className="form-group">
                                     <label>Start Date</label>
@@ -340,21 +350,7 @@ const NoticesPage = () => {
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <div className="checkbox-group">
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.refreshEvery15Min}
-                                            onChange={(e) => setFormData({ ...formData, refreshEvery15Min: e.target.checked })}
-                                        />
-                                        <span className="checkbox-text">
-                                            🔄 Refresh every 15 minutes
-                                            <small>Notice will reappear every 15 minutes even if dismissed by customers</small>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
+
 
                             <div className="form-actions">
                                 <button type="button" className="btn btn-secondary" onClick={resetForm}>
