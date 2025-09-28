@@ -23,18 +23,86 @@ const ProductsPage = () => {
         unit: '',
         shopId: ''
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [activeSearchTerm, setActiveSearchTerm] = useState('');
+    const [filterShop, setFilterShop] = useState('');
+    const [filterStock, setFilterStock] = useState('');
+    const [sortBy, setSortBy] = useState('name');
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
 
 
     useEffect(() => {
         fetchProducts(currentPage);
         fetchShops();
-    }, [currentPage]);
+    }, [currentPage, activeSearchTerm, filterShop, filterStock]);
+
+    useEffect(() => {
+        filterAndSortProducts();
+    }, [products, searchTerm, filterShop, filterStock, sortBy]);
+
+    const filterAndSortProducts = () => {
+        let filtered = [...products];
+
+        // Search filter
+        if (activeSearchTerm) {
+            filtered = filtered.filter(product =>
+                product.name?.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+                product.description?.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+                product.category?.toLowerCase().includes(activeSearchTerm.toLowerCase())
+            );
+        }
+
+        // Shop filter
+        if (filterShop) {
+            console.log('Filtering by shop:', filterShop);
+            console.log('Sample product shopId structure:', products[0]?.shopId);
+            filtered = filtered.filter(product => {
+                const productShopId = product.shopId?._id || product.shopId;
+                const matches = productShopId === filterShop;
+                if (!matches && product === products[0]) {
+                    console.log('Shop filter mismatch:', { productShopId, filterShop, product: product.name });
+                }
+                return matches;
+            });
+            console.log('Filtered products count:', filtered.length);
+        }
+
+        // Stock filter
+        if (filterStock === 'in-stock') {
+            filtered = filtered.filter(product => product.inStock);
+        } else if (filterStock === 'out-of-stock') {
+            filtered = filtered.filter(product => !product.inStock);
+        }
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case 'name':
+                    return (a.name || '').localeCompare(b.name || '');
+                case 'price-low':
+                    return (a.price || 0) - (b.price || 0);
+                case 'price-high':
+                    return (b.price || 0) - (a.price || 0);
+                case 'stock':
+                    return (b.stockQuantity || 0) - (a.stockQuantity || 0);
+                case 'shop':
+                    return (a.shopId?.name || '').localeCompare(b.shopId?.name || '');
+                default:
+                    return 0;
+            }
+        });
+
+        setFilteredProducts(filtered);
+    };
 
     const fetchProducts = async (page) => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get(`/admin/products?page=${page}`);
+            // If searching or filtering, get all products; otherwise use pagination
+            const needAllProducts = activeSearchTerm || filterShop || filterStock;
+            const url = needAllProducts ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
+            const response = await axiosInstance.get(url);
             if (response.data.success) {
                 setProducts(response.data.data.products || []);
                 setTotalPages(response.data.data.pagination?.pages || 1);
@@ -261,6 +329,66 @@ const ProductsPage = () => {
                 >
                     {showCreateForm ? 'Cancel' : 'Create New Product'}
                 </button>
+            </div>
+
+            <div className="products-filters">
+                <div className="search-container">
+                    <input
+                        type="text"
+                        placeholder="Search products... (Press Enter to search)"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                                setActiveSearchTerm(searchTerm);
+                                setCurrentPage(1);
+                            }
+                        }}
+                        className="search-input"
+                    />
+                </div>
+                
+                <div className="filters-row">
+                    <select
+                        value={filterShop}
+                        onChange={(e) => setFilterShop(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="">All Shops</option>
+                        {shops.map(shop => (
+                            <option key={shop._id} value={shop._id}>
+                                {shop.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <select
+                        value={filterStock}
+                        onChange={(e) => setFilterStock(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="">All Stock Status</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                    </select>
+
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="name">Sort by Name</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="stock">Stock Quantity</option>
+                        <option value="shop">Shop Name</option>
+                    </select>
+                </div>
+                
+                <div className="results-count">
+                    Showing {filteredProducts.length} of {products.length} products
+                    {activeSearchTerm && ` (searching "${activeSearchTerm}")`}
+                </div>
             </div>
 
             {showCreateForm && (
@@ -608,10 +736,10 @@ const ProductsPage = () => {
             )}
 
             <div className="products-list">
-                {products.length === 0 ? (
-                    <p>No products found.</p>
+                {filteredProducts.length === 0 ? (
+                    <p>No products found matching your criteria.</p>
                 ) : (
-                    products.map(product => (
+                    filteredProducts.map(product => (
                         <div key={product._id} className="product-card">
                             <div className="product-info">
                                 <h3>{product.name}</h3>
@@ -653,7 +781,7 @@ const ProductsPage = () => {
                 )}
             </div>
 
-            {totalPages > 1 && (
+            {totalPages > 1 && !activeSearchTerm && !filterShop && !filterStock && (
                 <div className="pagination">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}

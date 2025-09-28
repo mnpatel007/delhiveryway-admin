@@ -15,6 +15,7 @@ const OrdersPage = () => {
     const [sortBy, setSortBy] = useState('createdAt');
     const [sortOrder, setSortOrder] = useState('desc');
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeSearchTerm, setActiveSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [viewMode, setViewMode] = useState('compact'); // 'compact' or 'detailed'
 
@@ -42,7 +43,7 @@ const OrdersPage = () => {
 
     useEffect(() => {
         fetchOrders(currentPage);
-    }, [currentPage]);
+    }, [currentPage, activeSearchTerm, statusFilter, sortBy, sortOrder]);
 
     // Apply sorting and filtering whenever orders, sortBy, sortOrder, searchTerm, or statusFilter changes
     useEffect(() => {
@@ -53,8 +54,8 @@ const OrdersPage = () => {
         let filtered = [...orders];
 
         // Apply search filter
-        if (searchTerm.trim()) {
-            const term = searchTerm.toLowerCase();
+        if (activeSearchTerm.trim()) {
+            const term = activeSearchTerm.toLowerCase();
             filtered = filtered.filter(order => {
                 const customerName = order.customerId?.name?.toLowerCase() || '';
                 const customerPhone = order.deliveryAddress?.contactPhone?.toLowerCase() || order.customerId?.phone?.toLowerCase() || '';
@@ -130,7 +131,10 @@ const OrdersPage = () => {
     const fetchOrders = async (page) => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get(`/admin/orders?page=${page}`);
+            // If searching, filtering, or sorting, get all orders; otherwise use pagination
+            const needAllOrders = activeSearchTerm || statusFilter !== 'all' || sortBy !== 'createdAt' || sortOrder !== 'desc';
+            const url = needAllOrders ? '/admin/orders?limit=10000' : `/admin/orders?page=${page}`;
+            const response = await axiosInstance.get(url);
             if (response.data.success) {
                 const orders = response.data.data.orders || [];
                 console.log('Orders data:', orders);
@@ -200,9 +204,15 @@ const OrdersPage = () => {
                         <input
                             type="text"
                             id="search"
-                            placeholder="Search by customer, shopper, order number, or shop..."
+                            placeholder="Search by customer, shopper, order number, or shop... (Press Enter to search)"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    setActiveSearchTerm(searchTerm);
+                                    setCurrentPage(1);
+                                }
+                            }}
                             className="search-input"
                         />
                     </div>
@@ -283,8 +293,8 @@ const OrdersPage = () => {
                 {/* Results Summary */}
                 <div className="results-summary">
                     <span>Showing {filteredOrders.length} of {orders.length} orders</span>
-                    {searchTerm && (
-                        <span className="search-info">• Filtered by: "{searchTerm}"</span>
+                    {activeSearchTerm && (
+                        <span className="search-info">• Filtered by: "{activeSearchTerm}"</span>
                     )}
                     {statusFilter !== 'all' && (
                         <span className="filter-info">• Status: {statusFilter}</span>
@@ -501,7 +511,7 @@ const OrdersPage = () => {
                 )}
             </div>
 
-            {totalPages > 1 && (
+            {totalPages > 1 && !activeSearchTerm && statusFilter === 'all' && sortBy === 'createdAt' && sortOrder === 'desc' && (
                 <div className="pagination">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
