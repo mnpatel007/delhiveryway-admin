@@ -23,6 +23,11 @@ const ProductsPage = () => {
         unit: '',
         shopId: ''
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterShop, setFilterShop] = useState('');
+    const [filterStock, setFilterStock] = useState('');
+    const [sortBy, setSortBy] = useState('name');
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
 
 
@@ -30,6 +35,57 @@ const ProductsPage = () => {
         fetchProducts(currentPage);
         fetchShops();
     }, [currentPage]);
+
+    useEffect(() => {
+        filterAndSortProducts();
+    }, [products, searchTerm, filterShop, filterStock, sortBy]);
+
+    const filterAndSortProducts = () => {
+        let filtered = [...products];
+
+        // Search filter
+        if (searchTerm) {
+            filtered = filtered.filter(product =>
+                product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.category?.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Shop filter
+        if (filterShop) {
+            filtered = filtered.filter(product => 
+                product.shopId?._id === filterShop || product.shopId === filterShop
+            );
+        }
+
+        // Stock filter
+        if (filterStock === 'in-stock') {
+            filtered = filtered.filter(product => product.inStock);
+        } else if (filterStock === 'out-of-stock') {
+            filtered = filtered.filter(product => !product.inStock);
+        }
+
+        // Sort
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case 'name':
+                    return (a.name || '').localeCompare(b.name || '');
+                case 'price-low':
+                    return (a.price || 0) - (b.price || 0);
+                case 'price-high':
+                    return (b.price || 0) - (a.price || 0);
+                case 'stock':
+                    return (b.stockQuantity || 0) - (a.stockQuantity || 0);
+                case 'shop':
+                    return (a.shopId?.name || '').localeCompare(b.shopId?.name || '');
+                default:
+                    return 0;
+            }
+        });
+
+        setFilteredProducts(filtered);
+    };
 
     const fetchProducts = async (page) => {
         try {
@@ -261,6 +317,59 @@ const ProductsPage = () => {
                 >
                     {showCreateForm ? 'Cancel' : 'Create New Product'}
                 </button>
+            </div>
+
+            <div className="products-filters">
+                <div className="search-container">
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
+                </div>
+                
+                <div className="filters-row">
+                    <select
+                        value={filterShop}
+                        onChange={(e) => setFilterShop(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="">All Shops</option>
+                        {shops.map(shop => (
+                            <option key={shop._id} value={shop._id}>
+                                {shop.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <select
+                        value={filterStock}
+                        onChange={(e) => setFilterStock(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="">All Stock Status</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                    </select>
+
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="name">Sort by Name</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="stock">Stock Quantity</option>
+                        <option value="shop">Shop Name</option>
+                    </select>
+                </div>
+                
+                <div className="results-count">
+                    Showing {filteredProducts.length} of {products.length} products
+                </div>
             </div>
 
             {showCreateForm && (
@@ -608,10 +717,10 @@ const ProductsPage = () => {
             )}
 
             <div className="products-list">
-                {products.length === 0 ? (
-                    <p>No products found.</p>
+                {filteredProducts.length === 0 ? (
+                    <p>No products found matching your criteria.</p>
                 ) : (
-                    products.map(product => (
+                    filteredProducts.map(product => (
                         <div key={product._id} className="product-card">
                             <div className="product-info">
                                 <h3>{product.name}</h3>
