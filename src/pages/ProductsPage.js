@@ -34,7 +34,7 @@ const ProductsPage = () => {
     useEffect(() => {
         fetchProducts(currentPage);
         fetchShops();
-    }, [currentPage]);
+    }, [currentPage, searchTerm]);
 
     useEffect(() => {
         filterAndSortProducts();
@@ -90,7 +90,9 @@ const ProductsPage = () => {
     const fetchProducts = async (page) => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get(`/admin/products?page=${page}`);
+            // If searching, get all products; otherwise use pagination
+            const url = searchTerm ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
+            const response = await axiosInstance.get(url);
             if (response.data.success) {
                 setProducts(response.data.data.products || []);
                 setTotalPages(response.data.data.pagination?.pages || 1);
@@ -369,6 +371,7 @@ const ProductsPage = () => {
                 
                 <div className="results-count">
                     Showing {filteredProducts.length} of {products.length} products
+                    {searchTerm && ` (searching "${searchTerm}")`}
                 </div>
             </div>
 
@@ -762,7 +765,7 @@ const ProductsPage = () => {
                 )}
             </div>
 
-            {totalPages > 1 && (
+            {totalPages > 1 && !searchTerm && !filterShop && !filterStock && (
                 <div className="pagination">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
