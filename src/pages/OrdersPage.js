@@ -42,7 +42,7 @@ const OrdersPage = () => {
 
     useEffect(() => {
         fetchOrders(currentPage);
-    }, [currentPage]);
+    }, [currentPage, searchTerm, statusFilter, sortBy, sortOrder]);
 
     // Apply sorting and filtering whenever orders, sortBy, sortOrder, searchTerm, or statusFilter changes
     useEffect(() => {
@@ -130,7 +130,10 @@ const OrdersPage = () => {
     const fetchOrders = async (page) => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get(`/admin/orders?page=${page}`);
+            // If searching, filtering, or sorting, get all orders; otherwise use pagination
+            const needAllOrders = searchTerm || statusFilter !== 'all' || sortBy !== 'createdAt' || sortOrder !== 'desc';
+            const url = needAllOrders ? '/admin/orders?limit=10000' : `/admin/orders?page=${page}`;
+            const response = await axiosInstance.get(url);
             if (response.data.success) {
                 const orders = response.data.data.orders || [];
                 console.log('Orders data:', orders);
@@ -501,7 +504,7 @@ const OrdersPage = () => {
                 )}
             </div>
 
-            {totalPages > 1 && (
+            {totalPages > 1 && !searchTerm && statusFilter === 'all' && sortBy === 'createdAt' && sortOrder === 'desc' && (
                 <div className="pagination">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
