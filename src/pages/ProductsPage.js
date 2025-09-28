@@ -24,7 +24,7 @@ const ProductsPage = () => {
         shopId: ''
     });
     const [searchTerm, setSearchTerm] = useState('');
-    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+    const [activeSearchTerm, setActiveSearchTerm] = useState('');
     const [filterShop, setFilterShop] = useState('');
     const [filterStock, setFilterStock] = useState('');
     const [sortBy, setSortBy] = useState('name');
@@ -35,15 +35,7 @@ const ProductsPage = () => {
     useEffect(() => {
         fetchProducts(currentPage);
         fetchShops();
-    }, [currentPage, debouncedSearchTerm]);
-
-    // Debounce search term
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearchTerm(searchTerm);
-        }, 500);
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
+    }, [currentPage, activeSearchTerm]);
 
     useEffect(() => {
         filterAndSortProducts();
@@ -53,11 +45,11 @@ const ProductsPage = () => {
         let filtered = [...products];
 
         // Search filter
-        if (searchTerm) {
+        if (activeSearchTerm) {
             filtered = filtered.filter(product =>
-                product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.category?.toLowerCase().includes(searchTerm.toLowerCase())
+                product.name?.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+                product.description?.toLowerCase().includes(activeSearchTerm.toLowerCase()) ||
+                product.category?.toLowerCase().includes(activeSearchTerm.toLowerCase())
             );
         }
 
@@ -100,7 +92,7 @@ const ProductsPage = () => {
         try {
             setLoading(true);
             // If searching, get all products; otherwise use pagination
-            const url = debouncedSearchTerm ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
+            const url = activeSearchTerm ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
             const response = await axiosInstance.get(url);
             if (response.data.success) {
                 setProducts(response.data.data.products || []);
@@ -334,9 +326,15 @@ const ProductsPage = () => {
                 <div className="search-container">
                     <input
                         type="text"
-                        placeholder="Search products..."
+                        placeholder="Search products... (Press Enter to search)"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                                setActiveSearchTerm(searchTerm);
+                                setCurrentPage(1);
+                            }
+                        }}
                         className="search-input"
                     />
                 </div>
@@ -380,7 +378,7 @@ const ProductsPage = () => {
                 
                 <div className="results-count">
                     Showing {filteredProducts.length} of {products.length} products
-                    {searchTerm && ` (searching "${searchTerm}")`}
+                    {activeSearchTerm && ` (searching "${activeSearchTerm}")`}
                 </div>
             </div>
 
@@ -774,7 +772,7 @@ const ProductsPage = () => {
                 )}
             </div>
 
-            {totalPages > 1 && !debouncedSearchTerm && !filterShop && !filterStock && (
+            {totalPages > 1 && !activeSearchTerm && !filterShop && !filterStock && (
                 <div className="pagination">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
