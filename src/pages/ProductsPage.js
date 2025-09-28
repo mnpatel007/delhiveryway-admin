@@ -35,7 +35,7 @@ const ProductsPage = () => {
     useEffect(() => {
         fetchProducts(currentPage);
         fetchShops();
-    }, [currentPage, activeSearchTerm]);
+    }, [currentPage, activeSearchTerm, filterShop, filterStock]);
 
     useEffect(() => {
         filterAndSortProducts();
@@ -55,9 +55,17 @@ const ProductsPage = () => {
 
         // Shop filter
         if (filterShop) {
-            filtered = filtered.filter(product => 
-                product.shopId?._id === filterShop || product.shopId === filterShop
-            );
+            console.log('Filtering by shop:', filterShop);
+            console.log('Sample product shopId structure:', products[0]?.shopId);
+            filtered = filtered.filter(product => {
+                const productShopId = product.shopId?._id || product.shopId;
+                const matches = productShopId === filterShop;
+                if (!matches && product === products[0]) {
+                    console.log('Shop filter mismatch:', { productShopId, filterShop, product: product.name });
+                }
+                return matches;
+            });
+            console.log('Filtered products count:', filtered.length);
         }
 
         // Stock filter
@@ -91,8 +99,9 @@ const ProductsPage = () => {
     const fetchProducts = async (page) => {
         try {
             setLoading(true);
-            // If searching, get all products; otherwise use pagination
-            const url = activeSearchTerm ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
+            // If searching or filtering, get all products; otherwise use pagination
+            const needAllProducts = activeSearchTerm || filterShop || filterStock;
+            const url = needAllProducts ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
             const response = await axiosInstance.get(url);
             if (response.data.success) {
                 setProducts(response.data.data.products || []);
