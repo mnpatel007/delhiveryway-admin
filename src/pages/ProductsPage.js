@@ -24,6 +24,7 @@ const ProductsPage = () => {
         shopId: ''
     });
     const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [filterShop, setFilterShop] = useState('');
     const [filterStock, setFilterStock] = useState('');
     const [sortBy, setSortBy] = useState('name');
@@ -34,7 +35,15 @@ const ProductsPage = () => {
     useEffect(() => {
         fetchProducts(currentPage);
         fetchShops();
-    }, [currentPage, searchTerm]);
+    }, [currentPage, debouncedSearchTerm]);
+
+    // Debounce search term
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
     useEffect(() => {
         filterAndSortProducts();
@@ -91,7 +100,7 @@ const ProductsPage = () => {
         try {
             setLoading(true);
             // If searching, get all products; otherwise use pagination
-            const url = searchTerm ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
+            const url = debouncedSearchTerm ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
             const response = await axiosInstance.get(url);
             if (response.data.success) {
                 setProducts(response.data.data.products || []);
@@ -765,7 +774,7 @@ const ProductsPage = () => {
                 )}
             </div>
 
-            {totalPages > 1 && !searchTerm && !filterShop && !filterStock && (
+            {totalPages > 1 && !debouncedSearchTerm && !filterShop && !filterStock && (
                 <div className="pagination">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
