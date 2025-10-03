@@ -23,6 +23,7 @@ const Dashboard = () => {
         shopperStats: []
     });
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [shopperPeriod, setShopperPeriod] = useState('total');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -64,25 +65,36 @@ const Dashboard = () => {
     const handleDateChange = (e) => {
         const newDate = e.target.value;
         setSelectedDate(newDate);
-        // Call fetchStats with the new date
-        const fetchStatsWithDate = async () => {
-            try {
-                const url = `/admin/dashboard?date=${newDate}`;
-                const response = await axiosInstance.get(url);
-                if (response.data.success) {
-                    const data = response.data.data;
-                    setStats(prev => ({
-                        ...prev,
-                        dailyOrders: data.stats.dailyOrders || 0,
-                        dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
-                        dailyCancelledOrders: data.stats.dailyCancelledOrders || 0
-                    }));
-                }
-            } catch (err) {
-                console.error('Error fetching date-specific stats:', err);
+        fetchStatsWithParams({ date: newDate, shopperPeriod });
+    };
+
+    const handleShopperPeriodChange = (period) => {
+        setShopperPeriod(period);
+        const params = { shopperPeriod: period };
+        if (period === 'date') {
+            params.date = selectedDate;
+        }
+        fetchStatsWithParams(params);
+    };
+
+    const fetchStatsWithParams = async (params = {}) => {
+        try {
+            const queryParams = new URLSearchParams(params).toString();
+            const url = queryParams ? `/admin/dashboard?${queryParams}` : '/admin/dashboard';
+            const response = await axiosInstance.get(url);
+            if (response.data.success) {
+                const data = response.data.data;
+                setStats(prev => ({
+                    ...prev,
+                    dailyOrders: data.stats.dailyOrders || prev.dailyOrders,
+                    dailyDeliveredOrders: data.stats.dailyDeliveredOrders || prev.dailyDeliveredOrders,
+                    dailyCancelledOrders: data.stats.dailyCancelledOrders || prev.dailyCancelledOrders,
+                    shopperStats: data.shopperStats || prev.shopperStats
+                }));
             }
-        };
-        fetchStatsWithDate();
+        } catch (err) {
+            console.error('Error fetching stats:', err);
+        }
     };
 
     if (loading) {
@@ -261,7 +273,29 @@ const Dashboard = () => {
                             </div>
 
                             <div className="shopper-performance">
-                                <h2>Shopper Performance</h2>
+                                <div className="shopper-header">
+                                    <h2>Shopper Performance</h2>
+                                    <div className="period-buttons">
+                                        <button 
+                                            className={`period-btn ${shopperPeriod === 'today' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('today')}
+                                        >
+                                            Today
+                                        </button>
+                                        <button 
+                                            className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('total')}
+                                        >
+                                            Total
+                                        </button>
+                                        <button 
+                                            className={`period-btn ${shopperPeriod === 'date' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('date')}
+                                        >
+                                            Date
+                                        </button>
+                                    </div>
+                                </div>
                                 {!stats.shopperStats || stats.shopperStats.length === 0 ? (
                                     <p>No shopper performance data</p>
                                 ) : (
