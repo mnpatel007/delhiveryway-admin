@@ -185,47 +185,49 @@ const Dashboard = () => {
                             )}
                         </div>
 
-                        <div className="order-status-distribution">
-                            <h2>Order Status Distribution</h2>
-                            {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
-                                <p>No order status data</p>
-                            ) : (
-                                <div className="status-chart">
-                                    {stats.orderStatusDistribution.map(status => (
-                                        <div key={status._id} className="status-bar">
-                                            <div className="status-label">{status._id}</div>
-                                            <div className="status-value">{status.count}</div>
-                                            <div className="status-progress">
-                                                <div
-                                                    className="status-progress-fill"
-                                                    style={{ width: `${(status.count / stats.ordersCount) * 100}%` }}
-                                                ></div>
+                        <div className="analytics-right-panel">
+                            <div className="order-status-distribution">
+                                <h2>Order Status Distribution</h2>
+                                {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
+                                    <p>No order status data</p>
+                                ) : (
+                                    <div className="status-chart">
+                                        {stats.orderStatusDistribution.map(status => (
+                                            <div key={status._id} className="status-bar">
+                                                <div className="status-label">{status._id}</div>
+                                                <div className="status-value">{status.count}</div>
+                                                <div className="status-progress">
+                                                    <div
+                                                        className="status-progress-fill"
+                                                        style={{ width: `${(status.count / stats.ordersCount) * 100}%` }}
+                                                    ></div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
-                        <div className="shopper-performance">
-                            <h2>Shopper Performance</h2>
-                            {!stats.shopperStats || stats.shopperStats.length === 0 ? (
-                                <p>No shopper performance data</p>
-                            ) : (
-                                <div className="shopper-list">
-                                    {stats.shopperStats.slice(0, 5).map(shopper => (
-                                        <div key={shopper._id} className="shopper-item">
-                                            <div className="shopper-details">
-                                                <p className="shopper-name">{shopper.shopper.name}</p>
-                                                <p className="shopper-orders">{shopper.totalOrders} orders</p>
+                            <div className="shopper-performance">
+                                <h2>Shopper Performance</h2>
+                                {!stats.shopperStats || stats.shopperStats.length === 0 ? (
+                                    <p>No shopper performance data</p>
+                                ) : (
+                                    <div className="shopper-list">
+                                        {stats.shopperStats.slice(0, 5).map(shopper => (
+                                            <div key={shopper._id} className="shopper-item">
+                                                <div className="shopper-details">
+                                                    <p className="shopper-name">{shopper.shopper.name}</p>
+                                                    <p className="shopper-orders">{shopper.totalOrders} orders</p>
+                                                </div>
+                                                <div className="shopper-earnings">
+                                                    ₹{Math.round(shopper.totalEarnings || 0)}
+                                                </div>
                                             </div>
-                                            <div className="shopper-earnings">
-                                                ₹{Math.round(shopper.totalEarnings || 0)}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
