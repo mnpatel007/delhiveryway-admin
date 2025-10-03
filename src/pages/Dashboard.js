@@ -16,8 +16,8 @@ const Dashboard = () => {
         usersCount: 0,
         shoppersCount: 0,
         dailyOrders: 0,
-        deliveredOrders: 0,
-        cancelledOrders: 0,
+        dailyDeliveredOrders: 0,
+        dailyCancelledOrders: 0,
         recentOrders: [],
         orderStatusDistribution: [],
         shopperStats: []
@@ -39,8 +39,8 @@ const Dashboard = () => {
                         usersCount: data.stats.totalUsers || 0,
                         shoppersCount: data.stats.totalShoppers || 0,
                         dailyOrders: data.stats.dailyOrders || 0,
-                        deliveredOrders: data.stats.deliveredOrders || 0,
-                        cancelledOrders: data.stats.cancelledOrders || 0,
+                        dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
+                        dailyCancelledOrders: data.stats.dailyCancelledOrders || 0,
                         recentOrders: data.recentOrders || [],
                         orderStatusDistribution: data.orderStatusStats || [],
                         shopperStats: data.shopperStats || []
@@ -195,11 +195,11 @@ const Dashboard = () => {
                                     </div>
                                     <div className="order-stat">
                                         <span className="order-stat-label">Delivered</span>
-                                        <span className="order-stat-value">{stats.deliveredOrders}</span>
+                                        <span className="order-stat-value">{stats.dailyDeliveredOrders}</span>
                                     </div>
                                     <div className="order-stat">
                                         <span className="order-stat-label">Cancelled</span>
-                                        <span className="order-stat-value">{stats.cancelledOrders}</span>
+                                        <span className="order-stat-value">{stats.dailyCancelledOrders}</span>
                                     </div>
                                 </div>
                             </div>
