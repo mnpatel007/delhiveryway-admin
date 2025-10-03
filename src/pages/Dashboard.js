@@ -81,9 +81,7 @@ const Dashboard = () => {
     const handleShopperDateChange = (e) => {
         const newDate = e.target.value;
         setShopperDate(newDate);
-        if (shopperPeriod === 'date') {
-            fetchStatsWithParams({ shopperPeriod: 'date', date: newDate });
-        }
+        fetchStatsWithParams({ shopperPeriod: 'date', date: newDate });
     };
 
     const fetchStatsWithParams = async (params = {}) => {
@@ -285,34 +283,18 @@ const Dashboard = () => {
                                 <div className="shopper-header">
                                     <h2>Shopper Performance</h2>
                                     <div className="shopper-controls">
-                                        <div className="period-buttons">
-                                            <button 
-                                                className={`period-btn ${shopperPeriod === 'today' ? 'active' : ''}`}
-                                                onClick={() => handleShopperPeriodChange('today')}
-                                            >
-                                                Today
-                                            </button>
-                                            <button 
-                                                className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
-                                                onClick={() => handleShopperPeriodChange('total')}
-                                            >
-                                                Total
-                                            </button>
-                                            <button 
-                                                className={`period-btn ${shopperPeriod === 'date' ? 'active' : ''}`}
-                                                onClick={() => handleShopperPeriodChange('date')}
-                                            >
-                                                Date
-                                            </button>
-                                        </div>
-                                        {shopperPeriod === 'date' && (
-                                            <input 
-                                                type="date" 
-                                                value={shopperDate} 
-                                                onChange={handleShopperDateChange}
-                                                className="shopper-date-picker"
-                                            />
-                                        )}
+                                        <button 
+                                            className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('total')}
+                                        >
+                                            Total
+                                        </button>
+                                        <input 
+                                            type="date" 
+                                            value={shopperDate} 
+                                            onChange={handleShopperDateChange}
+                                            className="shopper-date-picker"
+                                        />
                                     </div>
                                 </div>
                                 {!stats.shopperStats || stats.shopperStats.length === 0 ? (
