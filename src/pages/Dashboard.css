@@ -363,9 +363,23 @@
     margin: 0;
 }
 
+.shopper-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .period-buttons {
     display: flex;
     gap: 5px;
+}
+
+.shopper-date-picker {
+    padding: 5px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-color);
 }
 
 .period-btn {
