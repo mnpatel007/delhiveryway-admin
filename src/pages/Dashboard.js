@@ -186,24 +186,6 @@ const Dashboard = () => {
                         </div>
 
                         <div className="analytics-right-panel">
-                            <div className="order-metrics">
-                                <h2>Order Analytics</h2>
-                                <div className="order-stats-grid">
-                                    <div className="order-stat">
-                                        <span className="order-stat-label">Daily Orders</span>
-                                        <span className="order-stat-value">{stats.dailyOrders}</span>
-                                    </div>
-                                    <div className="order-stat">
-                                        <span className="order-stat-label">Delivered</span>
-                                        <span className="order-stat-value">{stats.dailyDeliveredOrders}</span>
-                                    </div>
-                                    <div className="order-stat">
-                                        <span className="order-stat-label">Cancelled</span>
-                                        <span className="order-stat-value">{stats.dailyCancelledOrders}</span>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div className="order-status-distribution">
                                 <h2>Order Status Distribution</h2>
                                 {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
@@ -224,6 +206,24 @@ const Dashboard = () => {
                                         ))}
                                     </div>
                                 )}
+                            </div>
+
+                            <div className="order-metrics">
+                                <h2>Order Analytics</h2>
+                                <div className="order-stats-grid">
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Daily Orders</span>
+                                        <span className="order-stat-value">{stats.dailyOrders}</span>
+                                    </div>
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Delivered</span>
+                                        <span className="order-stat-value">{stats.dailyDeliveredOrders}</span>
+                                    </div>
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Cancelled</span>
+                                        <span className="order-stat-value">{stats.dailyCancelledOrders}</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="shopper-performance">
