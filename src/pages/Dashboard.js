@@ -15,8 +15,12 @@ const Dashboard = () => {
         ordersCount: 0,
         usersCount: 0,
         shoppersCount: 0,
+        dailyOrders: 0,
+        deliveredOrders: 0,
+        cancelledOrders: 0,
         recentOrders: [],
-        orderStatusDistribution: []
+        orderStatusDistribution: [],
+        shopperStats: []
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -34,8 +38,12 @@ const Dashboard = () => {
                         ordersCount: data.stats.totalOrders || 0,
                         usersCount: data.stats.totalUsers || 0,
                         shoppersCount: data.stats.totalShoppers || 0,
+                        dailyOrders: data.stats.dailyOrders || 0,
+                        deliveredOrders: data.stats.deliveredOrders || 0,
+                        cancelledOrders: data.stats.cancelledOrders || 0,
                         recentOrders: data.recentOrders || [],
-                        orderStatusDistribution: data.orderStatusStats || []
+                        orderStatusDistribution: data.orderStatusStats || [],
+                        shopperStats: data.shopperStats || []
                     });
                 } else {
                     setError(response.data.message || 'Failed to fetch dashboard statistics');
@@ -112,22 +120,6 @@ const Dashboard = () => {
                 <div className="dashboard-content">
                     <div className="stats-grid">
                         <div className="stat-card">
-                            <div className="stat-icon">🏪</div>
-                            <div className="stat-info">
-                                <h3>Total Shops</h3>
-                                <p className="stat-number">{stats.shopsCount}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">📦</div>
-                            <div className="stat-info">
-                                <h3>Total Products</h3>
-                                <p className="stat-number">{stats.productsCount}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
                             <div className="stat-icon">🛒</div>
                             <div className="stat-info">
                                 <h3>Total Orders</h3>
@@ -136,10 +128,26 @@ const Dashboard = () => {
                         </div>
 
                         <div className="stat-card">
-                            <div className="stat-icon">🛍️</div>
+                            <div className="stat-icon">📅</div>
                             <div className="stat-info">
-                                <h3>Personal Shoppers</h3>
-                                <p className="stat-number">{stats.shoppersCount}</p>
+                                <h3>Daily Orders</h3>
+                                <p className="stat-number">{stats.dailyOrders}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">✅</div>
+                            <div className="stat-info">
+                                <h3>Delivered Orders</h3>
+                                <p className="stat-number">{stats.deliveredOrders}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">❌</div>
+                            <div className="stat-info">
+                                <h3>Cancelled Orders</h3>
+                                <p className="stat-number">{stats.cancelledOrders}</p>
                             </div>
                         </div>
                     </div>
@@ -197,6 +205,61 @@ const Dashboard = () => {
                                     ))}
                                 </div>
                             )}
+                        </div>
+
+                        <div className="shopper-performance">
+                            <h2>Shopper Performance</h2>
+                            {!stats.shopperStats || stats.shopperStats.length === 0 ? (
+                                <p>No shopper performance data</p>
+                            ) : (
+                                <div className="shopper-list">
+                                    {stats.shopperStats.slice(0, 5).map(shopper => (
+                                        <div key={shopper._id} className="shopper-item">
+                                            <div className="shopper-details">
+                                                <p className="shopper-name">{shopper.shopper.name}</p>
+                                                <p className="shopper-orders">{shopper.totalOrders} orders</p>
+                                            </div>
+                                            <div className="shopper-earnings">
+                                                ₹{Math.round(shopper.totalEarnings || 0)}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="additional-stats">
+                        <div className="stat-card">
+                            <div className="stat-icon">🏪</div>
+                            <div className="stat-info">
+                                <h3>Total Shops</h3>
+                                <p className="stat-number">{stats.shopsCount}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">📦</div>
+                            <div className="stat-info">
+                                <h3>Total Products</h3>
+                                <p className="stat-number">{stats.productsCount}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">👥</div>
+                            <div className="stat-info">
+                                <h3>Total Users</h3>
+                                <p className="stat-number">{stats.usersCount}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">🛍️</div>
+                            <div className="stat-info">
+                                <h3>Personal Shoppers</h3>
+                                <p className="stat-number">{stats.shoppersCount}</p>
+                            </div>
                         </div>
                     </div>
 
