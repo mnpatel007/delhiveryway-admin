@@ -120,6 +120,22 @@ const Dashboard = () => {
                 <div className="dashboard-content">
                     <div className="stats-grid">
                         <div className="stat-card">
+                            <div className="stat-icon">🏪</div>
+                            <div className="stat-info">
+                                <h3>Total Shops</h3>
+                                <p className="stat-number">{stats.shopsCount}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">📦</div>
+                            <div className="stat-info">
+                                <h3>Total Products</h3>
+                                <p className="stat-number">{stats.productsCount}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
                             <div className="stat-icon">🛒</div>
                             <div className="stat-info">
                                 <h3>Total Orders</h3>
@@ -128,26 +144,10 @@ const Dashboard = () => {
                         </div>
 
                         <div className="stat-card">
-                            <div className="stat-icon">📅</div>
+                            <div className="stat-icon">🛍️</div>
                             <div className="stat-info">
-                                <h3>Daily Orders</h3>
-                                <p className="stat-number">{stats.dailyOrders}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">✅</div>
-                            <div className="stat-info">
-                                <h3>Delivered Orders</h3>
-                                <p className="stat-number">{stats.deliveredOrders}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">❌</div>
-                            <div className="stat-info">
-                                <h3>Cancelled Orders</h3>
-                                <p className="stat-number">{stats.cancelledOrders}</p>
+                                <h3>Personal Shoppers</h3>
+                                <p className="stat-number">{stats.shoppersCount}</p>
                             </div>
                         </div>
                     </div>
@@ -186,6 +186,24 @@ const Dashboard = () => {
                         </div>
 
                         <div className="analytics-right-panel">
+                            <div className="order-metrics">
+                                <h2>Order Analytics</h2>
+                                <div className="order-stats-grid">
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Daily Orders</span>
+                                        <span className="order-stat-value">{stats.dailyOrders}</span>
+                                    </div>
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Delivered</span>
+                                        <span className="order-stat-value">{stats.deliveredOrders}</span>
+                                    </div>
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Cancelled</span>
+                                        <span className="order-stat-value">{stats.cancelledOrders}</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="order-status-distribution">
                                 <h2>Order Status Distribution</h2>
                                 {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
@@ -227,40 +245,6 @@ const Dashboard = () => {
                                         ))}
                                     </div>
                                 )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="additional-stats">
-                        <div className="stat-card">
-                            <div className="stat-icon">🏪</div>
-                            <div className="stat-info">
-                                <h3>Total Shops</h3>
-                                <p className="stat-number">{stats.shopsCount}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">📦</div>
-                            <div className="stat-info">
-                                <h3>Total Products</h3>
-                                <p className="stat-number">{stats.productsCount}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">👥</div>
-                            <div className="stat-info">
-                                <h3>Total Users</h3>
-                                <p className="stat-number">{stats.usersCount}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">🛍️</div>
-                            <div className="stat-info">
-                                <h3>Personal Shoppers</h3>
-                                <p className="stat-number">{stats.shoppersCount}</p>
                             </div>
                         </div>
                     </div>
