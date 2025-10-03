@@ -66,41 +66,54 @@ const Dashboard = () => {
     const handleDateChange = (e) => {
         const newDate = e.target.value;
         setSelectedDate(newDate);
-        fetchStatsWithParams({ date: newDate, shopperPeriod });
+        fetchOrderAnalytics(newDate);
     };
 
     const handleShopperPeriodChange = (period) => {
         setShopperPeriod(period);
-        const params = { shopperPeriod: period };
-        if (period === 'date') {
-            params.date = shopperDate;
+        if (period === 'total') {
+            fetchShopperStats('total');
         }
-        fetchStatsWithParams(params);
     };
 
     const handleShopperDateChange = (e) => {
         const newDate = e.target.value;
         setShopperDate(newDate);
-        fetchStatsWithParams({ shopperPeriod: 'date', date: newDate });
+        fetchShopperStats('date', newDate);
     };
 
-    const fetchStatsWithParams = async (params = {}) => {
+    const fetchOrderAnalytics = async (date) => {
         try {
-            const queryParams = new URLSearchParams(params).toString();
-            const url = queryParams ? `/admin/dashboard?${queryParams}` : '/admin/dashboard';
-            const response = await axiosInstance.get(url);
+            const response = await axiosInstance.get(`/admin/dashboard?date=${date}`);
             if (response.data.success) {
                 const data = response.data.data;
                 setStats(prev => ({
                     ...prev,
-                    dailyOrders: data.stats.dailyOrders || prev.dailyOrders,
-                    dailyDeliveredOrders: data.stats.dailyDeliveredOrders || prev.dailyDeliveredOrders,
-                    dailyCancelledOrders: data.stats.dailyCancelledOrders || prev.dailyCancelledOrders,
-                    shopperStats: data.shopperStats || prev.shopperStats
+                    dailyOrders: data.stats.dailyOrders || 0,
+                    dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
+                    dailyCancelledOrders: data.stats.dailyCancelledOrders || 0
                 }));
             }
         } catch (err) {
-            console.error('Error fetching stats:', err);
+            console.error('Error fetching order analytics:', err);
+        }
+    };
+
+    const fetchShopperStats = async (period, date = null) => {
+        try {
+            const params = { shopperPeriod: period };
+            if (date) params.date = date;
+            const queryParams = new URLSearchParams(params).toString();
+            const response = await axiosInstance.get(`/admin/dashboard?${queryParams}`);
+            if (response.data.success) {
+                const data = response.data.data;
+                setStats(prev => ({
+                    ...prev,
+                    shopperStats: data.shopperStats || []
+                }));
+            }
+        } catch (err) {
+            console.error('Error fetching shopper stats:', err);
         }
     };
 
