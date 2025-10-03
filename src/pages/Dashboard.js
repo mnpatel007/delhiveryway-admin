@@ -22,13 +22,15 @@ const Dashboard = () => {
         orderStatusDistribution: [],
         shopperStats: []
     });
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchStats = async (date = null) => {
             try {
-                const response = await axiosInstance.get('/admin/dashboard');
+                const url = date ? `/admin/dashboard?date=${date}` : '/admin/dashboard';
+                const response = await axiosInstance.get(url);
 
                 if (response.data.success) {
                     const data = response.data.data;
@@ -57,6 +59,12 @@ const Dashboard = () => {
         };
 
         fetchStats();
+    }, []);
+
+    const handleDateChange = (e) => {
+        const newDate = e.target.value;
+        setSelectedDate(newDate);
+        fetchStats(newDate);
     }, []);
 
     if (loading) {
@@ -209,7 +217,15 @@ const Dashboard = () => {
                             </div>
 
                             <div className="order-metrics">
-                                <h2>Order Analytics</h2>
+                                <div className="order-analytics-header">
+                                    <h2>Order Analytics</h2>
+                                    <input 
+                                        type="date" 
+                                        value={selectedDate} 
+                                        onChange={handleDateChange}
+                                        className="date-picker"
+                                    />
+                                </div>
                                 <div className="order-stats-grid">
                                     <div className="order-stat">
                                         <span className="order-stat-label">Daily Orders</span>
