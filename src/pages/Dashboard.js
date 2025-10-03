@@ -64,8 +64,26 @@ const Dashboard = () => {
     const handleDateChange = (e) => {
         const newDate = e.target.value;
         setSelectedDate(newDate);
-        fetchStats(newDate);
-    }, []);
+        // Call fetchStats with the new date
+        const fetchStatsWithDate = async () => {
+            try {
+                const url = `/admin/dashboard?date=${newDate}`;
+                const response = await axiosInstance.get(url);
+                if (response.data.success) {
+                    const data = response.data.data;
+                    setStats(prev => ({
+                        ...prev,
+                        dailyOrders: data.stats.dailyOrders || 0,
+                        dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
+                        dailyCancelledOrders: data.stats.dailyCancelledOrders || 0
+                    }));
+                }
+            } catch (err) {
+                console.error('Error fetching date-specific stats:', err);
+            }
+        };
+        fetchStatsWithDate();
+    };
 
     if (loading) {
         return (
