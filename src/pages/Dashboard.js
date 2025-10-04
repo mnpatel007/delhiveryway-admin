@@ -15,16 +15,24 @@ const Dashboard = () => {
         ordersCount: 0,
         usersCount: 0,
         shoppersCount: 0,
+        dailyOrders: 0,
+        dailyDeliveredOrders: 0,
+        dailyCancelledOrders: 0,
         recentOrders: [],
-        orderStatusDistribution: []
+        orderStatusDistribution: [],
+        shopperStats: []
     });
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [shopperPeriod, setShopperPeriod] = useState('total');
+    const [shopperDate, setShopperDate] = useState(new Date().toISOString().split('T')[0]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchStats = async (date = null) => {
             try {
-                const response = await axiosInstance.get('/admin/dashboard');
+                const url = date ? `/admin/dashboard?date=${date}` : '/admin/dashboard';
+                const response = await axiosInstance.get(url);
 
                 if (response.data.success) {
                     const data = response.data.data;
@@ -34,8 +42,12 @@ const Dashboard = () => {
                         ordersCount: data.stats.totalOrders || 0,
                         usersCount: data.stats.totalUsers || 0,
                         shoppersCount: data.stats.totalShoppers || 0,
+                        dailyOrders: data.stats.dailyOrders || 0,
+                        dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
+                        dailyCancelledOrders: data.stats.dailyCancelledOrders || 0,
                         recentOrders: data.recentOrders || [],
-                        orderStatusDistribution: data.orderStatusStats || []
+                        orderStatusDistribution: data.orderStatusStats || [],
+                        shopperStats: data.shopperStats || []
                     });
                 } else {
                     setError(response.data.message || 'Failed to fetch dashboard statistics');
@@ -50,6 +62,60 @@ const Dashboard = () => {
 
         fetchStats();
     }, []);
+
+    const handleDateChange = (e) => {
+        const newDate = e.target.value;
+        setSelectedDate(newDate);
+        fetchOrderAnalytics(newDate);
+    };
+
+    const handleShopperPeriodChange = (period) => {
+        setShopperPeriod(period);
+        if (period === 'total') {
+            fetchShopperStats('total');
+        }
+    };
+
+    const handleShopperDateChange = (e) => {
+        const newDate = e.target.value;
+        setShopperDate(newDate);
+        fetchShopperStats('date', newDate);
+    };
+
+    const fetchOrderAnalytics = async (date) => {
+        try {
+            const response = await axiosInstance.get(`/admin/dashboard?date=${date}`);
+            if (response.data.success) {
+                const data = response.data.data;
+                setStats(prev => ({
+                    ...prev,
+                    dailyOrders: data.stats.dailyOrders || 0,
+                    dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
+                    dailyCancelledOrders: data.stats.dailyCancelledOrders || 0
+                }));
+            }
+        } catch (err) {
+            console.error('Error fetching order analytics:', err);
+        }
+    };
+
+    const fetchShopperStats = async (period, date = null) => {
+        try {
+            const params = { shopperPeriod: period };
+            if (date) params.date = date;
+            const queryParams = new URLSearchParams(params).toString();
+            const response = await axiosInstance.get(`/admin/dashboard?${queryParams}`);
+            if (response.data.success) {
+                const data = response.data.data;
+                setStats(prev => ({
+                    ...prev,
+                    shopperStats: data.shopperStats || []
+                }));
+            }
+        } catch (err) {
+            console.error('Error fetching shopper stats:', err);
+        }
+    };
 
     if (loading) {
         return (
@@ -177,26 +243,91 @@ const Dashboard = () => {
                             )}
                         </div>
 
-                        <div className="order-status-distribution">
-                            <h2>Order Status Distribution</h2>
-                            {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
-                                <p>No order status data</p>
-                            ) : (
-                                <div className="status-chart">
-                                    {stats.orderStatusDistribution.map(status => (
-                                        <div key={status._id} className="status-bar">
-                                            <div className="status-label">{status._id}</div>
-                                            <div className="status-value">{status.count}</div>
-                                            <div className="status-progress">
-                                                <div
-                                                    className="status-progress-fill"
-                                                    style={{ width: `${(status.count / stats.ordersCount) * 100}%` }}
-                                                ></div>
+                        <div className="analytics-right-panel">
+                            <div className="order-status-distribution">
+                                <h2>Order Status Distribution</h2>
+                                {!stats.orderStatusDistribution || stats.orderStatusDistribution.length === 0 ? (
+                                    <p>No order status data</p>
+                                ) : (
+                                    <div className="status-chart">
+                                        {stats.orderStatusDistribution.map(status => (
+                                            <div key={status._id} className="status-bar">
+                                                <div className="status-label">{status._id}</div>
+                                                <div className="status-value">{status.count}</div>
+                                                <div className="status-progress">
+                                                    <div
+                                                        className="status-progress-fill"
+                                                        style={{ width: `${(status.count / stats.ordersCount) * 100}%` }}
+                                                    ></div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="order-metrics">
+                                <div className="order-analytics-header">
+                                    <h2>Order Analytics</h2>
+                                    <input 
+                                        type="date" 
+                                        value={selectedDate} 
+                                        onChange={handleDateChange}
+                                        className="date-picker"
+                                    />
                                 </div>
-                            )}
+                                <div className="order-stats-grid">
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Daily Orders</span>
+                                        <span className="order-stat-value">{stats.dailyOrders}</span>
+                                    </div>
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Delivered</span>
+                                        <span className="order-stat-value">{stats.dailyDeliveredOrders}</span>
+                                    </div>
+                                    <div className="order-stat">
+                                        <span className="order-stat-label">Cancelled</span>
+                                        <span className="order-stat-value">{stats.dailyCancelledOrders}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="shopper-performance">
+                                <div className="shopper-header">
+                                    <h2>Shopper Performance</h2>
+                                    <div className="shopper-controls">
+                                        <button 
+                                            className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('total')}
+                                        >
+                                            Total
+                                        </button>
+                                        <input 
+                                            type="date" 
+                                            value={shopperDate} 
+                                            onChange={handleShopperDateChange}
+                                            className="shopper-date-picker"
+                                        />
+                                    </div>
+                                </div>
+                                {!stats.shopperStats || stats.shopperStats.length === 0 ? (
+                                    <p>No shopper performance data</p>
+                                ) : (
+                                    <div className="shopper-list">
+                                        {stats.shopperStats.slice(0, 5).map(shopper => (
+                                            <div key={shopper._id} className="shopper-item">
+                                                <div className="shopper-details">
+                                                    <p className="shopper-name">{shopper.shopper.name}</p>
+                                                    <p className="shopper-orders">{shopper.totalOrders} orders</p>
+                                                </div>
+                                                <div className="shopper-earnings">
+                                                    ₹{Math.round(shopper.totalEarnings || 0)}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
