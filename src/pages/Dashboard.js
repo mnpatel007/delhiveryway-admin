@@ -61,6 +61,8 @@ const Dashboard = () => {
         };
 
         fetchStats();
+        // Fetch today's shopper stats by default
+        fetchShopperStats('today');
     }, []);
 
     const handleDateChange = (e) => {
