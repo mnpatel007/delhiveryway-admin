@@ -23,7 +23,7 @@ const Dashboard = () => {
         shopperStats: []
     });
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-    const [shopperPeriod, setShopperPeriod] = useState('total');
+    const [shopperPeriod, setShopperPeriod] = useState('today');
     const [shopperDate, setShopperDate] = useState(new Date().toISOString().split('T')[0]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -61,6 +61,8 @@ const Dashboard = () => {
         };
 
         fetchStats();
+        // Fetch today's shopper stats by default
+        fetchShopperStats('today');
     }, []);
 
     const handleDateChange = (e) => {
@@ -73,6 +75,8 @@ const Dashboard = () => {
         setShopperPeriod(period);
         if (period === 'total') {
             fetchShopperStats('total');
+        } else if (period === 'today') {
+            fetchShopperStats('today');
         }
     };
 
@@ -296,6 +300,12 @@ const Dashboard = () => {
                                 <div className="shopper-header">
                                     <h2>Shopper Performance</h2>
                                     <div className="shopper-controls">
+                                        <button 
+                                            className={`period-btn ${shopperPeriod === 'today' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('today')}
+                                        >
+                                            Today
+                                        </button>
                                         <button 
                                             className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
                                             onClick={() => handleShopperPeriodChange('total')}
