@@ -37,6 +37,8 @@ const ShopsPage = () => {
             sunday: { open: '10:00', close: '20:00', closed: false }
         },
         deliveryFee: 30,
+        hasTax: false,
+        taxRate: 5,
         vendorId: 'admin-created'
     });
 
@@ -104,6 +106,8 @@ const ShopsPage = () => {
                     sunday: { open: '10:00', close: '20:00', closed: false }
                 },
                 deliveryFee: 30,
+                hasTax: false,
+                taxRate: 5,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -152,6 +156,8 @@ const ShopsPage = () => {
                 sunday: { open: '10:00', close: '20:00', closed: false }
             },
             deliveryFee: shop.deliveryFee || 30,
+            hasTax: shop.hasTax || false,
+            taxRate: shop.taxRate || 5,
             vendorId: 'admin-created'
         });
         setShowEditForm(true);
@@ -203,6 +209,8 @@ const ShopsPage = () => {
                     sunday: { open: '10:00', close: '20:00', closed: false }
                 },
                 deliveryFee: 30,
+                hasTax: false,
+                taxRate: 5,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -425,6 +433,35 @@ const ShopsPage = () => {
                             />
                         </div>
 
+                        <div className="form-group">
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hasTax"
+                                    checked={newShop.hasTax}
+                                    onChange={handleInputChange}
+                                />
+                                Apply Tax
+                            </label>
+                        </div>
+
+                        {newShop.hasTax && (
+                            <div className="form-group">
+                                <label htmlFor="taxRate">Tax Rate (%)</label>
+                                <input
+                                    type="number"
+                                    id="taxRate"
+                                    name="taxRate"
+                                    value={newShop.taxRate}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    placeholder="Enter tax rate (e.g., 5 for 5%)"
+                                />
+                            </div>
+                        )}
+
                         {/* Operating Hours Section */}
                         <div className="form-group">
                             <h3>Operating Hours</h3>
@@ -612,6 +649,35 @@ const ShopsPage = () => {
                             />
                         </div>
 
+                        <div className="form-group">
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hasTax"
+                                    checked={newShop.hasTax}
+                                    onChange={handleInputChange}
+                                />
+                                Apply Tax
+                            </label>
+                        </div>
+
+                        {newShop.hasTax && (
+                            <div className="form-group">
+                                <label htmlFor="taxRate">Tax Rate (%)</label>
+                                <input
+                                    type="number"
+                                    id="taxRate"
+                                    name="taxRate"
+                                    value={newShop.taxRate}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    placeholder="Enter tax rate (e.g., 5 for 5%)"
+                                />
+                            </div>
+                        )}
+
                         {/* Operating Hours Section */}
                         <div className="form-group">
                             <h3>Operating Hours</h3>
@@ -683,6 +749,9 @@ const ShopsPage = () => {
                                 </p>
                                 <p className="shop-delivery-fee">
                                     Delivery Fee: {shop.deliveryFee === 0 ? 'Free' : `₹${shop.deliveryFee}`}
+                                </p>
+                                <p className="shop-tax-info">
+                                    Tax: {shop.hasTax ? `${shop.taxRate}%` : 'No Tax'}
                                 </p>
                             </div>
                             <div className="shop-actions">

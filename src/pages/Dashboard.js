@@ -271,9 +271,9 @@ const Dashboard = () => {
                             <div className="order-metrics">
                                 <div className="order-analytics-header">
                                     <h2>Order Analytics</h2>
-                                    <input 
-                                        type="date" 
-                                        value={selectedDate} 
+                                    <input
+                                        type="date"
+                                        value={selectedDate}
                                         onChange={handleDateChange}
                                         className="date-picker"
                                     />
@@ -298,15 +298,21 @@ const Dashboard = () => {
                                 <div className="shopper-header">
                                     <h2>Shopper Performance</h2>
                                     <div className="shopper-controls">
-                                        <button 
+                                        <button
+                                            className={`period-btn ${shopperPeriod === 'today' ? 'active' : ''}`}
+                                            onClick={() => handleShopperPeriodChange('today')}
+                                        >
+                                            Today
+                                        </button>
+                                        <button
                                             className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
                                             onClick={() => handleShopperPeriodChange('total')}
                                         >
                                             Total
                                         </button>
-                                        <input 
-                                            type="date" 
-                                            value={shopperDate} 
+                                        <input
+                                            type="date"
+                                            value={shopperDate}
                                             onChange={handleShopperDateChange}
                                             className="shopper-date-picker"
                                         />
