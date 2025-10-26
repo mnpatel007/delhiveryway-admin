@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { axiosInstance } from '../services/api';
+import api from '../services/api';
 import './ShopperPerformancePage.css';
 
 const ShopperPerformancePage = () => {
@@ -18,7 +18,7 @@ const ShopperPerformancePage = () => {
     const fetchShopperPerformance = async () => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get(`/admin/shoppers/performance?days=${timeFilter}&sortBy=${sortBy}&order=${sortOrder}`);
+            const response = await api.get(`/admin/shoppers/performance?days=${timeFilter}&sortBy=${sortBy}&order=${sortOrder}`);
             setShoppers(response.data.data || []);
         } catch (err) {
             console.error('Error fetching shopper performance:', err);
