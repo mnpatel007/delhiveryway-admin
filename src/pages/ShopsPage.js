@@ -258,9 +258,11 @@ const ShopsPage = () => {
                 }
             });
         } else {
+            // Handle checkbox inputs
+            const inputValue = e.target.type === 'checkbox' ? e.target.checked : value;
             setNewShop({
                 ...newShop,
-                [name]: value
+                [name]: inputValue
             });
         }
     };
