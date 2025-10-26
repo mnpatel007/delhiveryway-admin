@@ -9,6 +9,7 @@ const ShopperPerformancePage = () => {
     const [selectedShopper, setSelectedShopper] = useState(null);
     const [sortBy, setSortBy] = useState('completionRate');
     const [sortOrder, setSortOrder] = useState('desc');
+    const [earningsFilter, setEarningsFilter] = useState('today');
 
     useEffect(() => {
         fetchShopperPerformance();
@@ -88,6 +89,32 @@ const ShopperPerformancePage = () => {
             return 'Online';
         }
         return shopper.status || 'inactive';
+    };
+
+    const getEarningsValue = (shopper) => {
+        switch (earningsFilter) {
+            case 'today':
+                return shopper.performance?.earningsToday || 0;
+            case 'yesterday':
+                return shopper.performance?.earningsYesterday || 0;
+            case 'dayBefore':
+                return shopper.performance?.earningsDayBefore || 0;
+            default:
+                return shopper.performance?.earningsToday || 0;
+        }
+    };
+
+    const getEarningsLabel = () => {
+        switch (earningsFilter) {
+            case 'today':
+                return "Today's earnings";
+            case 'yesterday':
+                return "Yesterday's earnings";
+            case 'dayBefore':
+                return "Day before yesterday";
+            default:
+                return "Today's earnings";
+        }
     };
 
     if (loading) {
@@ -196,7 +223,19 @@ const ShopperPerformancePage = () => {
                                 <th>Orders</th>
                                 <th>Completion Rate</th>
                                 <th>Total Earnings</th>
-                                <th>Today Earnings</th>
+                                <th>
+                                    <div className="earnings-header">
+                                        <select
+                                            value={earningsFilter}
+                                            onChange={(e) => setEarningsFilter(e.target.value)}
+                                            className="earnings-filter-select"
+                                        >
+                                            <option value="today">Today Earnings</option>
+                                            <option value="yesterday">Yesterday Earnings</option>
+                                            <option value="dayBefore">Day Before Yesterday</option>
+                                        </select>
+                                    </div>
+                                </th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -256,10 +295,10 @@ const ShopperPerformancePage = () => {
                                         <td>
                                             <div className="earnings-info">
                                                 <div className="total-earnings">
-                                                    {formatCurrency(shopper.performance?.earningsToday || 0)}
+                                                    {formatCurrency(getEarningsValue(shopper))}
                                                 </div>
                                                 <div className="avg-earnings">
-                                                    Today's earnings
+                                                    {getEarningsLabel()}
                                                 </div>
                                             </div>
                                         </td>
