@@ -350,10 +350,17 @@ const ShopperPerformancePage = () => {
                                 <h3>Recent Activity</h3>
                                 <div className="activity-stats">
                                     <div className="stat-item">
-                                        <span className="stat-label">Last Active:</span>
+                                        <span className="stat-label">Last Order:</span>
                                         <span className="stat-value">
-                                            {selectedShopper.lastActive ?
-                                                new Date(selectedShopper.lastActive).toLocaleDateString() :
+                                            {selectedShopper.performance?.lastOrderDate ?
+                                                new Date(selectedShopper.performance.lastOrderDate).toLocaleString('en-IN', {
+                                                    day: '2-digit',
+                                                    month: '2-digit',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                }) :
                                                 'Never'
                                             }
                                         </span>
@@ -362,6 +369,12 @@ const ShopperPerformancePage = () => {
                                         <span className="stat-label">Orders This Week:</span>
                                         <span className="stat-value">
                                             {selectedShopper.performance?.ordersThisWeek || 0}
+                                        </span>
+                                    </div>
+                                    <div className="stat-item">
+                                        <span className="stat-label">Earnings This Week:</span>
+                                        <span className="stat-value">
+                                            {formatCurrency(selectedShopper.performance?.earningsThisWeek || 0)}
                                         </span>
                                     </div>
                                     <div className="stat-item">
