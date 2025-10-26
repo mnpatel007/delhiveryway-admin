@@ -69,13 +69,26 @@ const ShopperPerformancePage = () => {
         return `${(value || 0).toFixed(1)}%`;
     };
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'active': return '#28a745';
-            case 'inactive': return '#6c757d';
-            case 'suspended': return '#dc3545';
+    const getStatusColor = (shopper) => {
+        // Check if shopper is online first
+        if (shopper.isOnline) {
+            return '#28a745'; // Green for online
+        }
+
+        // Then check status
+        switch (shopper.status) {
+            case 'active': return '#ffc107'; // Yellow for active but offline
+            case 'inactive': return '#6c757d'; // Gray for inactive
+            case 'suspended': return '#dc3545'; // Red for suspended
             default: return '#6c757d';
         }
+    };
+
+    const getStatusText = (shopper) => {
+        if (shopper.isOnline) {
+            return 'Online';
+        }
+        return shopper.status || 'inactive';
     };
 
     if (loading) {
@@ -137,7 +150,7 @@ const ShopperPerformancePage = () => {
                         <option value="completionRate">Completion Rate</option>
                         <option value="totalOrders">Total Orders</option>
                         <option value="earnings">Earnings</option>
-                        <option value="onTimeRate">On-Time Delivery</option>
+
                     </select>
                 </div>
 
@@ -197,11 +210,8 @@ const ShopperPerformancePage = () => {
                         <thead>
                             <tr>
                                 <th>Shopper</th>
-                                <th>Performance Score</th>
-                                <th>Rating</th>
                                 <th>Orders</th>
                                 <th>Completion Rate</th>
-                                <th>On-Time Delivery</th>
                                 <th>Earnings</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -225,31 +235,7 @@ const ShopperPerformancePage = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <div className="performance-score">
-                                                <div
-                                                    className="score-badge"
-                                                    style={{ backgroundColor: gradeInfo.color }}
-                                                >
-                                                    {gradeInfo.grade}
-                                                </div>
-                                                <div className="score-details">
-                                                    <div className="score-number">{performanceScore}/100</div>
-                                                    <div className="score-label">{gradeInfo.label}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="rating-display">
-                                                <span className="rating-stars">
-                                                    {'★'.repeat(Math.floor(shopper.performance?.avgRating || 0))}
-                                                    {'☆'.repeat(5 - Math.floor(shopper.performance?.avgRating || 0))}
-                                                </span>
-                                                <span className="rating-number">
-                                                    {(shopper.performance?.avgRating || 0).toFixed(1)}
-                                                </span>
-                                            </div>
-                                        </td>
+
                                         <td>
                                             <div className="orders-info">
                                                 <div className="total-orders">{shopper.performance?.totalOrders || 0}</div>
@@ -272,20 +258,7 @@ const ShopperPerformancePage = () => {
                                                 <span>{formatPercentage(shopper.performance?.completionRate)}</span>
                                             </div>
                                         </td>
-                                        <td>
-                                            <div className="metric-display">
-                                                <div className="metric-bar">
-                                                    <div
-                                                        className="metric-fill"
-                                                        style={{
-                                                            width: `${shopper.performance?.onTimeDeliveryRate || 0}%`,
-                                                            backgroundColor: (shopper.performance?.onTimeDeliveryRate || 0) >= 80 ? '#28a745' : '#ffc107'
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                                <span>{formatPercentage(shopper.performance?.onTimeDeliveryRate)}</span>
-                                            </div>
-                                        </td>
+
                                         <td>
                                             <div className="earnings-info">
                                                 <div className="total-earnings">
@@ -299,9 +272,9 @@ const ShopperPerformancePage = () => {
                                         <td>
                                             <span
                                                 className="status-badge"
-                                                style={{ backgroundColor: getStatusColor(shopper.status) }}
+                                                style={{ backgroundColor: getStatusColor(shopper) }}
                                             >
-                                                {shopper.status}
+                                                {getStatusText(shopper)}
                                             </span>
                                         </td>
                                         <td>
@@ -338,25 +311,7 @@ const ShopperPerformancePage = () => {
 
                         <div className="modal-content">
                             <div className="performance-metrics-grid">
-                                <div className="metric-card">
-                                    <h4>📊 Overall Performance</h4>
-                                    <div className="metric-value">
-                                        {calculatePerformanceScore(selectedShopper)}/100
-                                    </div>
-                                    <div className="metric-label">
-                                        {getPerformanceGrade(calculatePerformanceScore(selectedShopper)).label}
-                                    </div>
-                                </div>
 
-                                <div className="metric-card">
-                                    <h4>⭐ Average Rating</h4>
-                                    <div className="metric-value">
-                                        {(selectedShopper.performance?.avgRating || 0).toFixed(1)}
-                                    </div>
-                                    <div className="metric-label">
-                                        Based on {selectedShopper.performance?.totalRatings || 0} reviews
-                                    </div>
-                                </div>
 
                                 <div className="metric-card">
                                     <h4>✅ Completion Rate</h4>
@@ -368,15 +323,7 @@ const ShopperPerformancePage = () => {
                                     </div>
                                 </div>
 
-                                <div className="metric-card">
-                                    <h4>⏰ On-Time Delivery</h4>
-                                    <div className="metric-value">
-                                        {formatPercentage(selectedShopper.performance?.onTimeDeliveryRate)}
-                                    </div>
-                                    <div className="metric-label">
-                                        Avg delivery time: {selectedShopper.performance?.avgDeliveryTime || 0} min
-                                    </div>
-                                </div>
+
 
                                 <div className="metric-card">
                                     <h4>💰 Total Earnings</h4>
