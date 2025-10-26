@@ -7,18 +7,17 @@ const ShopperPerformancePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedShopper, setSelectedShopper] = useState(null);
-    const [timeFilter, setTimeFilter] = useState('30'); // days
-    const [sortBy, setSortBy] = useState('rating');
+    const [sortBy, setSortBy] = useState('completionRate');
     const [sortOrder, setSortOrder] = useState('desc');
 
     useEffect(() => {
         fetchShopperPerformance();
-    }, [timeFilter, sortBy, sortOrder]);
+    }, [sortBy, sortOrder]);
 
     const fetchShopperPerformance = async () => {
         try {
             setLoading(true);
-            const response = await api.get(`/admin/shoppers/performance?days=${timeFilter}&sortBy=${sortBy}&order=${sortOrder}`);
+            const response = await api.get(`/admin/shoppers/performance?days=30&sortBy=${sortBy}&order=${sortOrder}`);
             setShoppers(response.data.data || []);
         } catch (err) {
             console.error('Error fetching shopper performance:', err);
@@ -126,31 +125,15 @@ const ShopperPerformancePage = () => {
             {/* Filters and Controls */}
             <div className="performance-controls">
                 <div className="filter-group">
-                    <label>Time Period:</label>
-                    <select
-                        value={timeFilter}
-                        onChange={(e) => setTimeFilter(e.target.value)}
-                        className="filter-select"
-                    >
-                        <option value="7">Last 7 days</option>
-                        <option value="30">Last 30 days</option>
-                        <option value="90">Last 3 months</option>
-                        <option value="365">Last year</option>
-                    </select>
-                </div>
-
-                <div className="filter-group">
                     <label>Sort by:</label>
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         className="filter-select"
                     >
-                        <option value="rating">Rating</option>
                         <option value="completionRate">Completion Rate</option>
                         <option value="totalOrders">Total Orders</option>
-                        <option value="earnings">Earnings</option>
-
+                        <option value="earnings">Total Earnings</option>
                     </select>
                 </div>
 
@@ -212,7 +195,8 @@ const ShopperPerformancePage = () => {
                                 <th>Shopper</th>
                                 <th>Orders</th>
                                 <th>Completion Rate</th>
-                                <th>Earnings</th>
+                                <th>Total Earnings</th>
+                                <th>Today Earnings</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -266,6 +250,16 @@ const ShopperPerformancePage = () => {
                                                 </div>
                                                 <div className="avg-earnings">
                                                     Avg: {formatCurrency(shopper.performance?.avgEarningsPerOrder)}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="earnings-info">
+                                                <div className="total-earnings">
+                                                    {formatCurrency(shopper.performance?.earningsToday || 0)}
+                                                </div>
+                                                <div className="avg-earnings">
+                                                    Today's earnings
                                                 </div>
                                             </div>
                                         </td>
