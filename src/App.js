@@ -9,6 +9,7 @@ import ProductsPage from './pages/ProductsPage';
 import OrdersPage from './pages/OrdersPage';
 import UsersPage from './pages/UsersPage';
 import ShoppersPage from './pages/ShoppersPage';
+import ShopperPerformancePage from './pages/ShopperPerformancePage';
 import NoticesPage from './pages/NoticesPage';
 import './App.css';
 
@@ -54,6 +55,11 @@ function App() {
               <Route path="/shoppers" element={
                 <PrivateRoute>
                   <ShoppersPage />
+                </PrivateRoute>
+              } />
+              <Route path="/shopper-performance" element={
+                <PrivateRoute>
+                  <ShopperPerformancePage />
                 </PrivateRoute>
               } />
               <Route path="/notices" element={

@@ -1,0 +1,607 @@
+/* Shopper Performance Page Styles */
+.shopper-performance-page {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Controls */
+.performance-controls {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.filter-select {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Performance Summary Cards */
+.performance-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+}
+
+.summary-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border-radius: 50%;
+}
+
+.summary-content h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.summary-content p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Performance Table */
+.performance-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.table-header {
+    padding: 1.5rem 2rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table-header h2 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.performance-table {
+    overflow-x: auto;
+}
+
+.performance-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.performance-table th {
+    background: #f8f9fa;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.performance-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+}
+
+.performance-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Shopper Info */
+.shopper-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.shopper-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.shopper-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.shopper-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.shopper-phone {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Performance Score */
+.performance-score {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.score-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.score-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.score-number {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.score-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Rating Display */
+.rating-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.rating-stars {
+    color: #ffc107;
+    font-size: 1.1rem;
+}
+
+.rating-number {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Orders Info */
+.orders-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.total-orders {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.completed-orders {
+    font-size: 0.8rem;
+    color: #28a745;
+}
+
+/* Metric Display */
+.metric-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.metric-bar {
+    width: 80px;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.metric-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Earnings Info */
+.earnings-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.total-earnings {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+.avg-earnings {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Earnings Header */
+.earnings-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.earnings-filter-select {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    color: #495057;
+    min-width: 140px;
+}
+
+.earnings-filter-select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.shopper-detail-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: 2rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.modal-content {
+    padding: 2rem;
+}
+
+/* Performance Metrics Grid */
+.performance-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.metric-card h4 {
+    margin: 0 0 1rem 0;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.metric-card .metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.metric-card .metric-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Recent Activity */
+.recent-activity {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.recent-activity h3 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+}
+
+.activity-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.error-state h3 {
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .performance-table {
+        font-size: 0.9rem;
+    }
+
+    .performance-table th,
+    .performance-table td {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .shopper-performance-page {
+        padding: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .performance-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .filter-group {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .performance-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-card {
+        padding: 1.5rem;
+    }
+
+    .performance-table {
+        font-size: 0.8rem;
+    }
+
+    .shopper-detail-modal {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+
+    .modal-header,
+    .modal-content {
+        padding: 1.5rem;
+    }
+
+    .performance-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-stats {
+        gap: 0.5rem;
+    }
+
+    .stat-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+}

@@ -311,6 +311,16 @@ const OrdersPage = () => {
                         <div key={order._id} className={`order-card ${viewMode === 'compact' ? 'compact-view' : 'detailed-view'}`}>
                             <div className="order-header">
                                 <h3>Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}</h3>
+                                <span className="order-time">
+                                    {order.createdAt ? new Date(order.createdAt).toLocaleString('en-IN', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    }) : 'N/A'}
+                                </span>
                                 <div className="order-actions">
                                     <select
                                         value={order.status}
@@ -354,7 +364,14 @@ const OrdersPage = () => {
                                         </div>
                                         <div className="compact-info-item">
                                             <span className="compact-label">Date:</span>
-                                            <span className="compact-value">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</span>
+                                            <span className="compact-value">{order.createdAt ? new Date(order.createdAt).toLocaleString('en-IN', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: true
+                                            }) : 'N/A'}</span>
                                         </div>
                                     </div>
                                 </div>
