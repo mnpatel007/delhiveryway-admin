@@ -306,48 +306,7 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="shopper-performance">
-                                <div className="shopper-header">
-                                    <h2>Shopper Performance</h2>
-                                    <div className="shopper-controls">
-                                        <button
-                                            className={`period-btn ${shopperPeriod === 'today' ? 'active' : ''}`}
-                                            onClick={() => handleShopperPeriodChange('today')}
-                                        >
-                                            Today
-                                        </button>
-                                        <button
-                                            className={`period-btn ${shopperPeriod === 'total' ? 'active' : ''}`}
-                                            onClick={() => handleShopperPeriodChange('total')}
-                                        >
-                                            Total
-                                        </button>
-                                        <input
-                                            type="date"
-                                            value={shopperDate}
-                                            onChange={handleShopperDateChange}
-                                            className="shopper-date-picker"
-                                        />
-                                    </div>
-                                </div>
-                                {!stats.shopperStats || stats.shopperStats.length === 0 ? (
-                                    <p>No shopper performance data</p>
-                                ) : (
-                                    <div className="shopper-list">
-                                        {stats.shopperStats.slice(0, 5).map(shopper => (
-                                            <div key={shopper._id} className="shopper-item">
-                                                <div className="shopper-details">
-                                                    <p className="shopper-name">{shopper.shopper.name}</p>
-                                                    <p className="shopper-orders">{shopper.totalOrders} orders</p>
-                                                </div>
-                                                <div className="shopper-earnings">
-                                                    ₹{Math.round(shopper.totalEarnings || 0)}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+
                         </div>
                     </div>
 
