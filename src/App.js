@@ -67,6 +67,7 @@ function App() {
                   <NoticesPage />
                 </PrivateRoute>
               } />
+
               <Route path="/" element={<Navigate to="/dashboard" />} />
             </Routes>
           </div>
