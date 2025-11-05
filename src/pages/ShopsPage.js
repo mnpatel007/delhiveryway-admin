@@ -195,18 +195,32 @@ const ShopsPage = () => {
                 return;
             }
 
+            console.log('Updating shop with data:', newShop);
+            console.log('Inquiry time being sent:', newShop.inquiryAvailableTime);
+
             const response = await axiosInstance.put(`/admin/shops/${editingShop._id}`, newShop);
             console.log('Shop update response:', response.data);
 
-            // Update the shop in the list
+            // Get the updated shop data from response
+            const updatedShopData = response.data.data || response.data.shop || response.data;
+            console.log('Updated shop data:', updatedShopData);
+
+            // Update the shop in the list with the new data
             setShops(shops.map(shop =>
                 shop._id === editingShop._id
-                    ? { ...shop, ...response.data.data }
+                    ? { ...shop, ...updatedShopData, inquiryAvailableTime: newShop.inquiryAvailableTime }
                     : shop
             ));
 
             setShowEditForm(false);
             setEditingShop(null);
+            setError(''); // Clear any previous errors
+
+            // Show success message
+            alert('Shop updated successfully! Inquiry time changed to ' + newShop.inquiryAvailableTime + ' minutes.');
+
+            // Refetch shops to ensure we have the latest data
+            fetchShops(currentPage);
             setNewShop({
                 name: '',
                 description: '',
@@ -280,8 +294,16 @@ const ShopsPage = () => {
                 }
             });
         } else {
-            // Handle checkbox inputs
-            const inputValue = e.target.type === 'checkbox' ? e.target.checked : value;
+            // Handle different input types
+            let inputValue;
+            if (e.target.type === 'checkbox') {
+                inputValue = e.target.checked;
+            } else if (e.target.type === 'number') {
+                inputValue = parseFloat(value) || 0;
+            } else {
+                inputValue = value;
+            }
+
             setNewShop({
                 ...newShop,
                 [name]: inputValue
