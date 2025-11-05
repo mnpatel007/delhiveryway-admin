@@ -140,94 +140,197 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
         return -1;
     };
 
-    // Ultra-precise unit detection based on product name
+    // ULTRA-PRECISE unit detection based on product name
     const detectUnitFromName = (productName) => {
         if (!productName) return { unit: 'piece', confidence: 0 };
 
         const name = productName.toLowerCase().trim();
 
-        // EXACT MATCHES (100% confidence)
+        // EXACT MATCHES (100% confidence) - Comprehensive Indian grocery list
         const exactMatches = {
-            // KG items
+            // KG items - Grains, Cereals, Bulk Vegetables
             kg: [
-                'rice', 'basmati rice', 'brown rice', 'wheat', 'wheat flour', 'atta', 'maida', 'besan',
-                'sugar', 'jaggery', 'gur', 'onion', 'onions', 'potato', 'potatoes', 'tomato', 'tomatoes',
-                'dal', 'toor dal', 'moong dal', 'chana dal', 'urad dal', 'masoor dal', 'arhar dal',
-                'rajma', 'kidney beans', 'chickpeas', 'chana', 'lentils', 'ginger', 'garlic',
-                'carrot', 'carrots', 'cabbage', 'cauliflower', 'brinjal', 'eggplant', 'pumpkin'
+                // Rice varieties
+                'rice', 'basmati rice', 'brown rice', 'jasmine rice', 'sona masoori', 'ponni rice',
+                'parboiled rice', 'white rice', 'red rice', 'black rice', 'sticky rice',
+
+                // Wheat & Flours
+                'wheat', 'wheat flour', 'atta', 'whole wheat flour', 'maida', 'all purpose flour',
+                'besan', 'gram flour', 'chickpea flour', 'corn flour', 'rice flour', 'ragi flour',
+                'bajra flour', 'jowar flour', 'semolina', 'suji', 'rava',
+
+                // Dals & Pulses
+                'dal', 'toor dal', 'arhar dal', 'moong dal', 'mung dal', 'chana dal', 'urad dal',
+                'masoor dal', 'red lentil', 'black gram', 'green gram', 'pigeon pea',
+                'rajma', 'kidney beans', 'black beans', 'chickpeas', 'chana', 'kabuli chana',
+                'white chickpeas', 'black chickpeas', 'lentils', 'split peas',
+
+                // Sugar & Sweeteners
+                'sugar', 'white sugar', 'brown sugar', 'jaggery', 'gur', 'rock sugar', 'mishri',
+                'palm sugar', 'coconut sugar', 'raw sugar',
+
+                // Bulk Vegetables
+                'onion', 'onions', 'red onion', 'white onion', 'potato', 'potatoes', 'sweet potato',
+                'tomato', 'tomatoes', 'ginger', 'garlic', 'carrot', 'carrots', 'cabbage',
+                'cauliflower', 'brinjal', 'eggplant', 'okra', 'bhindi', 'pumpkin', 'bottle gourd',
+                'ridge gourd', 'bitter gourd', 'snake gourd', 'drumstick', 'radish', 'turnip',
+                'beetroot', 'yam', 'taro root', 'elephant yam',
+
+                // Dry Fruits & Nuts (bulk)
+                'almonds', 'cashews', 'walnuts', 'pistachios', 'dates', 'raisins', 'figs',
+                'dried coconut', 'copra', 'groundnuts', 'peanuts'
             ],
-            // GRAM items
+
+            // GRAM items - Spices, Small quantities
             gram: [
-                'cumin seeds', 'jeera', 'coriander seeds', 'dhania', 'turmeric', 'haldi',
-                'red chili powder', 'garam masala', 'chaat masala', 'black pepper', 'cinnamon',
-                'cardamom', 'cloves', 'bay leaves', 'mustard seeds', 'fenugreek seeds',
-                'tea', 'tea leaves', 'coffee', 'coffee powder', 'saffron', 'kesar'
+                // Whole Spices
+                'cumin seeds', 'jeera', 'coriander seeds', 'dhania', 'fennel seeds', 'saunf',
+                'fenugreek seeds', 'methi seeds', 'mustard seeds', 'sarson', 'carom seeds', 'ajwain',
+                'nigella seeds', 'kalonji', 'sesame seeds', 'til', 'poppy seeds', 'khus khus',
+
+                // Powdered Spices
+                'turmeric', 'haldi', 'turmeric powder', 'haldi powder', 'red chili powder',
+                'lal mirch powder', 'coriander powder', 'dhania powder', 'cumin powder', 'jeera powder',
+                'black pepper', 'kali mirch', 'white pepper', 'garam masala', 'chaat masala',
+                'tandoori masala', 'biryani masala', 'sambhar powder', 'rasam powder', 'curry powder',
+                'meat masala', 'chicken masala', 'fish masala', 'pav bhaji masala', 'chole masala',
+
+                // Aromatic Spices
+                'cardamom', 'elaichi', 'green cardamom', 'black cardamom', 'badi elaichi',
+                'cinnamon', 'dalchini', 'cloves', 'laung', 'bay leaves', 'tej patta',
+                'star anise', 'chakra phool', 'nutmeg', 'jaiphal', 'mace', 'javitri',
+                'asafoetida', 'hing', 'saffron', 'kesar',
+
+                // Tea & Coffee
+                'tea', 'tea leaves', 'chai patti', 'green tea', 'black tea', 'earl grey',
+                'coffee', 'coffee beans', 'coffee powder', 'instant coffee',
+
+                // Salt varieties
+                'salt', 'table salt', 'rock salt', 'sendha namak', 'black salt', 'kala namak',
+                'pink salt', 'sea salt'
             ],
-            // LITER items
+
+            // LITER items - Liquids, Oils, Dairy
             liter: [
-                'milk', 'oil', 'cooking oil', 'sunflower oil', 'mustard oil', 'coconut oil',
-                'olive oil', 'ghee', 'water', 'juice', 'fruit juice', 'buttermilk'
+                // Dairy
+                'milk', 'full cream milk', 'toned milk', 'double toned milk', 'skimmed milk',
+                'buffalo milk', 'cow milk', 'goat milk', 'buttermilk', 'chaas', 'lassi',
+
+                // Cooking Oils
+                'oil', 'cooking oil', 'sunflower oil', 'mustard oil', 'sarson oil', 'coconut oil',
+                'olive oil', 'extra virgin olive oil', 'sesame oil', 'til oil', 'groundnut oil',
+                'peanut oil', 'rice bran oil', 'safflower oil', 'corn oil', 'soybean oil',
+                'refined oil', 'vegetable oil', 'palm oil',
+
+                // Beverages
+                'water', 'mineral water', 'packaged water', 'fruit juice', 'orange juice',
+                'apple juice', 'mango juice', 'pomegranate juice', 'grape juice', 'mixed fruit juice',
+                'vegetable juice', 'carrot juice', 'beetroot juice'
             ],
-            // ML items
+
+            // ML items - Sauces, Syrups, Small bottles
             ml: [
-                'sauce', 'tomato sauce', 'soy sauce', 'chili sauce', 'honey', 'syrup',
-                'vinegar', 'vanilla extract', 'rose water', 'ketchup'
+                // Sauces & Condiments
+                'sauce', 'tomato sauce', 'ketchup', 'chili sauce', 'hot sauce', 'soy sauce',
+                'worcestershire sauce', 'tabasco', 'sriracha', 'mayonnaise', 'mayo', 'mustard sauce',
+                'barbecue sauce', 'bbq sauce', 'pasta sauce', 'pizza sauce', 'salsa',
+
+                // Syrups & Honey
+                'honey', 'maple syrup', 'golden syrup', 'corn syrup', 'agave syrup',
+                'rose syrup', 'khus syrup', 'orange syrup', 'lemon syrup', 'chocolate syrup',
+                'strawberry syrup', 'vanilla syrup',
+
+                // Extracts & Essences
+                'extract', 'vanilla extract', 'almond extract', 'rose water', 'gulab jal',
+                'kewra water', 'orange blossom water', 'lemon extract', 'mint extract',
+
+                // Vinegar
+                'vinegar', 'white vinegar', 'apple cider vinegar', 'balsamic vinegar',
+                'coconut vinegar', 'rice vinegar'
             ],
-            // PACK items
-            pack: [
-                'chips', 'biscuits', 'cookies', 'noodles', 'pasta', 'cornflakes',
-                'oats', 'popcorn', 'namkeen', 'mixture'
-            ],
-            // PIECE items
+
+            // PIECE items - Individual fruits, vegetables, bakery
             piece: [
-                'apple', 'banana', 'orange', 'mango', 'coconut', 'bread', 'egg',
-                'cucumber', 'bell pepper', 'corn', 'lemon', 'lime'
+                // Fruits
+                'apple', 'banana', 'orange', 'mango', 'grapes', 'strawberry', 'kiwi', 'pear',
+                'peach', 'plum', 'apricot', 'cherry', 'lemon', 'lime', 'pomegranate', 'anar',
+                'guava', 'amrud', 'custard apple', 'sitafal', 'dragon fruit', 'passion fruit',
+                'avocado', 'coconut', 'nariyal', 'watermelon', 'muskmelon', 'papaya', 'pineapple',
+
+                // Individual Vegetables
+                'cucumber', 'kheera', 'bell pepper', 'capsicum', 'green chili', 'hari mirch',
+                'red chili', 'lal mirch', 'corn', 'bhutta', 'sweet corn', 'baby corn',
+
+                // Bakery Items
+                'bread', 'white bread', 'brown bread', 'whole wheat bread', 'multigrain bread',
+                'pav', 'bun', 'burger bun', 'hot dog bun', 'dinner roll', 'croissant',
+                'bagel', 'muffin', 'donut', 'cake', 'pastry',
+
+                // Eggs & Dairy blocks
+                'egg', 'chicken egg', 'duck egg', 'quail egg', 'paneer', 'cheese', 'butter'
+            ],
+
+            // PACK items - Packaged foods, snacks
+            pack: [
+                // Snacks
+                'chips', 'potato chips', 'banana chips', 'corn chips', 'tortilla chips', 'nachos',
+                'popcorn', 'puffed rice', 'murmura', 'namkeen', 'mixture', 'chivda', 'sev',
+
+                // Biscuits & Cookies
+                'biscuits', 'cookies', 'crackers', 'digestive biscuits', 'marie biscuits',
+                'glucose biscuits', 'cream biscuits', 'chocolate biscuits', 'wafers', 'rusks',
+
+                // Noodles & Pasta
+                'noodles', 'instant noodles', 'maggi', 'pasta', 'macaroni', 'spaghetti',
+                'vermicelli', 'sevaiyan',
+
+                // Cereals
+                'cornflakes', 'muesli', 'granola', 'oats', 'breakfast cereal', 'puffed wheat'
             ]
         };
 
-        // Check exact matches
+        // Check exact matches first
         for (const [unit, items] of Object.entries(exactMatches)) {
             if (items.includes(name)) {
                 return { unit, confidence: 100 };
             }
         }
 
-        // CONTAINS MATCHES (90% confidence)
-        const containsMatches = {
-            kg: ['rice', 'flour', 'dal', 'sugar', 'onion', 'potato', 'tomato', 'wheat'],
-            gram: ['powder', 'masala', 'seeds', 'tea', 'coffee', 'spice'],
-            liter: ['milk', 'oil', 'juice', 'water'],
-            ml: ['sauce', 'honey', 'syrup', 'vinegar'],
-            pack: ['chips', 'biscuit', 'noodle', 'pasta', 'cereal'],
-            piece: ['apple', 'banana', 'orange', 'bread', 'egg']
+        // ENHANCED CONTAINS MATCHES (95% confidence)
+        const enhancedContains = {
+            kg: ['rice', 'flour', 'atta', 'dal', 'sugar', 'jaggery', 'onion', 'potato', 'tomato', 'wheat', 'grain', 'pulse'],
+            gram: ['powder', 'masala', 'seeds', 'tea', 'coffee', 'spice', 'salt', 'saffron', 'hing'],
+            liter: ['milk', 'oil', 'juice', 'water', 'liquid', 'ghee'],
+            ml: ['sauce', 'honey', 'syrup', 'vinegar', 'extract', 'ketchup'],
+            pack: ['chips', 'biscuit', 'cookie', 'noodle', 'pasta', 'cereal', 'namkeen'],
+            piece: ['apple', 'banana', 'orange', 'mango', 'bread', 'egg', 'coconut']
         };
 
-        for (const [unit, keywords] of Object.entries(containsMatches)) {
+        for (const [unit, keywords] of Object.entries(enhancedContains)) {
             for (const keyword of keywords) {
                 if (name.includes(keyword)) {
-                    return { unit, confidence: 90 };
+                    return { unit, confidence: 95 };
                 }
             }
         }
 
-        // PATTERN MATCHES (80% confidence)
-        if (/\b(rice|wheat|flour|dal|sugar|onion|potato|tomato|grain|pulse)\b/i.test(name)) {
-            return { unit: 'kg', confidence: 80 };
-        }
-        if (/\b(powder|masala|spice|seeds?|tea|coffee)\b/i.test(name)) {
-            return { unit: 'gram', confidence: 80 };
-        }
-        if (/\b(milk|oil|juice|water|liquid)\b/i.test(name)) {
-            return { unit: 'liter', confidence: 80 };
-        }
-        if (/\b(sauce|honey|syrup|extract)\b/i.test(name)) {
-            return { unit: 'ml', confidence: 80 };
-        }
-        if (/\b(chips|biscuit|cookie|noodle|pasta|pack)\b/i.test(name)) {
-            return { unit: 'pack', confidence: 80 };
+        // ADVANCED PATTERN MATCHES (90% confidence)
+        const patterns = {
+            kg: /\b(rice|wheat|flour|atta|maida|besan|dal|sugar|jaggery|onion|potato|tomato|grain|pulse|lentil|bean|chickpea)\b/i,
+            gram: /\b(powder|masala|spice|seeds?|tea|coffee|salt|turmeric|chili|cumin|coriander|cardamom|cinnamon|clove)\b/i,
+            liter: /\b(milk|oil|juice|water|liquid|ghee|buttermilk|lassi)\b/i,
+            ml: /\b(sauce|honey|syrup|vinegar|extract|ketchup|mayo|dressing)\b/i,
+            pack: /\b(chips|biscuit|cookie|noodle|pasta|cereal|snack|namkeen|mixture)\b/i,
+            piece: /\b(apple|banana|orange|mango|fruit|bread|egg|coconut|lemon|lime)\b/i
+        };
+
+        for (const [unit, pattern] of Object.entries(patterns)) {
+            if (pattern.test(name)) {
+                return { unit, confidence: 90 };
+            }
         }
 
-        // DEFAULT (60% confidence)
+        // DEFAULT fallback
         return { unit: 'piece', confidence: 60 };
     };
 
@@ -414,6 +517,79 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
                     <div className="stat invalid">❌ Invalid: {invalidProducts.length}</div>
                 </div>
 
+                <div className="bulk-unit-actions">
+                    <h5>🔧 Quick Unit Fixes (Select products and click to apply):</h5>
+                    <div className="bulk-unit-buttons">
+                        <button
+                            className="bulk-unit-btn"
+                            onClick={() => {
+                                const updatedData = parsedData.map(p =>
+                                    p.name.toLowerCase().includes('rice') ||
+                                        p.name.toLowerCase().includes('flour') ||
+                                        p.name.toLowerCase().includes('dal') ||
+                                        p.name.toLowerCase().includes('sugar') ||
+                                        p.name.toLowerCase().includes('onion') ||
+                                        p.name.toLowerCase().includes('potato')
+                                        ? { ...p, unit: 'kg', unitConfidence: 100 }
+                                        : p
+                                );
+                                setParsedData(updatedData);
+                            }}
+                        >
+                            Fix Bulk Items → KG
+                        </button>
+                        <button
+                            className="bulk-unit-btn"
+                            onClick={() => {
+                                const updatedData = parsedData.map(p =>
+                                    p.name.toLowerCase().includes('powder') ||
+                                        p.name.toLowerCase().includes('masala') ||
+                                        p.name.toLowerCase().includes('spice') ||
+                                        p.name.toLowerCase().includes('tea') ||
+                                        p.name.toLowerCase().includes('coffee')
+                                        ? { ...p, unit: 'gram', unitConfidence: 100 }
+                                        : p
+                                );
+                                setParsedData(updatedData);
+                            }}
+                        >
+                            Fix Spices → GRAM
+                        </button>
+                        <button
+                            className="bulk-unit-btn"
+                            onClick={() => {
+                                const updatedData = parsedData.map(p =>
+                                    p.name.toLowerCase().includes('milk') ||
+                                        p.name.toLowerCase().includes('oil') ||
+                                        p.name.toLowerCase().includes('juice')
+                                        ? { ...p, unit: 'liter', unitConfidence: 100 }
+                                        : p
+                                );
+                                setParsedData(updatedData);
+                            }}
+                        >
+                            Fix Liquids → LITER
+                        </button>
+                        <button
+                            className="bulk-unit-btn"
+                            onClick={() => {
+                                const updatedData = parsedData.map(p =>
+                                    p.name.toLowerCase().includes('apple') ||
+                                        p.name.toLowerCase().includes('banana') ||
+                                        p.name.toLowerCase().includes('orange') ||
+                                        p.name.toLowerCase().includes('bread') ||
+                                        p.name.toLowerCase().includes('egg')
+                                        ? { ...p, unit: 'piece', unitConfidence: 100 }
+                                        : p
+                                );
+                                setParsedData(updatedData);
+                            }}
+                        >
+                            Fix Individual → PIECE
+                        </button>
+                    </div>
+                </div>
+
                 <div className="preview-table-container">
                     <table className="preview-table">
                         <thead>
@@ -454,9 +630,30 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
                                     <td>₹{product.price}</td>
                                     <td>{product.category}</td>
                                     <td>
-                                        <span className={`unit-badge confidence-${Math.floor(product.unitConfidence / 20)}`}>
-                                            {product.unit}
-                                        </span>
+                                        <select
+                                            value={product.unit}
+                                            onChange={(e) => {
+                                                const updatedData = parsedData.map(p =>
+                                                    p.id === product.id
+                                                        ? { ...p, unit: e.target.value, unitConfidence: 100 }
+                                                        : p
+                                                );
+                                                setParsedData(updatedData);
+                                            }}
+                                            className={`unit-select confidence-${Math.floor(product.unitConfidence / 20)}`}
+                                        >
+                                            <option value="piece">Piece</option>
+                                            <option value="kg">Kilogram (kg)</option>
+                                            <option value="gram">Gram</option>
+                                            <option value="liter">Liter</option>
+                                            <option value="ml">Milliliter (ml)</option>
+                                            <option value="dozen">Dozen</option>
+                                            <option value="pack">Pack</option>
+                                            <option value="box">Box</option>
+                                            <option value="bottle">Bottle</option>
+                                            <option value="can">Can</option>
+                                            <option value="strip">Strip</option>
+                                        </select>
                                     </td>
                                     <td>{product.unitConfidence}%</td>
                                     <td className="errors">

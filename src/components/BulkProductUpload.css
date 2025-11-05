@@ -789,3 +789,136 @@ tock Toggle Switch */
         padding: 8px 4px;
     }
 }
+
+/* Editab
+le Unit Selector */
+.unit-select {
+    padding: 6px 8px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.unit-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Confidence-based styling for unit selectors */
+.unit-select.confidence-5 {
+    /* 100% confidence */
+    border-color: #28a745;
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+}
+
+.unit-select.confidence-4 {
+    /* 80-99% confidence */
+    border-color: #17a2b8;
+    background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+    color: #0c5460;
+}
+
+.unit-select.confidence-3 {
+    /* 60-79% confidence */
+    border-color: #ffc107;
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    color: #856404;
+}
+
+.unit-select.confidence-2 {
+    /* 40-59% confidence */
+    border-color: #fd7e14;
+    background: linear-gradient(135deg, #ffe8d1, #fdd5a8);
+    color: #8a4a00;
+}
+
+.unit-select.confidence-1,
+.unit-select.confidence-0 {
+    /* <40% confidence */
+    border-color: #dc3545;
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+}
+
+.unit-select:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Unit selector options styling */
+.unit-select option {
+    padding: 8px;
+    background: white;
+    color: #333;
+}
+
+/* Enhanced table column for units */
+.preview-table th:nth-child(5),
+.preview-table td:nth-child(5) {
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Mobile responsive unit selectors */
+@media (max-width: 768px) {
+    .unit-select {
+        font-size: 11px;
+        padding: 4px 6px;
+        min-width: 70px;
+    }
+
+    .preview-table th:nth-child(5),
+    .preview-table td:nth-child(5) {
+        min-width: 80px;
+    }
+}
+
+/* Bulk edit helper */
+.bulk-unit-actions {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.bulk-unit-actions h5 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 14px;
+}
+
+.bulk-unit-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.bulk-unit-btn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bulk-unit-btn:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.bulk-unit-btn.active {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
