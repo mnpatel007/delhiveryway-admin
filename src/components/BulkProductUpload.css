@@ -669,3 +669,123 @@ hop Selection First Step */
         font-size: 16px;
     }
 }
+
+/* S
+tock Toggle Switch */
+.stock-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.stock-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 50px;
+    height: 24px;
+    background: #ccc;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stock-toggle input:checked+.toggle-slider {
+    background: #28a745;
+}
+
+.stock-toggle input:checked+.toggle-slider::before {
+    transform: translateX(26px);
+}
+
+.toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 70px;
+}
+
+.stock-toggle input:checked+.toggle-slider+.toggle-label {
+    color: #28a745;
+}
+
+.stock-toggle input:not(:checked)+.toggle-slider+.toggle-label {
+    color: #dc3545;
+}
+
+/* Valid indicator */
+.valid-indicator {
+    color: #28a745;
+    font-size: 11px;
+    font-weight: 600;
+    background: #d4edda;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #c3e6cb;
+}
+
+/* Enhanced table styling for better toggle visibility */
+.preview-table td:first-child {
+    padding: 12px 8px;
+    min-width: 140px;
+}
+
+/* Hover effects for better UX */
+.stock-toggle:hover .toggle-slider {
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+.stock-toggle input:not(:checked):hover+.toggle-slider {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+
+/* Mobile responsive toggles */
+@media (max-width: 768px) {
+    .stock-toggle {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+
+    .toggle-slider {
+        width: 40px;
+        height: 20px;
+    }
+
+    .toggle-slider::before {
+        width: 16px;
+        height: 16px;
+        top: 2px;
+        left: 2px;
+    }
+
+    .stock-toggle input:checked+.toggle-slider::before {
+        transform: translateX(20px);
+    }
+
+    .toggle-label {
+        font-size: 11px;
+        min-width: auto;
+    }
+
+    .preview-table td:first-child {
+        min-width: 100px;
+        padding: 8px 4px;
+    }
+}

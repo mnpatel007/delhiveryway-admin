@@ -418,7 +418,7 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
                     <table className="preview-table">
                         <thead>
                             <tr>
-                                <th>Status</th>
+                                <th>In Stock</th>
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Category</th>
@@ -431,7 +431,24 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
                             {parsedData.slice(0, 100).map(product => (
                                 <tr key={product.id} className={product.isValid && product.errors.length === 0 ? 'valid' : 'invalid'}>
                                     <td>
-                                        {product.isValid && product.errors.length === 0 ? '✅' : '❌'}
+                                        <label className="stock-toggle">
+                                            <input
+                                                type="checkbox"
+                                                checked={product.inStock}
+                                                onChange={(e) => {
+                                                    const updatedData = parsedData.map(p =>
+                                                        p.id === product.id
+                                                            ? { ...p, inStock: e.target.checked }
+                                                            : p
+                                                    );
+                                                    setParsedData(updatedData);
+                                                }}
+                                            />
+                                            <span className="toggle-slider"></span>
+                                            <span className="toggle-label">
+                                                {product.inStock ? 'In Stock' : 'Out of Stock'}
+                                            </span>
+                                        </label>
                                     </td>
                                     <td>{product.name}</td>
                                     <td>₹{product.price}</td>
@@ -446,6 +463,9 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
                                         {product.errors.map((error, i) => (
                                             <div key={i} className="error">{error}</div>
                                         ))}
+                                        {product.isValid && product.errors.length === 0 && (
+                                            <span className="valid-indicator">✅ Ready</span>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
