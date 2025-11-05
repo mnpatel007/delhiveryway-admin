@@ -37,6 +37,8 @@ const ShopsPage = () => {
             sunday: { open: '10:00', close: '20:00', closed: false }
         },
         deliveryFee: 30,
+        deliveryFeeMode: 'fixed',
+        feePerKm: 10,
         hasTax: false,
         taxRate: 5,
         inquiryAvailableTime: 15,
@@ -177,6 +179,8 @@ const ShopsPage = () => {
                 sunday: { open: '10:00', close: '20:00', closed: false }
             },
             deliveryFee: shop.deliveryFee || 30,
+            deliveryFeeMode: shop.deliveryFeeMode || 'fixed',
+            feePerKm: shop.feePerKm || 10,
             hasTax: shop.hasTax || false,
             taxRate: shop.taxRate || 5,
             inquiryAvailableTime: shop.inquiryAvailableTime || 15,
@@ -566,6 +570,42 @@ const ShopsPage = () => {
                             </small>
                         </div>
 
+                        <div className="form-group">
+                            <label htmlFor="deliveryFeeMode">Delivery Fee Mode</label>
+                            <select
+                                id="deliveryFeeMode"
+                                name="deliveryFeeMode"
+                                value={newShop.deliveryFeeMode || 'fixed'}
+                                onChange={handleInputChange}
+                            >
+                                <option value="fixed">Fixed Fee (same for everyone)</option>
+                                <option value="distance">Distance-based (per 500m from shop)</option>
+                            </select>
+                            <small className="form-help">
+                                Fixed: Everyone pays the same delivery fee. Distance: Fee calculated based on distance from shop.
+                            </small>
+                        </div>
+
+                        {(newShop.deliveryFeeMode === 'distance') && (
+                            <div className="form-group">
+                                <label htmlFor="feePerKm">Fee per 500m (Distance Mode)</label>
+                                <input
+                                    type="number"
+                                    id="feePerKm"
+                                    name="feePerKm"
+                                    value={newShop.feePerKm || 10}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    placeholder="Enter fee per 500m"
+                                />
+                                <small className="form-help">
+                                    Amount charged for every 500m distance from shop to customer
+                                </small>
+                            </div>
+                        )}
+
                         <button type="submit" className="submit-btn">Create Shop</button>
                     </form>
                 </div>
@@ -801,6 +841,42 @@ const ShopsPage = () => {
                                 </small>
                             </div>
 
+                            <div className="form-group">
+                                <label htmlFor="deliveryFeeModeEdit">Delivery Fee Mode</label>
+                                <select
+                                    id="deliveryFeeModeEdit"
+                                    name="deliveryFeeMode"
+                                    value={newShop.deliveryFeeMode || 'fixed'}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="fixed">Fixed Fee (same for everyone)</option>
+                                    <option value="distance">Distance-based (per 500m from shop)</option>
+                                </select>
+                                <small className="form-help">
+                                    Fixed: Everyone pays the same delivery fee. Distance: Fee calculated based on distance from shop.
+                                </small>
+                            </div>
+
+                            {(newShop.deliveryFeeMode === 'distance') && (
+                                <div className="form-group">
+                                    <label htmlFor="feePerKmEdit">Fee per 500m (Distance Mode)</label>
+                                    <input
+                                        type="number"
+                                        id="feePerKmEdit"
+                                        name="feePerKm"
+                                        value={newShop.feePerKm || 10}
+                                        onChange={handleInputChange}
+                                        min="0"
+                                        max="100"
+                                        step="1"
+                                        placeholder="Enter fee per 500m"
+                                    />
+                                    <small className="form-help">
+                                        Amount charged for every 500m distance from shop to customer
+                                    </small>
+                                </div>
+                            )}
+
                             <button type="submit" className="submit-btn">Update Shop</button>
                             <button
                                 type="button"
@@ -837,7 +913,10 @@ const ShopsPage = () => {
                                     {shop.address.street}, {shop.address.city}, {shop.address.state} {shop.address.zipCode}
                                 </p>
                                 <p className="shop-delivery-fee">
-                                    Delivery Fee: {shop.deliveryFee === 0 ? 'Free' : `₹${shop.deliveryFee}`}
+                                    Delivery: {shop.deliveryFeeMode === 'distance'
+                                        ? `₹${shop.feePerKm || 10}/500m from shop`
+                                        : (shop.deliveryFee === 0 ? 'Free' : `₹${shop.deliveryFee} fixed`)
+                                    }
                                 </p>
                                 <p className="shop-tax-info">
                                     Tax: {shop.hasTax ? `${shop.taxRate}%` : 'No Tax'}
