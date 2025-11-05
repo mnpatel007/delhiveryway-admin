@@ -543,3 +543,129 @@
     animation: spin 1s linear infinite;
     margin-right: 10px;
 }
+
+/* S
+hop Selection First Step */
+.shop-selection-first {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px solid #007bff;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.shop-selection-first h4 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.shop-selection-first p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.shop-select-large {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px 20px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    background: white;
+    color: #333;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.shop-select-large:focus {
+    outline: none;
+    border-color: #0056b3;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.shop-select-large option {
+    padding: 10px;
+    font-weight: 500;
+}
+
+/* Selected Shop Info in Preview */
+.selected-shop-info {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border: 1px solid #28a745;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.selected-shop-info h4 {
+    color: #155724;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.selected-shop-info .shop-name {
+    color: #0d4f1c;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.selected-shop-info p {
+    color: #155724;
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Enhanced Upload Instructions */
+.upload-instructions {
+    margin-top: 25px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* File Upload Area Enhancement */
+.file-upload-area {
+    margin-top: 25px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive Design for Shop Selection */
+@media (max-width: 768px) {
+    .shop-selection-first {
+        padding: 20px 15px;
+    }
+
+    .shop-select-large {
+        max-width: 100%;
+        font-size: 14px;
+        padding: 12px 15px;
+    }
+
+    .selected-shop-info {
+        padding: 15px;
+    }
+
+    .selected-shop-info h4 {
+        font-size: 16px;
+    }
+}

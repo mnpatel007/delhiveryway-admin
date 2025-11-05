@@ -341,33 +341,57 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
     const renderUploadStep = () => (
         <div className="upload-step">
             <h3>📊 Upload Excel File</h3>
-            <div className="upload-instructions">
-                <p><strong>Excel Format Required:</strong></p>
-                <ul>
-                    <li>Column 1: <strong>Name</strong> (Product Name)</li>
-                    <li>Column 2: <strong>Price</strong> (Product Price)</li>
-                    <li>Column 3: <strong>Category</strong> (Optional - will default to "General Items")</li>
-                </ul>
-                <p><em>Units will be automatically detected based on product names!</em></p>
+
+            {/* Shop Selection First */}
+            <div className="shop-selection-first">
+                <h4>🏪 Select Target Shop</h4>
+                <p>Choose which shop you want to add these products to:</p>
+                <select
+                    value={selectedShop}
+                    onChange={(e) => setSelectedShop(e.target.value)}
+                    className="shop-select-large"
+                    required
+                >
+                    <option value="">Choose a shop...</option>
+                    {shops.map(shop => (
+                        <option key={shop._id} value={shop._id}>
+                            {shop.name}
+                        </option>
+                    ))}
+                </select>
             </div>
 
-            <div className="file-upload-area">
-                <input
-                    type="file"
-                    accept=".xlsx,.xls"
-                    onChange={(e) => handleFileSelect(e.target.files[0])}
-                    className="file-input"
-                    id="excel-file"
-                />
-                <label htmlFor="excel-file" className="file-upload-label">
-                    📁 Choose Excel File (.xlsx, .xls)
-                </label>
-                {file && (
-                    <div className="file-info">
-                        ✅ Selected: {file.name} ({(file.size / 1024).toFixed(1)} KB)
+            {selectedShop && (
+                <>
+                    <div className="upload-instructions">
+                        <p><strong>Excel Format Required:</strong></p>
+                        <ul>
+                            <li>Column 1: <strong>Name</strong> (Product Name)</li>
+                            <li>Column 2: <strong>Price</strong> (Product Price)</li>
+                            <li>Column 3: <strong>Category</strong> (Optional - will default to "General Items")</li>
+                        </ul>
+                        <p><em>Units will be automatically detected based on product names!</em></p>
                     </div>
-                )}
-            </div>
+
+                    <div className="file-upload-area">
+                        <input
+                            type="file"
+                            accept=".xlsx,.xls"
+                            onChange={(e) => handleFileSelect(e.target.files[0])}
+                            className="file-input"
+                            id="excel-file"
+                        />
+                        <label htmlFor="excel-file" className="file-upload-label">
+                            📁 Choose Excel File (.xlsx, .xls)
+                        </label>
+                        {file && (
+                            <div className="file-info">
+                                ✅ Selected: {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
         </div>
     );
 
@@ -380,21 +404,9 @@ const BulkProductUpload = ({ shops, onClose, onSuccess }) => {
             <div className="preview-step">
                 <h3>📋 Preview Products ({parsedData.length} total)</h3>
 
-                <div className="shop-selection">
-                    <label htmlFor="shop-select">Select Shop:</label>
-                    <select
-                        id="shop-select"
-                        value={selectedShop}
-                        onChange={(e) => setSelectedShop(e.target.value)}
-                        required
-                    >
-                        <option value="">Choose a shop...</option>
-                        {shops.map(shop => (
-                            <option key={shop._id} value={shop._id}>
-                                {shop.name}
-                            </option>
-                        ))}
-                    </select>
+                <div className="selected-shop-info">
+                    <h4>🏪 Target Shop: <span className="shop-name">{shops.find(shop => shop._id === selectedShop)?.name || 'Unknown Shop'}</span></h4>
+                    <p>All products will be added to this shop.</p>
                 </div>
 
                 <div className="preview-stats">
