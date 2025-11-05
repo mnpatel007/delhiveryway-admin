@@ -398,3 +398,102 @@
         min-width: 100%;
     }
 }
+
+/* Crea
+te Product Options Dropdown */
+.create-product-container {
+    position: relative;
+    display: inline-block;
+}
+
+.create-options-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 220px;
+    overflow: hidden;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.option-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.option-btn:last-child {
+    border-bottom: none;
+}
+
+.option-btn:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.option-btn.single-product:hover {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1976d2;
+}
+
+.option-btn.bulk-upload:hover {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #388e3c;
+}
+
+/* Enhanced Create Product Button */
+.create-product-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.create-product-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .create-options-dropdown {
+        right: auto;
+        left: 0;
+        min-width: 200px;
+    }
+
+    .option-btn {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+}
