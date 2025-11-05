@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axios';
 import { useAuth } from '../context/AuthContext';
+import BulkProductUpload from '../components/BulkProductUpload';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -14,6 +15,8 @@ const ProductsPage = () => {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+    const [showBulkUpload, setShowBulkUpload] = useState(false);
+    const [showCreateOptions, setShowCreateOptions] = useState(false);
     const [newProduct, setNewProduct] = useState({
         name: '',
         description: '',
@@ -323,12 +326,37 @@ const ProductsPage = () => {
         <div className="products-page">
             <div className="products-header">
                 <h1>Manage Products</h1>
-                <button
-                    className="create-product-btn"
-                    onClick={() => setShowCreateForm(!showCreateForm)}
-                >
-                    {showCreateForm ? 'Cancel' : 'Create New Product'}
-                </button>
+                <div className="create-product-container">
+                    <button
+                        className="create-product-btn"
+                        onClick={() => setShowCreateOptions(!showCreateOptions)}
+                    >
+                        {showCreateOptions ? 'Cancel' : 'Create New Product'}
+                    </button>
+
+                    {showCreateOptions && (
+                        <div className="create-options-dropdown">
+                            <button
+                                className="option-btn single-product"
+                                onClick={() => {
+                                    setShowCreateForm(true);
+                                    setShowCreateOptions(false);
+                                }}
+                            >
+                                📝 Add Single Product
+                            </button>
+                            <button
+                                className="option-btn bulk-upload"
+                                onClick={() => {
+                                    setShowBulkUpload(true);
+                                    setShowCreateOptions(false);
+                                }}
+                            >
+                                📊 Upload Excel File
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="products-filters">
@@ -347,7 +375,7 @@ const ProductsPage = () => {
                         className="search-input"
                     />
                 </div>
-                
+
                 <div className="filters-row">
                     <select
                         value={filterShop}
@@ -384,7 +412,7 @@ const ProductsPage = () => {
                         <option value="shop">Shop Name</option>
                     </select>
                 </div>
-                
+
                 <div className="results-count">
                     Showing {filteredProducts.length} of {products.length} products
                     {activeSearchTerm && ` (searching "${activeSearchTerm}")`}
@@ -797,6 +825,18 @@ const ProductsPage = () => {
                         Next
                     </button>
                 </div>
+            )}
+
+            {/* Bulk Upload Modal */}
+            {showBulkUpload && (
+                <BulkProductUpload
+                    shops={shops}
+                    onClose={() => setShowBulkUpload(false)}
+                    onSuccess={() => {
+                        setShowBulkUpload(false);
+                        fetchProducts(currentPage); // Refresh products list
+                    }}
+                />
             )}
         </div>
     );
