@@ -39,6 +39,7 @@ const ShopsPage = () => {
         deliveryFee: 30,
         hasTax: false,
         taxRate: 5,
+        inquiryAvailableTime: 15,
         vendorId: 'admin-created'
     });
 
@@ -178,6 +179,7 @@ const ShopsPage = () => {
             deliveryFee: shop.deliveryFee || 30,
             hasTax: shop.hasTax || false,
             taxRate: shop.taxRate || 5,
+            inquiryAvailableTime: shop.inquiryAvailableTime || 15,
             vendorId: 'admin-created'
         });
         setShowEditForm(true);
@@ -193,18 +195,32 @@ const ShopsPage = () => {
                 return;
             }
 
+            console.log('Updating shop with data:', newShop);
+            console.log('Inquiry time being sent:', newShop.inquiryAvailableTime);
+
             const response = await axiosInstance.put(`/admin/shops/${editingShop._id}`, newShop);
             console.log('Shop update response:', response.data);
 
-            // Update the shop in the list
+            // Get the updated shop data from response
+            const updatedShopData = response.data.data || response.data.shop || response.data;
+            console.log('Updated shop data:', updatedShopData);
+
+            // Update the shop in the list with the new data
             setShops(shops.map(shop =>
                 shop._id === editingShop._id
-                    ? { ...shop, ...response.data.data }
+                    ? { ...shop, ...updatedShopData, inquiryAvailableTime: newShop.inquiryAvailableTime }
                     : shop
             ));
 
             setShowEditForm(false);
             setEditingShop(null);
+            setError(''); // Clear any previous errors
+
+            // Show success message
+            alert('Shop updated successfully! Inquiry time changed to ' + newShop.inquiryAvailableTime + ' minutes.');
+
+            // Refetch shops to ensure we have the latest data
+            fetchShops(currentPage);
             setNewShop({
                 name: '',
                 description: '',
@@ -278,8 +294,16 @@ const ShopsPage = () => {
                 }
             });
         } else {
-            // Handle checkbox inputs
-            const inputValue = e.target.type === 'checkbox' ? e.target.checked : value;
+            // Handle different input types
+            let inputValue;
+            if (e.target.type === 'checkbox') {
+                inputValue = e.target.checked;
+            } else if (e.target.type === 'number') {
+                inputValue = parseFloat(value) || 0;
+            } else {
+                inputValue = value;
+            }
+
             setNewShop({
                 ...newShop,
                 [name]: inputValue
@@ -524,6 +548,24 @@ const ShopsPage = () => {
                             ))}
                         </div>
 
+                        <div className="form-group">
+                            <label htmlFor="inquiryAvailableTime">Customer Inquiry Available After (minutes)</label>
+                            <input
+                                type="number"
+                                id="inquiryAvailableTime"
+                                name="inquiryAvailableTime"
+                                value={newShop.inquiryAvailableTime}
+                                onChange={handleInputChange}
+                                min="5"
+                                max="120"
+                                step="1"
+                                placeholder="Enter minutes (5-120)"
+                            />
+                            <small className="form-help">
+                                Customers can inquire about their orders after this many minutes from order placement
+                            </small>
+                        </div>
+
                         <button type="submit" className="submit-btn">Create Shop</button>
                     </form>
                 </div>
@@ -741,6 +783,24 @@ const ShopsPage = () => {
                         </div>
 
                         <div className="form-actions">
+                            <div className="form-group">
+                                <label htmlFor="inquiryAvailableTimeEdit">Customer Inquiry Available After (minutes)</label>
+                                <input
+                                    type="number"
+                                    id="inquiryAvailableTimeEdit"
+                                    name="inquiryAvailableTime"
+                                    value={newShop.inquiryAvailableTime}
+                                    onChange={handleInputChange}
+                                    min="5"
+                                    max="120"
+                                    step="1"
+                                    placeholder="Enter minutes (5-120)"
+                                />
+                                <small className="form-help">
+                                    Customers can inquire about their orders after this many minutes from order placement
+                                </small>
+                            </div>
+
                             <button type="submit" className="submit-btn">Update Shop</button>
                             <button
                                 type="button"
@@ -781,6 +841,9 @@ const ShopsPage = () => {
                                 </p>
                                 <p className="shop-tax-info">
                                     Tax: {shop.hasTax ? `${shop.taxRate}%` : 'No Tax'}
+                                </p>
+                                <p className="shop-inquiry-time">
+                                    📞 Inquiry Available: After {shop.inquiryAvailableTime || 15} minutes
                                 </p>
                             </div>
                             <div className="shop-actions">

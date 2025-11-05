@@ -18,6 +18,7 @@ const Dashboard = () => {
         dailyOrders: 0,
         dailyDeliveredOrders: 0,
         dailyCancelledOrders: 0,
+        dailyInquiries: 0,
         recentOrders: [],
         orderStatusDistribution: [],
         shopperStats: []
@@ -209,6 +210,15 @@ const Dashboard = () => {
                             <div className="stat-info">
                                 <h3>Personal Shoppers</h3>
                                 <p className="stat-number">{stats.shoppersCount}</p>
+                            </div>
+                        </div>
+
+                        <div className="stat-card">
+                            <div className="stat-icon">📞</div>
+                            <div className="stat-info">
+                                <h3>Customer Inquiries</h3>
+                                <p className="stat-number">{stats.dailyInquiries || 0}</p>
+                                <small className="stat-subtitle">Today</small>
                             </div>
                         </div>
                     </div>
