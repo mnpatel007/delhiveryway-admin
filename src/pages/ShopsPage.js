@@ -782,6 +782,9 @@ const ShopsPage = () => {
                                 <p className="shop-tax-info">
                                     Tax: {shop.hasTax ? `${shop.taxRate}%` : 'No Tax'}
                                 </p>
+                                <p className="shop-inquiry-time">
+                                    📞 Inquiry Available: After {shop.inquiryAvailableTime || 15} minutes
+                                </p>
                             </div>
                             <div className="shop-actions">
                                 <button
