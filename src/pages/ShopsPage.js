@@ -39,6 +39,7 @@ const ShopsPage = () => {
         deliveryFee: 30,
         hasTax: false,
         taxRate: 5,
+        inquiryAvailableTime: 15,
         vendorId: 'admin-created'
     });
 
@@ -178,6 +179,7 @@ const ShopsPage = () => {
             deliveryFee: shop.deliveryFee || 30,
             hasTax: shop.hasTax || false,
             taxRate: shop.taxRate || 5,
+            inquiryAvailableTime: shop.inquiryAvailableTime || 15,
             vendorId: 'admin-created'
         });
         setShowEditForm(true);
@@ -524,6 +526,24 @@ const ShopsPage = () => {
                             ))}
                         </div>
 
+                        <div className="form-group">
+                            <label htmlFor="inquiryAvailableTime">Customer Inquiry Available After (minutes)</label>
+                            <input
+                                type="number"
+                                id="inquiryAvailableTime"
+                                name="inquiryAvailableTime"
+                                value={newShop.inquiryAvailableTime}
+                                onChange={handleInputChange}
+                                min="5"
+                                max="120"
+                                step="1"
+                                placeholder="Enter minutes (5-120)"
+                            />
+                            <small className="form-help">
+                                Customers can inquire about their orders after this many minutes from order placement
+                            </small>
+                        </div>
+
                         <button type="submit" className="submit-btn">Create Shop</button>
                     </form>
                 </div>
@@ -741,6 +761,24 @@ const ShopsPage = () => {
                         </div>
 
                         <div className="form-actions">
+                            <div className="form-group">
+                                <label htmlFor="inquiryAvailableTimeEdit">Customer Inquiry Available After (minutes)</label>
+                                <input
+                                    type="number"
+                                    id="inquiryAvailableTimeEdit"
+                                    name="inquiryAvailableTime"
+                                    value={newShop.inquiryAvailableTime}
+                                    onChange={handleInputChange}
+                                    min="5"
+                                    max="120"
+                                    step="1"
+                                    placeholder="Enter minutes (5-120)"
+                                />
+                                <small className="form-help">
+                                    Customers can inquire about their orders after this many minutes from order placement
+                                </small>
+                            </div>
+
                             <button type="submit" className="submit-btn">Update Shop</button>
                             <button
                                 type="button"
