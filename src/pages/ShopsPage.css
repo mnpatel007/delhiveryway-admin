@@ -236,3 +236,139 @@
         align-items: flex-start;
     }
 }
+
+/* 
+Shop Visibility Controls */
+.shop-card {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.shop-card.shop-visible {
+    opacity: 1;
+    border: 2px solid #28a745;
+    background: linear-gradient(135deg, #ffffff, #f8fff8);
+}
+
+.shop-card.shop-hidden {
+    opacity: 0.6;
+    border: 2px solid #dc3545;
+    background: linear-gradient(135deg, #ffffff, #fff8f8);
+    filter: grayscale(30%);
+}
+
+.shop-visibility-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.visibility-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.visibility-badge.visible {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border: 1px solid #28a745;
+}
+
+.visibility-badge.hidden {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    border: 1px solid #dc3545;
+}
+
+.visibility-toggle-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.visibility-toggle-btn.visible {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.visibility-toggle-btn.visible:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.visibility-toggle-btn.hidden {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.visibility-toggle-btn.hidden:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Enhanced shop actions layout */
+.shop-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .shop-visibility-indicator {
+        position: static;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .visibility-toggle-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .shop-actions {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .shop-actions button {
+        width: 100%;
+    }
+}
+
+/* Animation for visibility changes */
+@keyframes visibilityChange {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.shop-card.visibility-changed {
+    animation: visibilityChange 0.5s ease;
+}

@@ -130,6 +130,26 @@ const ShopsPage = () => {
         }
     };
 
+    const handleToggleVisibility = async (shopId, currentVisibility) => {
+        try {
+            const response = await axiosInstance.put(`/admin/shops/${shopId}/visibility`, {
+                isVisible: !currentVisibility
+            });
+
+            if (response.data.success) {
+                // Update the shop in the local state
+                setShops(shops.map(shop =>
+                    shop._id === shopId
+                        ? { ...shop, isVisible: !currentVisibility }
+                        : shop
+                ));
+            }
+        } catch (err) {
+            setError('Failed to update shop visibility');
+            console.error('Error updating shop visibility:', err);
+        }
+    };
+
     const handleEditShop = (shop) => {
         setEditingShop(shop);
         setNewShop({
@@ -742,7 +762,14 @@ const ShopsPage = () => {
                     <p>No shops found.</p>
                 ) : (
                     shops.map(shop => (
-                        <div key={shop._id} className="shop-card">
+                        <div key={shop._id} className={`shop-card ${shop.isVisible === false ? 'shop-hidden' : 'shop-visible'}`}>
+                            <div className="shop-visibility-indicator">
+                                {shop.isVisible !== false ? (
+                                    <span className="visibility-badge visible">👁️ Visible to Customers</span>
+                                ) : (
+                                    <span className="visibility-badge hidden">🙈 Hidden from Customers</span>
+                                )}
+                            </div>
                             <div className="shop-info">
                                 <h3>{shop.name}</h3>
                                 <p>{shop.description}</p>
@@ -757,6 +784,17 @@ const ShopsPage = () => {
                                 </p>
                             </div>
                             <div className="shop-actions">
+                                <button
+                                    className={`visibility-toggle-btn ${shop.isVisible !== false ? 'visible' : 'hidden'}`}
+                                    onClick={() => handleToggleVisibility(shop._id, shop.isVisible !== false)}
+                                    title={shop.isVisible !== false ? 'Hide from customers' : 'Show to customers'}
+                                >
+                                    {shop.isVisible !== false ? (
+                                        <>👁️ Hide Shop</>
+                                    ) : (
+                                        <>👀 Show Shop</>
+                                    )}
+                                </button>
                                 <button
                                     className="edit-btn"
                                     onClick={() => handleEditShop(shop)}
