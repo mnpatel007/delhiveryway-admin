@@ -17,10 +17,33 @@ const TermsPage = () => {
         version: ''
     });
 
+    // Test if terms routes are available
+    const testTermsRoutes = async () => {
+        try {
+            console.log('🧪 Testing terms routes...');
+            const response = await axios.get('/api/terms/test');
+            console.log('✅ Terms routes test successful:', response.data);
+            return true;
+        } catch (error) {
+            console.error('❌ Terms routes test failed:', error);
+            if (error.response?.status === 404) {
+                setError('Terms routes not found on server. Backend needs to be updated.');
+            }
+            return false;
+        }
+    };
+
     // Fetch all terms
     const fetchTerms = async () => {
         try {
             setLoading(true);
+
+            // First test if routes are available
+            const routesAvailable = await testTermsRoutes();
+            if (!routesAvailable) {
+                return;
+            }
+
             const response = await axios.get('/api/terms/all');
 
             if (response.data.success) {
@@ -65,7 +88,11 @@ const TermsPage = () => {
             setLoading(true);
             setError(null);
 
+            console.log('🚀 Creating terms with data:', formData);
+            console.log('🔗 API URL:', '/api/terms/create');
+
             const response = await axios.post('/api/terms/create', formData);
+            console.log('✅ Terms creation response:', response.data);
 
             if (response.data.success) {
                 setFormData({ title: '', content: '', version: '' });
@@ -74,8 +101,28 @@ const TermsPage = () => {
                 alert('Terms and conditions created successfully! All customers will see this immediately.');
             }
         } catch (error) {
-            console.error('Failed to create terms:', error);
-            setError(error.response?.data?.message || 'Failed to create terms and conditions');
+            console.error('❌ Failed to create terms:', error);
+            console.error('❌ Error details:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                url: error.config?.url,
+                method: error.config?.method
+            });
+
+            let errorMessage = 'Failed to create terms and conditions';
+
+            if (error.response?.status === 405) {
+                errorMessage = 'Server route not found. Please ensure the backend is updated with terms routes.';
+            } else if (error.response?.status === 401) {
+                errorMessage = 'Authentication failed. Please login again.';
+            } else if (error.response?.status === 403) {
+                errorMessage = 'Access denied. Admin permissions required.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
