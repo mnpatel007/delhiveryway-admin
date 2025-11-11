@@ -21,7 +21,7 @@ const TermsPage = () => {
     const testTermsRoutes = async () => {
         try {
             console.log('🧪 Testing terms routes...');
-            const response = await axios.get('/api/terms/test');
+            const response = await axios.get('/api/admin/terms/test');
             console.log('✅ Terms routes test successful:', response.data);
             return true;
         } catch (error) {
@@ -44,7 +44,7 @@ const TermsPage = () => {
                 return;
             }
 
-            const response = await axios.get('/api/terms/all');
+            const response = await axios.get('/api/admin/terms/all');
 
             if (response.data.success) {
                 setTerms(response.data.data.terms);
@@ -66,7 +66,7 @@ const TermsPage = () => {
     // Fetch live acceptance count
     const fetchLiveCount = async (termsId) => {
         try {
-            const response = await axios.get(`/api/terms/${termsId}/count`);
+            const response = await axios.get(`/api/admin/terms/${termsId}/count`);
             if (response.data.success) {
                 setLiveCount(response.data.data.acceptanceCount);
             }
@@ -91,7 +91,7 @@ const TermsPage = () => {
             console.log('🚀 Creating terms with data:', formData);
             console.log('🔗 API URL:', '/api/terms/create');
 
-            const response = await axios.post('/api/terms/create', formData);
+            const response = await axios.post('/api/admin/terms/create', formData);
             console.log('✅ Terms creation response:', response.data);
 
             if (response.data.success) {
