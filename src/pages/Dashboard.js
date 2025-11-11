@@ -177,6 +177,7 @@ const Dashboard = () => {
                     <Link to="/shoppers" className="nav-link">Shoppers</Link>
                     <Link to="/shopper-performance" className="nav-link">📊 Shopper Performance</Link>
                     <Link to="/notices" className="nav-link">📢 Notices</Link>
+                    <Link to="/terms" className="nav-link">📋 Terms & Conditions</Link>
                 </nav>
 
                 <div className="dashboard-content">
@@ -352,6 +353,12 @@ const Dashboard = () => {
                                 <div className="action-icon">📊</div>
                                 <h3>Shopper Performance</h3>
                                 <p>Analytics and performance metrics</p>
+                            </Link>
+
+                            <Link to="/terms" className="action-card">
+                                <div className="action-icon">📋</div>
+                                <h3>Terms & Conditions</h3>
+                                <p>Manage terms and track acceptances</p>
                             </Link>
                         </div>
                     </div>
