@@ -35,7 +35,9 @@ const OrdersPage = () => {
             const deliveryFee = order.deliveryFee || 30;
             // Include taxes if available in order value
             const taxes = order.orderValue?.taxes || 0;
-            return itemsTotal + deliveryFee + taxes;
+            // Include packaging charges if available in order value
+            const packagingCharges = order.orderValue?.packagingCharges || 0;
+            return itemsTotal + deliveryFee + taxes + packagingCharges;
         }
 
         // Default fallback
@@ -508,6 +510,10 @@ const OrdersPage = () => {
                                                     <div className="total-row">
                                                         <span>Taxes:</span>
                                                         <span>₹{order.revisedOrderValue?.taxes || 0}</span>
+                                                    </div>
+                                                    <div className="total-row">
+                                                        <span>Packaging Charges:</span>
+                                                        <span>₹{order.revisedOrderValue?.packagingCharges || 0}</span>
                                                     </div>
                                                     <div className="total-row grand-total">
                                                         <span>Total:</span>

@@ -41,6 +41,8 @@ const ShopsPage = () => {
         feePerKm: 10,
         hasTax: false,
         taxRate: 5,
+        hasPackaging: false,
+        packagingRate: 2,
         inquiryAvailableTime: 15,
         vendorId: 'admin-created'
     });
@@ -111,6 +113,8 @@ const ShopsPage = () => {
                 deliveryFee: 30,
                 hasTax: false,
                 taxRate: 5,
+                hasPackaging: false,
+                packagingRate: 2,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -183,6 +187,8 @@ const ShopsPage = () => {
             feePerKm: shop.feePerKm || 10,
             hasTax: shop.hasTax || false,
             taxRate: shop.taxRate || 5,
+            hasPackaging: shop.hasPackaging || false,
+            packagingRate: shop.packagingRate || 2,
             inquiryAvailableTime: shop.inquiryAvailableTime || 15,
             vendorId: 'admin-created'
         });
@@ -251,6 +257,8 @@ const ShopsPage = () => {
                 deliveryFee: 30,
                 hasTax: false,
                 taxRate: 5,
+                hasPackaging: false,
+                packagingRate: 2,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -920,6 +928,9 @@ const ShopsPage = () => {
                                 </p>
                                 <p className="shop-tax-info">
                                     Tax: {shop.hasTax ? `${shop.taxRate}%` : 'No Tax'}
+                                </p>
+                                <p className="shop-packaging-info">
+                                    Packaging: {shop.hasPackaging ? `${shop.packagingRate}%` : 'No Packaging Charges'}
                                 </p>
                                 <p className="shop-inquiry-time">
                                     📞 Inquiry Available: After {shop.inquiryAvailableTime || 15} minutes
