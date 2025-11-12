@@ -520,6 +520,35 @@ const ShopsPage = () => {
                             </div>
                         )}
 
+
+                        <div className="form-group">
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hasPackaging"
+                                    checked={newShop.hasPackaging}
+                                    onChange={handleInputChange}
+                                />
+                                Apply Packaging Charges
+                            </label>
+                        </div>
+
+                        {newShop.hasPackaging && (
+                            <div className="form-group">
+                                <label htmlFor="packagingRate">Packaging Rate (%)</label>
+                                <input
+                                    type="number"
+                                    id="packagingRate"
+                                    name="packagingRate"
+                                    value={newShop.packagingRate}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    placeholder="Enter packaging rate (e.g., 2 for 2%)"
+                                />
+                            </div>
+                        )}
                         {/* Operating Hours Section */}
                         <div className="form-group">
                             <h3>Operating Hours</h3>
@@ -790,6 +819,35 @@ const ShopsPage = () => {
                             </div>
                         )}
 
+
+                        <div className="form-group">
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hasPackaging"
+                                    checked={newShop.hasPackaging}
+                                    onChange={handleInputChange}
+                                />
+                                Apply Packaging Charges
+                            </label>
+                        </div>
+
+                        {newShop.hasPackaging && (
+                            <div className="form-group">
+                                <label htmlFor="packagingRate">Packaging Rate (%)</label>
+                                <input
+                                    type="number"
+                                    id="packagingRate"
+                                    name="packagingRate"
+                                    value={newShop.packagingRate}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    placeholder="Enter packaging rate (e.g., 2 for 2%)"
+                                />
+                            </div>
+                        )}
                         {/* Operating Hours Section */}
                         <div className="form-group">
                             <h3>Operating Hours</h3>
