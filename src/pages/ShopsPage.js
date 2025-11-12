@@ -42,7 +42,7 @@ const ShopsPage = () => {
         hasTax: false,
         taxRate: 5,
         hasPackaging: false,
-        packagingRate: 2,
+        packagingCharges: 10,
         inquiryAvailableTime: 15,
         vendorId: 'admin-created'
     });
@@ -114,7 +114,7 @@ const ShopsPage = () => {
                 hasTax: false,
                 taxRate: 5,
                 hasPackaging: false,
-                packagingRate: 2,
+                packagingCharges: 10,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -188,7 +188,7 @@ const ShopsPage = () => {
             hasTax: shop.hasTax || false,
             taxRate: shop.taxRate || 5,
             hasPackaging: shop.hasPackaging || false,
-            packagingRate: shop.packagingRate || 2,
+            packagingCharges: shop.packagingCharges || shop.packagingRate || 10,
             inquiryAvailableTime: shop.inquiryAvailableTime || 15,
             vendorId: 'admin-created'
         });
@@ -198,6 +198,7 @@ const ShopsPage = () => {
 
     const handleUpdateShop = async (e) => {
         e.preventDefault();
+        console.log('Update shop function called');
         try {
             // Validate coordinates
             if (!newShop.address.coordinates.lat || !newShop.address.coordinates.lng) {
@@ -206,7 +207,12 @@ const ShopsPage = () => {
             }
 
             console.log('Updating shop with data:', newShop);
-            console.log('Inquiry time being sent:', newShop.inquiryAvailableTime);
+            console.log('Packaging data being sent:', {
+                hasPackaging: newShop.hasPackaging,
+                packagingCharges: newShop.packagingCharges,
+                hasPackagingType: typeof newShop.hasPackaging,
+                packagingChargesType: typeof newShop.packagingCharges
+            });
 
             const response = await axiosInstance.put(`/admin/shops/${editingShop._id}`, newShop);
             console.log('Shop update response:', response.data);
@@ -218,7 +224,7 @@ const ShopsPage = () => {
             // Update the shop in the list with the new data
             setShops(shops.map(shop =>
                 shop._id === editingShop._id
-                    ? { ...shop, ...updatedShopData, inquiryAvailableTime: newShop.inquiryAvailableTime }
+                    ? { ...shop, ...updatedShopData }
                     : shop
             ));
 
@@ -227,7 +233,7 @@ const ShopsPage = () => {
             setError(''); // Clear any previous errors
 
             // Show success message
-            alert('Shop updated successfully! Inquiry time changed to ' + newShop.inquiryAvailableTime + ' minutes.');
+            alert(`Shop updated successfully! Packaging: ${updatedShopData.hasPackaging ? 'Enabled' : 'Disabled'}, Charges: ₹${updatedShopData.packagingCharges || 0}`);
 
             // Refetch shops to ensure we have the latest data
             fetchShops(currentPage);
@@ -258,7 +264,7 @@ const ShopsPage = () => {
                 hasTax: false,
                 taxRate: 5,
                 hasPackaging: false,
-                packagingRate: 2,
+                packagingCharges: 10,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -513,7 +519,7 @@ const ShopsPage = () => {
                                     value={newShop.taxRate}
                                     onChange={handleInputChange}
                                     min="0"
-                                    max="100"
+                                    max="1000"
                                     step="0.1"
                                     placeholder="Enter tax rate (e.g., 5 for 5%)"
                                 />
@@ -535,17 +541,17 @@ const ShopsPage = () => {
 
                         {newShop.hasPackaging && (
                             <div className="form-group">
-                                <label htmlFor="packagingRate">Packaging Rate (%)</label>
+                                <label htmlFor="packagingCharges">Packaging Charges (?)</label>
                                 <input
                                     type="number"
-                                    id="packagingRate"
-                                    name="packagingRate"
-                                    value={newShop.packagingRate}
+                                    id="packagingCharges"
+                                    name="packagingCharges"
+                                    value={newShop.packagingCharges}
                                     onChange={handleInputChange}
                                     min="0"
-                                    max="100"
-                                    step="0.1"
-                                    placeholder="Enter packaging rate (e.g., 2 for 2%)"
+                                    max="1000"
+                                    step="1"
+                                    placeholder="Enter packaging charges (e.g., 10 for ?10)"
                                 />
                             </div>
                         )}
@@ -633,7 +639,7 @@ const ShopsPage = () => {
                                     value={newShop.feePerKm || 10}
                                     onChange={handleInputChange}
                                     min="0"
-                                    max="100"
+                                    max="1000"
                                     step="1"
                                     placeholder="Enter fee per 500m"
                                 />
@@ -812,7 +818,7 @@ const ShopsPage = () => {
                                     value={newShop.taxRate}
                                     onChange={handleInputChange}
                                     min="0"
-                                    max="100"
+                                    max="1000"
                                     step="0.1"
                                     placeholder="Enter tax rate (e.g., 5 for 5%)"
                                 />
@@ -834,17 +840,17 @@ const ShopsPage = () => {
 
                         {newShop.hasPackaging && (
                             <div className="form-group">
-                                <label htmlFor="packagingRate">Packaging Rate (%)</label>
+                                <label htmlFor="packagingCharges">Packaging Charges (?)</label>
                                 <input
                                     type="number"
-                                    id="packagingRate"
-                                    name="packagingRate"
-                                    value={newShop.packagingRate}
+                                    id="packagingCharges"
+                                    name="packagingCharges"
+                                    value={newShop.packagingCharges}
                                     onChange={handleInputChange}
                                     min="0"
-                                    max="100"
-                                    step="0.1"
-                                    placeholder="Enter packaging rate (e.g., 2 for 2%)"
+                                    max="1000"
+                                    step="1"
+                                    placeholder="Enter packaging charges (e.g., 10 for ?10)"
                                 />
                             </div>
                         )}
@@ -933,7 +939,7 @@ const ShopsPage = () => {
                                         value={newShop.feePerKm || 10}
                                         onChange={handleInputChange}
                                         min="0"
-                                        max="100"
+                                        max="1000"
                                         step="1"
                                         placeholder="Enter fee per 500m"
                                     />
@@ -988,7 +994,7 @@ const ShopsPage = () => {
                                     Tax: {shop.hasTax ? `${shop.taxRate}%` : 'No Tax'}
                                 </p>
                                 <p className="shop-packaging-info">
-                                    Packaging: {shop.hasPackaging ? `${shop.packagingRate}%` : 'No Packaging Charges'}
+                                    Packaging: {shop.hasPackaging ? `₹${shop.packagingCharges || shop.packagingRate || 10}` : 'No Packaging Charges'}
                                 </p>
                                 <p className="shop-inquiry-time">
                                     📞 Inquiry Available: After {shop.inquiryAvailableTime || 15} minutes
@@ -1046,3 +1052,5 @@ const ShopsPage = () => {
 };
 
 export default ShopsPage;
+
+
