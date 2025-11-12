@@ -198,21 +198,12 @@ const ShopsPage = () => {
 
     const handleUpdateShop = async (e) => {
         e.preventDefault();
-        console.log('Update shop function called');
         try {
             // Validate coordinates
             if (!newShop.address.coordinates.lat || !newShop.address.coordinates.lng) {
                 setError('Please provide valid coordinates (latitude and longitude)');
                 return;
             }
-
-            console.log('Updating shop with data:', newShop);
-            console.log('Packaging data being sent:', {
-                hasPackaging: newShop.hasPackaging,
-                packagingCharges: newShop.packagingCharges,
-                hasPackagingType: typeof newShop.hasPackaging,
-                packagingChargesType: typeof newShop.packagingCharges
-            });
 
             const response = await axiosInstance.put(`/admin/shops/${editingShop._id}`, newShop);
             console.log('Shop update response:', response.data);
@@ -233,7 +224,7 @@ const ShopsPage = () => {
             setError(''); // Clear any previous errors
 
             // Show success message
-            alert(`Shop updated successfully! Packaging: ${updatedShopData.hasPackaging ? 'Enabled' : 'Disabled'}, Charges: ₹${updatedShopData.packagingCharges || 0}`);
+            alert('Shop updated successfully!');
 
             // Refetch shops to ensure we have the latest data
             fetchShops(currentPage);
