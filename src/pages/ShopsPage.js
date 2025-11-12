@@ -630,7 +630,7 @@ const ShopsPage = () => {
                                     value={newShop.feePerKm || 10}
                                     onChange={handleInputChange}
                                     min="0"
-                                    max="1000"
+                                    max="100"
                                     step="1"
                                     placeholder="Enter fee per 500m"
                                 />
@@ -930,7 +930,7 @@ const ShopsPage = () => {
                                         value={newShop.feePerKm || 10}
                                         onChange={handleInputChange}
                                         min="0"
-                                        max="1000"
+                                        max="100"
                                         step="1"
                                         placeholder="Enter fee per 500m"
                                     />
