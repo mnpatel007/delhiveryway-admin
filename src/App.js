@@ -68,11 +68,6 @@ function App() {
                   <NoticesPage />
                 </PrivateRoute>
               } />
-              <Route path="/terms" element={
-                <PrivateRoute>
-                  <TermsPage />
-                </PrivateRoute>
-              } />
 
               <Route path="/" element={<Navigate to="/dashboard" />} />
             </Routes>
