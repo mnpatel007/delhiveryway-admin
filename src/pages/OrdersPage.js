@@ -194,6 +194,16 @@ const OrdersPage = () => {
         <div className="orders-page">
             <div className="orders-header">
                 <h1>Manage Orders</h1>
+                <div className="duplicate-orders-info" style={{
+                    background: '#fff3cd',
+                    border: '1px solid #ffeaa7',
+                    borderRadius: '4px',
+                    padding: '10px',
+                    margin: '10px 0',
+                    fontSize: '14px'
+                }}>
+                    <strong>🚫 Duplicate Order Prevention:</strong> Customers are now prevented from placing similar orders within 5 minutes to reduce shopper confusion.
+                </div>
             </div>
 
             {/* Controls Section */}
