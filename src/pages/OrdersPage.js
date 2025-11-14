@@ -19,6 +19,11 @@ const OrdersPage = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [viewMode, setViewMode] = useState('compact'); // 'compact' or 'detailed'
 
+    // Cancel order dialog states
+    const [showCancelDialog, setShowCancelDialog] = useState(false);
+    const [orderToCancel, setOrderToCancel] = useState(null);
+    const [cancelReason, setCancelReason] = useState('');
+
     const calculateOrderTotal = (order) => {
         // Try different total field names
         if (order.totalAmount) return order.totalAmount;
@@ -156,6 +161,14 @@ const OrdersPage = () => {
     };
 
     const handleUpdateOrderStatus = async (orderId, status) => {
+        // If status is cancelled, show dialog for reason
+        if (status === 'cancelled') {
+            const order = orders.find(o => o._id === orderId);
+            setOrderToCancel(order);
+            setShowCancelDialog(true);
+            return;
+        }
+
         try {
             const response = await axiosInstance.put(`/admin/orders/${orderId}/status`,
                 { status }
@@ -174,6 +187,51 @@ const OrdersPage = () => {
             setError('Failed to update order status');
             console.error('Error updating order status:', err);
         }
+    };
+
+    const handleCancelOrder = async () => {
+        if (!orderToCancel || !cancelReason.trim()) {
+            alert('Please provide a reason for cancellation');
+            return;
+        }
+
+        try {
+            const response = await axiosInstance.put(`/admin/orders/${orderToCancel._id}/cancel`, {
+                reason: cancelReason.trim()
+            });
+
+            if (response.data.success) {
+                // Update the order in the state
+                setOrders(orders.map(order =>
+                    order._id === orderToCancel._id
+                        ? {
+                            ...order,
+                            status: 'cancelled',
+                            cancellationReason: cancelReason.trim(),
+                            cancelledBy: 'admin',
+                            cancelledAt: new Date()
+                        }
+                        : order
+                ));
+                setError(''); // Clear any previous errors
+
+                // Close dialog and reset
+                setShowCancelDialog(false);
+                setOrderToCancel(null);
+                setCancelReason('');
+            } else {
+                setError(response.data.message || 'Failed to cancel order');
+            }
+        } catch (err) {
+            setError('Failed to cancel order');
+            console.error('Error cancelling order:', err);
+        }
+    };
+
+    const handleCancelDialogClose = () => {
+        setShowCancelDialog(false);
+        setOrderToCancel(null);
+        setCancelReason('');
     };
 
     const handlePageChange = (page) => {
@@ -422,6 +480,42 @@ const OrdersPage = () => {
                                             <h5>Order Timeline</h5>
                                             <p><strong>Order Placed:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}</p>
                                             <p><strong>Status:</strong> <span className={`status-${order.status}`}>{order.status || 'pending'}</span></p>
+
+                                            {/* Show cancellation details if order is cancelled */}
+                                            {order.status === 'cancelled' && (
+                                                <div style={{
+                                                    backgroundColor: '#f8d7da',
+                                                    border: '1px solid #f5c6cb',
+                                                    borderRadius: '4px',
+                                                    padding: '0.75rem',
+                                                    marginTop: '0.5rem'
+                                                }}>
+                                                    <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#721c24' }}>
+                                                        ❌ Order Cancelled
+                                                    </p>
+                                                    <p style={{ margin: '0 0 0.25rem 0', fontSize: '14px', color: '#721c24' }}>
+                                                        <strong>Cancelled by:</strong> {order.cancelledBy || 'Unknown'}
+                                                    </p>
+                                                    {order.cancellationReason && (
+                                                        <p style={{ margin: '0 0 0.25rem 0', fontSize: '14px', color: '#721c24' }}>
+                                                            <strong>Reason:</strong> {order.cancellationReason}
+                                                        </p>
+                                                    )}
+                                                    {order.cancelledAt && (
+                                                        <p style={{ margin: '0', fontSize: '14px', color: '#721c24' }}>
+                                                            <strong>Date:</strong> {new Date(order.cancelledAt).toLocaleString('en-IN', {
+                                                                day: '2-digit',
+                                                                month: '2-digit',
+                                                                year: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                hour12: true
+                                                            })}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
+
                                             {order.deliveredAt && (
                                                 <p><strong>Delivered At:</strong> {new Date(order.deliveredAt).toLocaleString()}</p>
                                             )}
@@ -558,6 +652,92 @@ const OrdersPage = () => {
                     >
                         Next
                     </button>
+                </div>
+            )}
+
+            {/* Cancel Order Dialog */}
+            {showCancelDialog && orderToCancel && (
+                <div className="cancel-dialog-overlay" style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div className="cancel-dialog" style={{
+                        backgroundColor: 'white',
+                        padding: '2rem',
+                        borderRadius: '8px',
+                        maxWidth: '500px',
+                        width: '90%',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
+                    }}>
+                        <h3 style={{ color: '#dc3545', marginBottom: '1rem' }}>
+                            ❌ Cancel Order
+                        </h3>
+
+                        <p style={{ marginBottom: '1rem' }}>
+                            Are you sure you want to cancel <strong>Order #{orderToCancel.orderNumber}</strong>?
+                        </p>
+
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                                Reason for cancellation: <span style={{ color: 'red' }}>*</span>
+                            </label>
+                            <textarea
+                                value={cancelReason}
+                                onChange={(e) => setCancelReason(e.target.value)}
+                                placeholder="Please provide a reason for cancelling this order..."
+                                style={{
+                                    width: '100%',
+                                    minHeight: '80px',
+                                    padding: '0.75rem',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    fontSize: '14px',
+                                    resize: 'vertical'
+                                }}
+                                maxLength={500}
+                            />
+                            <small style={{ color: '#666', fontSize: '12px' }}>
+                                {cancelReason.length}/500 characters
+                            </small>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                            <button
+                                onClick={handleCancelDialogClose}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    border: '1px solid #ddd',
+                                    backgroundColor: 'white',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleCancelOrder}
+                                disabled={!cancelReason.trim()}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    border: 'none',
+                                    backgroundColor: cancelReason.trim() ? '#dc3545' : '#ccc',
+                                    color: 'white',
+                                    borderRadius: '4px',
+                                    cursor: cancelReason.trim() ? 'pointer' : 'not-allowed'
+                                }}
+                            >
+                                Confirm Cancellation
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
