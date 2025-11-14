@@ -196,9 +196,15 @@ const OrdersPage = () => {
         }
 
         try {
+            console.log('🔄 Sending cancel request for order:', orderToCancel._id);
+            console.log('🔄 Cancel reason:', cancelReason.trim());
+            console.log('🔄 Request URL:', `/admin/orders/${orderToCancel._id}/cancel`);
+
             const response = await axiosInstance.put(`/admin/orders/${orderToCancel._id}/cancel`, {
                 reason: cancelReason.trim()
             });
+
+            console.log('✅ Response received:', response);
 
             if (response.data.success) {
                 // Update the order in the state
@@ -225,6 +231,17 @@ const OrdersPage = () => {
         } catch (err) {
             setError('Failed to cancel order');
             console.error('Error cancelling order:', err);
+            console.error('Error response:', err.response?.data);
+            console.error('Error status:', err.response?.status);
+
+            // Show more specific error message
+            if (err.response?.data?.message) {
+                alert(`Failed to cancel order: ${err.response.data.message}`);
+            } else if (err.response?.status === 404) {
+                alert('Cancel order endpoint not found. Please check if the backend route is properly configured.');
+            } else {
+                alert(`Failed to cancel order: ${err.message}`);
+            }
         }
     };
 
