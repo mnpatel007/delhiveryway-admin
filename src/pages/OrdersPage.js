@@ -520,18 +520,18 @@ const OrdersPage = () => {
                                                     {(
                                                         order.cancellationReason || order.reason || order.cancelledBy === 'shopper'
                                                     ) && (
-                                                        <p style={{ margin: '0 0 0.25rem 0', fontSize: '14px', color: '#721c24' }}>
-                                                            <strong>Reason:</strong>{' '}
-                                                            {order.cancellationReason || order.reason || (() => {
-                                                                const cancelTimeline = order.timeline?.find(t => t.status === 'cancelled' && t.note?.includes('Order cancelled by shopper:'));
-                                                                if (cancelTimeline) {
-                                                                    return cancelTimeline.note.replace('Order cancelled by shopper: ', '');
+                                                            <p style={{ margin: '0 0 0.25rem 0', fontSize: '14px', color: '#721c24' }}>
+                                                                <strong>Reason:</strong>{' '}
+                                                                {order.cancellationReason || order.reason || (() => {
+                                                                    const cancelTimeline = order.timeline?.find(t => t.status === 'cancelled' && t.note?.includes('Order cancelled by shopper:'));
+                                                                    if (cancelTimeline) {
+                                                                        return cancelTimeline.note.replace('Order cancelled by shopper: ', '');
+                                                                    }
+                                                                    return 'No reason provided';
+                                                                })()
                                                                 }
-                                                                return 'No reason provided';
-                                                            })()
-                                                            }
-                                                        </p>
-                                                    )}
+                                                            </p>
+                                                        )}
                                                     {order.cancelledAt && (
                                                         <p style={{ margin: '0', fontSize: '14px', color: '#721c24' }}>
                                                             <strong>Date:</strong> {new Date(order.cancelledAt).toLocaleString('en-IN', {
