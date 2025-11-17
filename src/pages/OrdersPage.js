@@ -513,9 +513,23 @@ const OrdersPage = () => {
                                                     <p style={{ margin: '0 0 0.25rem 0', fontSize: '14px', color: '#721c24' }}>
                                                         <strong>Cancelled by:</strong> {order.cancelledBy || 'Unknown'}
                                                     </p>
-                                                    {order.cancellationReason && (
+
+                                                    {/* Show cancellation reason. Prefer explicit `cancellationReason`,
+                                                        otherwise for shopper-initiated cancellations try extracting
+                                                        the reason from the timeline note entry. */}
+                                                    {(
+                                                        order.cancellationReason || order.reason || order.cancelledBy === 'shopper'
+                                                    ) && (
                                                         <p style={{ margin: '0 0 0.25rem 0', fontSize: '14px', color: '#721c24' }}>
-                                                            <strong>Reason:</strong> {order.cancellationReason}
+                                                            <strong>Reason:</strong>{' '}
+                                                            {order.cancellationReason || order.reason || (() => {
+                                                                const cancelTimeline = order.timeline?.find(t => t.status === 'cancelled' && t.note?.includes('Order cancelled by shopper:'));
+                                                                if (cancelTimeline) {
+                                                                    return cancelTimeline.note.replace('Order cancelled by shopper: ', '');
+                                                                }
+                                                                return 'No reason provided';
+                                                            })()
+                                                            }
                                                         </p>
                                                     )}
                                                     {order.cancelledAt && (
