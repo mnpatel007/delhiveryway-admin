@@ -26,7 +26,7 @@ const TermsAndConditionsPage = () => {
     const fetchAllTerms = async () => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get('/admin/terms/all');
+            const response = await axiosInstance.get('/terms/all');
             if (response.data.success) {
                 setTerms(response.data.data.terms || []);
                 setError('');
@@ -43,7 +43,7 @@ const TermsAndConditionsPage = () => {
 
     const fetchTermsDetails = async (termsId) => {
         try {
-            const response = await axiosInstance.get(`/admin/terms/${termsId}/details`);
+            const response = await axiosInstance.get(`/terms/${termsId}/details`);
             if (response.data.success) {
                 setSelectedTerms(response.data.data.terms);
             }
@@ -61,7 +61,7 @@ const TermsAndConditionsPage = () => {
 
         try {
             setLoading(true);
-            const response = await axiosInstance.post('/admin/terms/create', formData);
+            const response = await axiosInstance.post('/terms/create', formData);
             if (response.data.success) {
                 setSuccess('Terms & Conditions created and published successfully!');
                 setFormData({ title: '', content: '', version: '1.0' });
