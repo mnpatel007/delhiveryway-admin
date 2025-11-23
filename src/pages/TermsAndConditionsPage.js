@@ -6,7 +6,7 @@ const TermsAndConditionsPage = () => {
     const [activeView, setActiveView] = useState('list'); // 'list', 'create', 'details'
     const [terms, setTerms] = useState([]);
     const [selectedTerms, setSelectedTerms] = useState(null);
-    const [formData, setFormData] = useState({ title: '', content: '', version: '1.0' });
+    const [formData, setFormData] = useState({ title: '', content: '', version: '1.0', isTesting: false });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -64,7 +64,7 @@ const TermsAndConditionsPage = () => {
             const response = await axiosInstance.post('/terms/create', formData);
             if (response.data.success) {
                 setSuccess('Terms & Conditions created and published successfully!');
-                setFormData({ title: '', content: '', version: '1.0' });
+                setFormData({ title: '', content: '', version: '1.0', isTesting: false });
                 setActiveView('list');
                 // Refresh the terms list
                 await fetchAllTerms();
@@ -77,6 +77,27 @@ const TermsAndConditionsPage = () => {
             console.error('Error creating terms:', err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteTerms = async (termsId) => {
+        if (window.confirm('Are you sure you want to delete these terms? This action cannot be undone.')) {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.delete(`/terms/${termsId}`);
+                if (response.data.success) {
+                    setSuccess('Terms deleted successfully');
+                    await fetchAllTerms();
+                    setTimeout(() => setSuccess(''), 3000);
+                } else {
+                    setError(response.data.message || 'Failed to delete terms');
+                }
+            } catch (err) {
+                setError('Failed to delete terms');
+                console.error('Error deleting terms:', err);
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -99,7 +120,7 @@ const TermsAndConditionsPage = () => {
                     className="btn btn-primary"
                     onClick={() => {
                         setActiveView('create');
-                        setFormData({ title: '', content: '', version: '1.0' });
+                        setFormData({ title: '', content: '', version: '1.0', isTesting: false });
                     }}
                 >
                     + Create New Terms
@@ -133,6 +154,11 @@ const TermsAndConditionsPage = () => {
                                         <span className={`badge ${termsItem.isActive ? 'badge-active' : 'badge-inactive'}`}>
                                             {termsItem.isActive ? 'Active' : 'Inactive'}
                                         </span>
+                                        {termsItem.isTesting && (
+                                            <span className="badge badge-warning" style={{ marginLeft: '5px', backgroundColor: '#f39c12' }}>
+                                                Testing
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="terms-card-body">
                                         <p><strong>Version:</strong> {termsItem.version}</p>
@@ -148,6 +174,13 @@ const TermsAndConditionsPage = () => {
                                             onClick={() => handleViewDetails(termsItem)}
                                         >
                                             View Details & Stats
+                                        </button>
+                                        <button
+                                            className="btn btn-danger"
+                                            style={{ marginLeft: '10px', backgroundColor: '#e74c3c', color: 'white' }}
+                                            onClick={() => handleDeleteTerms(termsItem._id)}
+                                        >
+                                            Delete
                                         </button>
                                     </div>
                                 </div>
@@ -180,6 +213,18 @@ const TermsAndConditionsPage = () => {
                                 onChange={(e) => setFormData({ ...formData, version: e.target.value })}
                                 placeholder="e.g., 1.0, 2.0"
                             />
+                        </div>
+
+                        <div className="form-group">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={formData.isTesting}
+                                    onChange={(e) => setFormData({ ...formData, isTesting: e.target.checked })}
+                                    style={{ marginRight: '10px' }}
+                                />
+                                Testing Mode (Visible only to specific testers)
+                            </label>
                         </div>
 
                         <div className="form-group">
