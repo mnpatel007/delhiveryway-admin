@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// Admin page for managing Terms and Conditions
 import axiosInstance from '../utils/axios';
 import './TermsAndConditionsPage.css';
 
