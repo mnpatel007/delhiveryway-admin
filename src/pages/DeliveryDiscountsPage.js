@@ -17,7 +17,6 @@ const DeliveryDiscountsPage = () => {
         discountValue: '',
         startDate: '',
         endDate: '',
-        description: '',
         shopId: ''
     });
 
@@ -59,7 +58,6 @@ const DeliveryDiscountsPage = () => {
             discountValue: '',
             startDate: '',
             endDate: '',
-            description: '',
             shopId: ''
         });
         setIsEditing(false);
@@ -74,7 +72,6 @@ const DeliveryDiscountsPage = () => {
             discountValue: discount.discountValue || '',
             startDate: discount.startDate ? new Date(discount.startDate).toISOString().slice(0, 16) : '',
             endDate: discount.endDate ? new Date(discount.endDate).toISOString().slice(0, 16) : '',
-            description: discount.description || '',
             shopId: discount.shopId?._id || ''
         });
         setIsEditing(true);
@@ -146,7 +143,6 @@ const DeliveryDiscountsPage = () => {
                             <p className="shop-badge">
                                 {d.shopId ? `Shop: ${d.shopId.name}` : 'All Shops'}
                             </p>
-                            <p className="description">{d.description}</p>
                             <div className="discount-details">
                                 <div className="detail-item">
                                     <span className="label">Type:</span>
@@ -238,14 +234,6 @@ const DeliveryDiscountsPage = () => {
                                     value={formData.endDate}
                                     onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                                     required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Description</label>
-                                <textarea
-                                    placeholder="Description"
-                                    value={formData.description}
-                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
                                 />
                             </div>
                             <div className="modal-actions">
