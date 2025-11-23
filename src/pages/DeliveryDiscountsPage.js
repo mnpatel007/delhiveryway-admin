@@ -5,21 +5,25 @@ import './DeliveryDiscountsPage.css';
 
 const DeliveryDiscountsPage = () => {
     const [discounts, setDiscounts] = useState([]);
+    const [shops, setShops] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         discountType: 'fixed',
         discountValue: '',
-        minOrderValue: 0,
         startDate: '',
         endDate: '',
-        description: ''
+        description: '',
+        shopId: ''
     });
 
     useEffect(() => {
         fetchDiscounts();
+        fetchShops();
     }, []);
 
     const fetchDiscounts = async () => {
@@ -37,30 +41,71 @@ const DeliveryDiscountsPage = () => {
         }
     };
 
-    const handleCreate = async (e) => {
+    const fetchShops = async () => {
+        try {
+            const res = await axiosInstance.get('/shops');
+            if (res.data.success) {
+                setShops(res.data.data.shops || []);
+            }
+        } catch (err) {
+            console.error('Failed to fetch shops', err);
+        }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            name: '',
+            discountType: 'fixed',
+            discountValue: '',
+            startDate: '',
+            endDate: '',
+            description: '',
+            shopId: ''
+        });
+        setIsEditing(false);
+        setEditId(null);
+        setShowCreateModal(false);
+    };
+
+    const handleEdit = (discount) => {
+        setFormData({
+            name: discount.name || '',
+            discountType: discount.discountType,
+            discountValue: discount.discountValue || '',
+            startDate: discount.startDate ? new Date(discount.startDate).toISOString().slice(0, 16) : '',
+            endDate: discount.endDate ? new Date(discount.endDate).toISOString().slice(0, 16) : '',
+            description: discount.description || '',
+            shopId: discount.shopId?._id || ''
+        });
+        setIsEditing(true);
+        setEditId(discount._id);
+        setShowCreateModal(true);
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axiosInstance.post('/delivery/discounts', formData);
+            const payload = { ...formData };
+            if (!payload.shopId) payload.shopId = null; // Ensure null if empty string
+
+            let res;
+            if (isEditing) {
+                res = await axiosInstance.put(`/delivery/discounts/${editId}`, payload);
+            } else {
+                res = await axiosInstance.post('/delivery/discounts', payload);
+            }
+
             if (res.data.success) {
-                setShowCreateModal(false);
-                setFormData({
-                    name: '',
-                    discountType: 'fixed',
-                    discountValue: '',
-                    minOrderValue: 0,
-                    startDate: '',
-                    endDate: '',
-                    description: ''
-                });
+                resetForm();
                 fetchDiscounts();
             }
         } catch (err) {
-            alert('Failed to create discount');
+            alert(isEditing ? 'Failed to update discount' : 'Failed to create discount');
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure?')) return;
+        if (!window.confirm('Are you sure you want to delete this discount?')) return;
         try {
             await axiosInstance.delete(`/delivery/discounts/${id}`);
             fetchDiscounts();
@@ -84,7 +129,7 @@ const DeliveryDiscountsPage = () => {
                 <Link to="/dashboard" className="back-link">← Back to Dashboard</Link>
                 <header className="page-header">
                     <h1>Delivery Discounts</h1>
-                    <button className="btn-primary" onClick={() => setShowCreateModal(true)}>+ Add Discount</button>
+                    <button className="btn-primary" onClick={() => { resetForm(); setShowCreateModal(true); }}>+ Add Discount</button>
                 </header>
             </div>
 
@@ -93,11 +138,14 @@ const DeliveryDiscountsPage = () => {
                     {discounts.map(d => (
                         <div key={d._id} className={`discount-card ${d.isActive ? 'active' : 'inactive'}`}>
                             <div className="card-header">
-                                <h3>{d.name}</h3>
+                                <h3>{d.name || 'Untitled Discount'}</h3>
                                 <span className={`status-badge ${d.isActive ? 'active' : 'inactive'}`}>
                                     {d.isActive ? 'Active' : 'Inactive'}
                                 </span>
                             </div>
+                            <p className="shop-badge">
+                                {d.shopId ? `Shop: ${d.shopId.name}` : 'All Shops'}
+                            </p>
                             <p className="description">{d.description}</p>
                             <div className="discount-details">
                                 <div className="detail-item">
@@ -110,10 +158,6 @@ const DeliveryDiscountsPage = () => {
                                         <span className="value">{d.discountValue}</span>
                                     </div>
                                 )}
-                                <div className="detail-item">
-                                    <span className="label">Min Order:</span>
-                                    <span className="value">₹{d.minOrderValue}</span>
-                                </div>
                             </div>
                             <div className="discount-dates">
                                 <p>Start: {new Date(d.startDate).toLocaleDateString()}</p>
@@ -123,6 +167,7 @@ const DeliveryDiscountsPage = () => {
                                 <button className="btn-secondary" onClick={() => handleToggle(d._id)}>
                                     {d.isActive ? 'Deactivate' : 'Activate'}
                                 </button>
+                                <button className="btn-secondary" onClick={() => handleEdit(d)}>Edit</button>
                                 <button className="btn-danger" onClick={() => handleDelete(d._id)}>Delete</button>
                             </div>
                         </div>
@@ -133,16 +178,27 @@ const DeliveryDiscountsPage = () => {
             {showCreateModal && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h2>Create Discount</h2>
-                        <form onSubmit={handleCreate}>
+                        <h2>{isEditing ? 'Edit Discount' : 'Create Discount'}</h2>
+                        <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <label>Name</label>
+                                <label>Name (Optional)</label>
                                 <input
                                     placeholder="e.g. Festival Offer"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    required
                                 />
+                            </div>
+                            <div className="form-group">
+                                <label>Applicable Shop</label>
+                                <select
+                                    value={formData.shopId}
+                                    onChange={e => setFormData({ ...formData, shopId: e.target.value })}
+                                >
+                                    <option value="">All Shops</option>
+                                    {shops.map(shop => (
+                                        <option key={shop._id} value={shop._id}>{shop.name}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="form-group">
                                 <label>Type</label>
@@ -167,15 +223,6 @@ const DeliveryDiscountsPage = () => {
                                     />
                                 </div>
                             )}
-                            <div className="form-group">
-                                <label>Min Order Value</label>
-                                <input
-                                    type="number"
-                                    placeholder="0"
-                                    value={formData.minOrderValue}
-                                    onChange={e => setFormData({ ...formData, minOrderValue: e.target.value })}
-                                />
-                            </div>
                             <div className="form-group">
                                 <label>Start Date</label>
                                 <input
@@ -202,8 +249,8 @@ const DeliveryDiscountsPage = () => {
                                 />
                             </div>
                             <div className="modal-actions">
-                                <button type="button" className="btn-secondary" onClick={() => setShowCreateModal(false)}>Cancel</button>
-                                <button type="submit" className="btn-primary">Create</button>
+                                <button type="button" className="btn-secondary" onClick={resetForm}>Cancel</button>
+                                <button type="submit" className="btn-primary">{isEditing ? 'Update' : 'Create'}</button>
                             </div>
                         </form>
                     </div>
