@@ -12,6 +12,7 @@ import ShoppersPage from './pages/ShoppersPage';
 import ShopperPerformancePage from './pages/ShopperPerformancePage';
 import NoticesPage from './pages/NoticesPage';
 import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
+import DeliveryDiscountsPage from './pages/DeliveryDiscountsPage';
 import './App.css';
 
 // Private route component
@@ -71,6 +72,11 @@ function App() {
               <Route path="/terms" element={
                 <PrivateRoute>
                   <TermsAndConditionsPage />
+                </PrivateRoute>
+              } />
+              <Route path="/delivery-discounts" element={
+                <PrivateRoute>
+                  <DeliveryDiscountsPage />
                 </PrivateRoute>
               } />
 
