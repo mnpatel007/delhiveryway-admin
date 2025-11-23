@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axios';
 import './DeliveryDiscountsPage.css';
 
@@ -79,10 +80,13 @@ const DeliveryDiscountsPage = () => {
 
     return (
         <div className="discounts-page">
-            <header className="page-header">
-                <h1>Delivery Discounts</h1>
-                <button className="btn-primary" onClick={() => setShowCreateModal(true)}>+ Add Discount</button>
-            </header>
+            <div className="page-header-container">
+                <Link to="/dashboard" className="back-link">← Back to Dashboard</Link>
+                <header className="page-header">
+                    <h1>Delivery Discounts</h1>
+                    <button className="btn-primary" onClick={() => setShowCreateModal(true)}>+ Add Discount</button>
+                </header>
+            </div>
 
             {loading ? <div className="loading">Loading...</div> : (
                 <div className="discounts-grid">
