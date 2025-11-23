@@ -156,8 +156,8 @@ const DeliveryDiscountsPage = () => {
                                 )}
                             </div>
                             <div className="discount-dates">
-                                <p>Start: {new Date(d.startDate).toLocaleDateString()}</p>
-                                <p>End: {new Date(d.endDate).toLocaleDateString()}</p>
+                                <p><strong>Start:</strong> {new Date(d.startDate).toLocaleDateString()}</p>
+                                <p><strong>End:</strong> {new Date(d.endDate).toLocaleDateString()}</p>
                             </div>
                             <div className="card-actions">
                                 <button className="btn-secondary" onClick={() => handleToggle(d._id)}>
@@ -222,7 +222,7 @@ const DeliveryDiscountsPage = () => {
                             <div className="form-group">
                                 <label>Start Date</label>
                                 <input
-                                    type="datetime-local"
+                                    type="date"
                                     value={formData.startDate}
                                     onChange={e => setFormData({ ...formData, startDate: e.target.value })}
                                 />
@@ -230,7 +230,7 @@ const DeliveryDiscountsPage = () => {
                             <div className="form-group">
                                 <label>End Date</label>
                                 <input
-                                    type="datetime-local"
+                                    type="date"
                                     value={formData.endDate}
                                     onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                                     required
