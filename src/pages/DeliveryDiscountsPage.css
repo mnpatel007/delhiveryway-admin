@@ -1,0 +1,282 @@
+.discounts-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header-container {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.discounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.discount-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #bdc3c7;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.discount-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.discount-card.active {
+    border-left-color: #2ecc71;
+}
+
+.discount-card.inactive {
+    border-left-color: #e74c3c;
+    opacity: 0.85;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.shop-badge {
+    font-size: 0.85rem;
+    color: #3498db;
+    font-weight: 600;
+    background: #ebf5fb;
+    padding: 4px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.description {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.discount-details {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.value {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.discount-dates {
+    font-size: 0.875rem;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 3px solid #3498db;
+}
+
+.discount-dates p {
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.discount-dates p strong {
+    min-width: 40px;
+    color: #495057;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.card-actions button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-secondary {
+    background: #ecf0f1;
+    color: #2c3e50;
+}
+
+.btn-secondary:hover {
+    background: #bdc3c7;
+}
+
+.btn-danger {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.btn-danger:hover {
+    background: #ffcdd2;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #34495e;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #7f8c8d;
+    font-size: 1.2rem;
+}
