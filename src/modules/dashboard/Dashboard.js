@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../utils/axios';
-import OrderMonitoring from '../components/OrderMonitoring';
-import Logo from '../components/Logo';
+import { useAuth } from '../core/context/AuthContext';
+import axiosInstance from '../core/utils/axios';
+import OrderMonitoring from '../orders/components/OrderMonitoring';
+import Logo from '../core/components/Logo';
 import './Dashboard.css';
 
 const Dashboard = () => {

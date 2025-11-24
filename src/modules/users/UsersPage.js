@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../utils/axios';
+import axiosInstance from '../core/utils/axios';
 import './UsersPage.css';
 
 const UsersPage = () => {
-    const { admin } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');

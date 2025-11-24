@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axiosInstance from '../utils/axios';
+import axiosInstance from '../core/utils/axios';
 import './DeliveryDiscountsPage.css';
 
 const DeliveryDiscountsPage = () => {

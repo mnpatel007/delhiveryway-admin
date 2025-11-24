@@ -1,18 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ErrorBoundary from './components/ErrorBoundary';
-import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard';
-import ShopsPage from './pages/ShopsPage';
-import ProductsPage from './pages/ProductsPage';
-import OrdersPage from './pages/OrdersPage';
-import UsersPage from './pages/UsersPage';
-import ShoppersPage from './pages/ShoppersPage';
-import ShopperPerformancePage from './pages/ShopperPerformancePage';
-import NoticesPage from './pages/NoticesPage';
-import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
-import DeliveryDiscountsPage from './pages/DeliveryDiscountsPage';
+import { AuthProvider } from './modules/core/context/AuthContext';
+import ErrorBoundary from './modules/core/components/ErrorBoundary';
+import LoginPage from './modules/auth/LoginPage';
+import Dashboard from './modules/dashboard/Dashboard';
+import ShopsPage from './modules/shops/ShopsPage';
+import ProductsPage from './modules/products/ProductsPage';
+import OrdersPage from './modules/orders/OrdersPage';
+import UsersPage from './modules/users/UsersPage';
+import ShoppersPage from './modules/shoppers/ShoppersPage';
+import ShopperPerformancePage from './modules/shoppers/ShopperPerformancePage';
+import NoticesPage from './modules/communication/NoticesPage';
+import TermsAndConditionsPage from './modules/settings/TermsAndConditionsPage';
+import DeliveryDiscountsPage from './modules/settings/DeliveryDiscountsPage';
 import './App.css';
 
 // Private route component

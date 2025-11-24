@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import api, { adminAPI } from '../services/api';
+import { useAuth } from '../core/context/AuthContext';
+import api, { adminAPI } from '../core/services/api';
 import './NoticesPage.css';
 
 const NoticesPage = () => {

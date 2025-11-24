@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-// Admin page for managing Terms and Conditions
-import axiosInstance from '../utils/axios';
+import axiosInstance from '../core/utils/axios';
 import './TermsAndConditionsPage.css';
 
 const TermsAndConditionsPage = () => {
-    const [activeView, setActiveView] = useState('list'); // 'list', 'create', 'details'
     const [terms, setTerms] = useState([]);
+    const [activeView, setActiveView] = useState('list');
     const [selectedTerms, setSelectedTerms] = useState(null);
     const [formData, setFormData] = useState({ title: '', content: '', version: '1.0', isTesting: false });
     const [loading, setLoading] = useState(false);
