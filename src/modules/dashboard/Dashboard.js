@@ -194,7 +194,7 @@ const Dashboard = () => {
                         <p>Loading...</p>
                     </div>
                     <div className="header-right">
-                        <button className="logout-btn" onClick={handleLogout}> // MODIFIED: Used handleLogout
+                        <button className="logout-btn" onClick={handleLogout}>
                             Logout
                         </button>
                     </div>
