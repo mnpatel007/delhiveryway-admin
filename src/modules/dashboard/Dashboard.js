@@ -227,7 +227,7 @@ const Dashboard = () => {
                     </div>
                     <div className="header-actions">
                         <span>Welcome, {admin?.name || 'Admin'}</span>
-                        <button onClick={handleLogout} className="logout-btn">Logout</button> // MODIFIED: Used handleLogout
+                        <button onClick={handleLogout} className="logout-btn">Logout</button>
                     </div>
                 </div>
             </header>
