@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../core/context/AuthContext';
+import Logo from '../core/components/Logo'; // ADDED: Import Logo Component
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -34,8 +35,8 @@ const LoginPage = () => {
         <div className="login-page">
             <div className="login-container">
                 <div className="login-header">
-                    <h1>Admin Portal</h1>
-                    <p>Sign in to manage your store</p>
+                    <Logo size="xlarge" variant="dark" showText={true} /> {/* MODIFIED: Added Logo */}
+                    <p>Sign in to the DelhiveryWay Admin Portal</p>
                 </div>
                 <form onSubmit={handleSubmit} className="login-form">
                     {error && <div className="error-message">{error}</div>}
