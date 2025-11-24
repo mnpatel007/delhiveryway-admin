@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# DelhiveryWay Admin Portal 🚀
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**The Command Center for the DelhiveryWay Platform**
 
-## Available Scripts
+The DelhiveryWay Admin Portal is a robust, modular administrative interface designed to empower platform managers with complete control over the delivery ecosystem. From real-time order tracking to comprehensive vendor management, this application serves as the central nervous system for operations.
 
-In the project directory, you can run:
+## ✨ Key Features
 
-### `npm start`
+*   **📊 Interactive Dashboard**
+    *   Real-time overview of platform health.
+    *   Key metrics: Active Orders, Revenue, Active Shoppers, and more.
+    *   Visual data representation for quick decision-making.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+*   **📦 Advanced Order Management**
+    *   Full lifecycle tracking: Pending -> Shopping -> Delivery -> Completed.
+    *   Detailed order views with item-level specifics.
+    *   Ability to intervene and update order statuses manually.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+*   **🛍️ Shop & Vendor Management**
+    *   Onboard new shops and manage existing profiles.
+    *   Configure operating hours, locations, and delivery zones.
+    *   Toggle shop availability instantly.
 
-### `npm test`
+*   **🛒 Product Catalog System**
+    *   Centralized management of the global product database.
+    *   Bulk import/export capabilities using Excel (XLSX).
+    *   Category and sub-category organization.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+*   **🏃 Personal Shopper Coordination**
+    *   Manage shopper profiles and verification status.
+    *   Track shopper performance and ratings.
+    *   Approve or reject shopper applications.
 
-### `npm run build`
+*   **👥 Customer Management**
+    *   View customer profiles and order history.
+    *   Manage account statuses and support inquiries.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+*   **💬 Communication Hub**
+    *   Integrated messaging for platform-wide announcements.
+    *   Direct communication channels with shoppers and vendors.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+*   **⚙️ System Configuration**
+    *   Global settings for delivery fees, taxes, and commissions.
+    *   Role-based access control (RBAC) for secure administration.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🛠️ Technology Stack
 
-### `npm run eject`
+Built with modern web technologies for performance and scalability:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+*   **Frontend Framework**: [React 19](https://react.dev/) - The latest in component-based UI development.
+*   **Routing**: [React Router v7](https://reactrouter.com/) - Robust client-side routing.
+*   **State Management**: React Context API & Hooks.
+*   **HTTP Client**: [Axios](https://axios-http.com/) - For efficient API communication.
+*   **Data Processing**: [SheetJS (xlsx)](https://sheetjs.com/) - For handling spreadsheet data.
+*   **Styling**: Modular CSS - Scoped styling for component isolation.
+*   **Architecture**: Feature-based Modular Architecture.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Follow these steps to set up the admin portal locally.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Prerequisites
 
-## Learn More
+*   **Node.js**: v16.0.0 or higher
+*   **npm** or **yarn**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1.  **Clone the repository** (if you haven't already):
+    ```bash
+    git clone https://github.com/your-org/delhiveryway.git
+    cd delhiveryway/client-admin
+    ```
 
-### Code Splitting
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3.  **Configure Environment Variables**:
+    Create a `.env` file in the root of `client-admin` based on the example:
+    ```bash
+    cp env.example .env
+    ```
+    
+    Update the values in `.env` to match your backend configuration:
+    ```env
+    CI=false
+    REACT_APP_BACKEND_URL="http://localhost:5000"
+    REACT_APP_SOCKET_URL="http://localhost:5000"
+    REACT_APP_API_URL="http://localhost:5000/api"
+    ```
 
-### Analyzing the Bundle Size
+4.  **Start the Development Server**:
+    ```bash
+    npm start
+    ```
+    The application will launch automatically at `http://localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 📂 Project Structure
 
-### Making a Progressive Web App
+The codebase follows a strictly modular architecture, ensuring that features are encapsulated and easy to maintain.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+client-admin/
+├── public/                 # Static assets (Manifest, Icons)
+├── src/
+│   ├── modules/            # Feature Modules
+│   │   ├── auth/           # Login & Authentication
+│   │   ├── core/           # Shared Components (Layout, Sidebar, Navbar)
+│   │   ├── dashboard/      # Analytics & Overview
+│   │   ├── orders/         # Order Processing Logic
+│   │   ├── products/       # Product Management
+│   │   ├── settings/       # Platform Configuration
+│   │   ├── shoppers/       # Shopper Management
+│   │   ├── shops/          # Vendor Management
+│   │   └── users/          # Customer Management
+│   ├── App.js              # Main Application Entry
+│   ├── index.js            # React DOM Rendering
+│   └── index.css           # Global Styles
+├── .env                    # Environment Variables
+├── package.json            # Dependencies & Scripts
+└── README.md               # Project Documentation
+```
 
-### Advanced Configuration
+## 🔐 Security
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+*   **Authentication**: JWT-based session management.
+*   **Authorization**: Protected routes ensure only authorized admins can access sensitive modules.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+*© 2025 DelhiveryWay. All rights reserved.*
