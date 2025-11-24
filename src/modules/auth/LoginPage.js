@@ -35,7 +35,7 @@ const LoginPage = () => {
         <div className="login-page">
             <div className="login-container">
                 <div className="login-header">
-                    <Logo size="xlarge" variant="dark" showText={true} /> {/* MODIFIED: Added Logo */}
+                    <Logo size="xlarge" variant="dark" showText={true} /> {/* MODIFIED: Added Logo for the professional look */}
                     <p>Sign in to the DelhiveryWay Admin Portal</p>
                 </div>
                 <form onSubmit={handleSubmit} className="login-form">

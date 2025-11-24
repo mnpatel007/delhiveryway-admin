@@ -1,4 +1,4 @@
-/* Enhanced Styling for a Premium Admin Portal Look */
+/* Final, Fully Responsive, Premium Admin Portal CSS */
 
 :root {
     --primary-color: #3498db;
@@ -7,12 +7,9 @@
     --background-start: #1c2a49;
     /* Deep Navy for background */
     --background-end: #334d7d;
-    /* Slightly lighter Navy */
     --container-bg: #ffffff;
     --text-color: #2c3e50;
     --shadow-color: rgba(0, 0, 0, 0.4);
-    --mobile-padding: 15px;
-    /* Base padding for mobile */
 }
 
 .login-page {
@@ -20,10 +17,9 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* Premium dark gradient background - High-contrast and professional */
+    /* Premium dark gradient background */
     background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
     padding: 20px;
-    /* Base padding for safety on smaller screens */
     box-sizing: border-box;
 }
 
@@ -36,13 +32,14 @@
     box-shadow: 0 15px 40px -10px var(--shadow-color);
     width: 100%;
     max-width: 450px;
+    /* Optimal max-width for login form */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid #e1e4e8;
 }
 
 .login-container:hover {
     transform: translateY(-5px);
-    /* Slight lift on hover */
+    /* Subtle lift effect */
     box-shadow: 0 20px 50px -10px var(--shadow-color);
 }
 
@@ -51,11 +48,7 @@
     margin-bottom: 2.5rem;
 }
 
-/* Hide H1 since the Logo component will provide the brand name */
-.login-header h1 {
-    display: none;
-}
-
+/* Style for the slogan/description under the logo */
 .login-header p {
     color: #7f8c8d;
     font-size: 1rem;
@@ -85,14 +78,12 @@
     transition: border-color 0.3s, box-shadow 0.3s;
     background-color: #f7f7f7;
     box-sizing: border-box;
-    /* Important for responsiveness */
 }
 
 .login-form input:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-    /* Blue glowing effect */
     background-color: var(--container-bg);
 }
 
@@ -106,7 +97,7 @@
     border: 1px solid #fecaca;
 }
 
-/* Button Styling (Hero Button) */
+/* Button Styling (Hero Button with Hover Effect) */
 .login-btn {
     width: 100%;
     padding: 1rem;
@@ -119,7 +110,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    /* Lifted shadow effect */
+    /* Lifted shadow for depth */
     box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
 }
 
@@ -137,7 +128,7 @@
 }
 
 /* -------------------------------------------------- */
-/* 🚀 MOBILE RESPONSIVENESS MEDIA QUERIES */
+/* 📱 MOBILE RESPONSIVENESS MEDIA QUERIES */
 /* -------------------------------------------------- */
 
 /* Tablets and medium screens (max-width: 768px) */
@@ -149,13 +140,12 @@
     .login-container {
         padding: 2rem;
         max-width: 95%;
-        /* Take up most of the available space */
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .login-container:hover {
         transform: none;
-        /* Disable lift effect on mobile for better UX */
+        /* Disable subtle lift on hover for mobile/tablet UX */
     }
 
     .login-header {
@@ -168,7 +158,6 @@
 
     .login-form input {
         padding: 0.8rem 0.6rem;
-        /* Slightly smaller input padding */
     }
 
     .login-btn {
@@ -179,7 +168,6 @@
 
     .login-btn:hover:not(:disabled) {
         transform: none;
-        /* Disable lift effect on mobile */
     }
 }
 
@@ -187,12 +175,7 @@
 @media (max-width: 480px) {
     .login-container {
         padding: 1.5rem;
-        /* Reduced padding for minimal screens */
         border-radius: 8px;
-    }
-
-    .login-header {
-        margin-bottom: 1.5rem;
     }
 
     .login-form .form-group {
@@ -201,14 +184,5 @@
 
     .login-form input {
         padding: 0.75rem;
-    }
-
-    .login-form label {
-        font-size: 0.9rem;
-    }
-
-    .login-btn {
-        padding: 0.8rem;
-        font-size: 0.95rem;
     }
 }
