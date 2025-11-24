@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // MODIFIED: Added useNavigate
-import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../utils/axios';
-import OrderMonitoring from '../components/OrderMonitoring';
-import Logo from '../components/Logo';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../core/context/AuthContext';
+import axiosInstance from '../core/utils/axios';
+import OrderMonitoring from '../orders/components/OrderMonitoring';
+import Logo from '../core/components/Logo';
 import './Dashboard.css';
 
 const Dashboard = () => {
     const { admin, logout } = useAuth();
-    const navigate = useNavigate(); // ADDED: Initialized useNavigate hook
     const [activeView, setActiveView] = useState('dashboard');
     const [stats, setStats] = useState({
         shopsCount: 0,
@@ -179,12 +178,6 @@ const Dashboard = () => {
         setShowCancelDialog(true);
     };
 
-    // ADDED: New function to handle logout and redirection
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
     if (loading) {
         return (
             <div className="dashboard">
@@ -194,7 +187,7 @@ const Dashboard = () => {
                         <p>Loading...</p>
                     </div>
                     <div className="header-right">
-                        <button className="logout-btn" onClick={handleLogout}>
+                        <button className="logout-btn" onClick={logout}>
                             Logout
                         </button>
                     </div>
@@ -227,7 +220,7 @@ const Dashboard = () => {
                     </div>
                     <div className="header-actions">
                         <span>Welcome, {admin?.name || 'Admin'}</span>
-                        <button onClick={handleLogout} className="logout-btn">Logout</button> // MODIFIED: Updated onClick handler
+                        <button onClick={logout} className="logout-btn">Logout</button>
                     </div>
                 </div>
             </header>
