@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // MODIFIED: Added useNavigate
 import { useAuth } from '../core/context/AuthContext';
 import axiosInstance from '../core/utils/axios';
 import OrderMonitoring from '../orders/components/OrderMonitoring';
@@ -8,6 +8,7 @@ import './Dashboard.css';
 
 const Dashboard = () => {
     const { admin, logout } = useAuth();
+    const navigate = useNavigate(); // ADDED: Initialized useNavigate hook
     const [activeView, setActiveView] = useState('dashboard');
     const [stats, setStats] = useState({
         shopsCount: 0,
@@ -178,6 +179,12 @@ const Dashboard = () => {
         setShowCancelDialog(true);
     };
 
+    // ADDED: Function to perform logout and redirect
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     if (loading) {
         return (
             <div className="dashboard">
@@ -187,7 +194,7 @@ const Dashboard = () => {
                         <p>Loading...</p>
                     </div>
                     <div className="header-right">
-                        <button className="logout-btn" onClick={logout}>
+                        <button className="logout-btn" onClick={handleLogout}> // MODIFIED: Used handleLogout
                             Logout
                         </button>
                     </div>
@@ -220,7 +227,7 @@ const Dashboard = () => {
                     </div>
                     <div className="header-actions">
                         <span>Welcome, {admin?.name || 'Admin'}</span>
-                        <button onClick={logout} className="logout-btn">Logout</button>
+                        <button onClick={handleLogout} className="logout-btn">Logout</button> // MODIFIED: Used handleLogout
                     </div>
                 </div>
             </header>
