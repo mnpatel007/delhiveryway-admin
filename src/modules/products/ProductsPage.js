@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../utils/axios';
-import { useAuth } from '../context/AuthContext';
-import BulkProductUpload from '../components/BulkProductUpload';
+import axiosInstance from '../core/utils/axios';
+import BulkProductUpload from './components/BulkProductUpload';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
-    const { admin } = useAuth();
     const [products, setProducts] = useState([]);
     const [shops, setShops] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [editingProduct, setEditingProduct] = useState(null);
     const [showBulkUpload, setShowBulkUpload] = useState(false);
     const [showCreateOptions, setShowCreateOptions] = useState(false);
@@ -24,7 +22,11 @@ const ProductsPage = () => {
         originalPrice: '',
         discount: '',
         unit: '',
-        shopId: ''
+        shopId: '',
+        stockQuantity: '',
+        category: '',
+        tags: '',
+        inStock: true
     });
     const [searchTerm, setSearchTerm] = useState('');
     const [activeSearchTerm, setActiveSearchTerm] = useState('');
@@ -32,8 +34,6 @@ const ProductsPage = () => {
     const [filterStock, setFilterStock] = useState('');
     const [sortBy, setSortBy] = useState('name');
     const [filteredProducts, setFilteredProducts] = useState([]);
-
-
 
     useEffect(() => {
         fetchProducts(currentPage);
@@ -58,17 +58,10 @@ const ProductsPage = () => {
 
         // Shop filter
         if (filterShop) {
-            console.log('Filtering by shop:', filterShop);
-            console.log('Sample product shopId structure:', products[0]?.shopId);
             filtered = filtered.filter(product => {
                 const productShopId = product.shopId?._id || product.shopId;
-                const matches = productShopId === filterShop;
-                if (!matches && product === products[0]) {
-                    console.log('Shop filter mismatch:', { productShopId, filterShop, product: product.name });
-                }
-                return matches;
+                return productShopId === filterShop;
             });
-            console.log('Filtered products count:', filtered.length);
         }
 
         // Stock filter
@@ -102,7 +95,6 @@ const ProductsPage = () => {
     const fetchProducts = async (page) => {
         try {
             setLoading(true);
-            // If searching or filtering, get all products; otherwise use pagination
             const needAllProducts = activeSearchTerm || filterShop || filterStock;
             const url = needAllProducts ? '/admin/products?limit=10000' : `/admin/products?page=${page}`;
             const response = await axiosInstance.get(url);
@@ -132,9 +124,8 @@ const ProductsPage = () => {
 
     const handleCreateProduct = async (e) => {
         e.preventDefault();
-        setError(''); // Clear any existing errors
+        setError('');
         try {
-            // Validate required fields
             if (!newProduct.name?.trim()) {
                 setError('Product name is required');
                 return;
@@ -152,7 +143,6 @@ const ProductsPage = () => {
                 return;
             }
 
-            // Validate unit
             const allowedUnits = ['piece', 'kg', 'gram', 'liter', 'ml', 'dozen', 'pack', 'box', 'bottle', 'can', 'strip'];
             const unit = newProduct.unit?.toLowerCase() || 'piece';
             const validUnit = allowedUnits.includes(unit) ? unit : 'piece';
@@ -171,9 +161,7 @@ const ProductsPage = () => {
                 inStock: newProduct.inStock !== false
             };
 
-            console.log('Creating product with data:', productData);
             const response = await axiosInstance.post(`/admin/products`, productData);
-            console.log('Product creation response:', response.data);
             const newProductData = response.data.data || response.data;
             setProducts([newProductData, ...products]);
             setShowCreateForm(false);
@@ -229,9 +217,8 @@ const ProductsPage = () => {
 
     const handleUpdateProduct = async (e) => {
         e.preventDefault();
-        setError(''); // Clear any existing errors
+        setError('');
         try {
-            // Validate required fields
             if (!newProduct.name?.trim()) {
                 setError('Product name is required');
                 return;
@@ -249,7 +236,6 @@ const ProductsPage = () => {
                 return;
             }
 
-            // Validate unit
             const allowedUnits = ['piece', 'kg', 'gram', 'liter', 'ml', 'dozen', 'pack', 'box', 'bottle', 'can', 'strip'];
             const unit = newProduct.unit?.toLowerCase() || 'piece';
             const validUnit = allowedUnits.includes(unit) ? unit : 'piece';
@@ -268,14 +254,10 @@ const ProductsPage = () => {
                 inStock: newProduct.inStock !== false
             };
 
-            console.log('Updating product with data:', productData);
             const response = await axiosInstance.put(`/admin/products/${editingProduct._id}`, productData);
-            console.log('Product update response:', response.data);
-
-            // Update the product in the list
             setProducts(products.map(product =>
                 product._id === editingProduct._id
-                    ? { ...product, ...response.data.data }
+                    ? (response.data.data || response.data)
                     : product
             ));
 
@@ -535,7 +517,7 @@ const ProductsPage = () => {
                                     <option value="">Select a shop</option>
                                     {shops?.map(shop => (
                                         <option key={shop._id} value={shop._id}>
-                                            {shop.name} ({shop._id})
+                                            {shop.name}
                                         </option>
                                     ))}
                                 </select>
@@ -701,7 +683,7 @@ const ProductsPage = () => {
                                     <option value="">Select a shop</option>
                                     {shops?.map(shop => (
                                         <option key={shop._id} value={shop._id}>
-                                            {shop.name} ({shop._id})
+                                            {shop.name}
                                         </option>
                                     ))}
                                 </select>
@@ -778,7 +760,6 @@ const ProductsPage = () => {
                                     <span className="discount">{product.discount}% off</span>
                                 </div>
                                 <p className="product-unit">Unit: {product.unit}</p>
-                                <p className="product-stock">Stock: {product.stockQuantity || 0} {product.unit}</p>
                                 <div className={`stock-status ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
                                     {product.inStock ? 'In Stock' : 'Out of Stock'}
                                 </div>
@@ -827,14 +808,13 @@ const ProductsPage = () => {
                 </div>
             )}
 
-            {/* Bulk Upload Modal */}
             {showBulkUpload && (
                 <BulkProductUpload
                     shops={shops}
                     onClose={() => setShowBulkUpload(false)}
                     onSuccess={() => {
                         setShowBulkUpload(false);
-                        fetchProducts(currentPage); // Refresh products list
+                        fetchProducts(currentPage);
                     }}
                 />
             )}

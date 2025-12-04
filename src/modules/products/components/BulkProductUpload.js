@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import * as XLSX from 'xlsx';
-import axiosInstance from '../utils/axios';
+import axiosInstance from '../../core/utils/axios';
 import './BulkProductUpload.css';
 
 const BulkProductUpload = ({ shops, onClose, onSuccess }) => {

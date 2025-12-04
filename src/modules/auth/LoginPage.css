@@ -1,0 +1,188 @@
+/* Final, Fully Responsive, Premium Admin Portal CSS */
+
+:root {
+    --primary-color: #3498db;
+    /* Main Blue */
+    --primary-dark: #2980b9;
+    --background-start: #1c2a49;
+    /* Deep Navy for background */
+    --background-end: #334d7d;
+    --container-bg: #ffffff;
+    --text-color: #2c3e50;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Premium dark gradient background */
+    background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-container {
+    background: var(--container-bg);
+    padding: 3rem;
+    /* Generous desktop padding */
+    border-radius: 12px;
+    /* Deep shadow for "floating" effect, high contrast */
+    box-shadow: 0 15px 40px -10px var(--shadow-color);
+    width: 100%;
+    max-width: 450px;
+    /* Optimal max-width for login form */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e1e4e8;
+}
+
+.login-container:hover {
+    transform: translateY(-5px);
+    /* Subtle lift effect */
+    box-shadow: 0 20px 50px -10px var(--shadow-color);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+/* Style for the slogan/description under the logo */
+.login-header p {
+    color: #7f8c8d;
+    font-size: 1rem;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+/* Form Elements */
+.login-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 1rem 0.75rem;
+    border: 1px solid #dcdde1;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #f7f7f7;
+    box-sizing: border-box;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: var(--container-bg);
+}
+
+.error-message {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    border: 1px solid #fecaca;
+}
+
+/* Button Styling (Hero Button with Hover Effect) */
+.login-btn {
+    width: 100%;
+    padding: 1rem;
+    /* Primary gradient for visual pop */
+    background: linear-gradient(45deg, var(--primary-color) 0%, #3498db 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Lifted shadow for depth */
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.login-btn:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+    transform: translateY(-2px);
+}
+
+.login-btn:disabled {
+    background: #95a5a6;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* -------------------------------------------------- */
+/* 📱 MOBILE RESPONSIVENESS MEDIA QUERIES */
+/* -------------------------------------------------- */
+
+/* Tablets and medium screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .login-page {
+        padding: 10px;
+    }
+
+    .login-container {
+        padding: 2rem;
+        max-width: 95%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-container:hover {
+        transform: none;
+        /* Disable subtle lift on hover for mobile/tablet UX */
+    }
+
+    .login-header {
+        margin-bottom: 2rem;
+    }
+
+    .login-header p {
+        font-size: 0.9rem;
+    }
+
+    .login-form input {
+        padding: 0.8rem 0.6rem;
+    }
+
+    .login-btn {
+        padding: 0.9rem;
+        font-size: 1rem;
+        box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+    }
+
+    .login-btn:hover:not(:disabled) {
+        transform: none;
+    }
+}
+
+/* Small screens and phones (max-width: 480px) */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .login-form .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .login-form input {
+        padding: 0.75rem;
+    }
+}
