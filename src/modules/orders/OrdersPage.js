@@ -24,7 +24,13 @@ const OrdersPage = () => {
     const [cancelReason, setCancelReason] = useState('');
 
     const calculateOrderTotal = (order) => {
-        // Try different total field names
+        // Priority 1: Revised Order Value (if order was edited)
+        if (order.revisedOrderValue?.total) return order.revisedOrderValue.total;
+
+        // Priority 2: Standard Order Value
+        if (order.orderValue?.total) return order.orderValue.total;
+
+        // Try different total field names (Legacy/Fallback)
         if (order.totalAmount) return order.totalAmount;
         if (order.total) return order.total;
         if (order.grandTotal) return order.grandTotal;
