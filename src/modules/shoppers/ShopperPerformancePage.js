@@ -18,7 +18,7 @@ const ShopperPerformancePage = () => {
     const fetchShopperPerformance = async () => {
         try {
             setLoading(true);
-            const response = await api.get(`/admin/shoppers/performance?days=30&sortBy=${sortBy}&order=${sortOrder}`);
+            const response = await api.get(`/admin/shoppers/performance?days=365&sortBy=${sortBy}&order=${sortOrder}`);
             setShoppers(response.data.data || []);
         } catch (err) {
             console.error('Error fetching shopper performance:', err);
