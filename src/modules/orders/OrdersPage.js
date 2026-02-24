@@ -438,7 +438,12 @@ const OrdersPage = () => {
                                         </div>
                                         <div className="compact-info-item">
                                             <span className="compact-label">Phone:</span>
-                                            <span className="compact-value">{order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}</span>
+                                            <span className="compact-value">
+                                                {order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}
+                                                {(order.deliveryAddress?.permanentContactPhone && order.deliveryAddress?.permanentContactPhone !== order.deliveryAddress?.contactPhone) && (
+                                                    <div style={{ fontSize: '0.9em', color: '#666', marginTop: '2px' }}>Reg: {order.deliveryAddress?.permanentCountryCode || '+91'} {order.deliveryAddress.permanentContactPhone}</div>
+                                                )}
+                                            </span>
                                         </div>
                                         <div className="compact-info-item">
                                             <span className="compact-label">Shopper:</span>
@@ -473,7 +478,10 @@ const OrdersPage = () => {
                                         <div className="info-section">
                                             <h5>Customer Information</h5>
                                             <p><strong>Name:</strong> {order.customerId?.name || order.customer?.name || 'Unknown'}</p>
-                                            <p><strong>Phone:</strong> {order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}</p>
+                                            <p><strong>Delivery Phone:</strong> {order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}</p>
+                                            {(order.deliveryAddress?.permanentContactPhone && order.deliveryAddress?.permanentContactPhone !== order.deliveryAddress?.contactPhone) && (
+                                                <p><strong>Reg. Phone:</strong> {order.deliveryAddress?.permanentCountryCode || '+91'} {order.deliveryAddress.permanentContactPhone}</p>
+                                            )}
                                             <p><strong>Email:</strong> {order.customerId?.email || 'N/A'}</p>
                                         </div>
 

@@ -190,6 +190,9 @@ const OrderMonitoring = () => {
                                 <div className="customer-info">
                                     <span className="customer-name">{order.customerId?.name || 'N/A'}</span>
                                     <span className="customer-phone">{order.deliveryAddress?.contactPhone || order.customerId?.phone || 'N/A'}</span>
+                                    {(order.deliveryAddress?.permanentContactPhone && order.deliveryAddress?.permanentContactPhone !== order.deliveryAddress?.contactPhone) && (
+                                        <span className="customer-phone" style={{ fontSize: '0.85em', color: '#666' }}>Reg: {order.deliveryAddress?.permanentCountryCode || '+91'} {order.deliveryAddress.permanentContactPhone}</span>
+                                    )}
                                 </div>
                             </div>
                             <div className="col-shopper">
