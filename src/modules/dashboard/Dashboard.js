@@ -243,6 +243,7 @@ const Dashboard = () => {
                     <Link to="/shopper-performance" className="nav-link">📊 Shopper Performance</Link>
                     <Link to="/notices" className="nav-link">📢 Notices</Link>
                     <Link to="/delivery-discounts" className="nav-link">🏷️ Delivery Discounts</Link>
+                    <Link to="/commissions" className="nav-link">💰 Commissions</Link>
                     <Link to="/terms" className="nav-link">📋 Terms & Conditions</Link>
                 </nav>
 

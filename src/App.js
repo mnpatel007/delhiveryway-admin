@@ -13,6 +13,7 @@ import ShopperPerformancePage from './modules/shoppers/ShopperPerformancePage';
 import NoticesPage from './modules/communication/NoticesPage';
 import TermsAndConditionsPage from './modules/settings/TermsAndConditionsPage';
 import DeliveryDiscountsPage from './modules/settings/DeliveryDiscountsPage';
+import CommissionsPage from './modules/settings/CommissionsPage';
 import './App.css';
 
 // Private route component
@@ -77,6 +78,11 @@ function App() {
               <Route path="/delivery-discounts" element={
                 <PrivateRoute>
                   <DeliveryDiscountsPage />
+                </PrivateRoute>
+              } />
+              <Route path="/commissions" element={
+                <PrivateRoute>
+                  <CommissionsPage />
                 </PrivateRoute>
               } />
 
