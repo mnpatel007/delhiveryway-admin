@@ -154,7 +154,12 @@ const CommissionsPage = () => {
                         <div key={shop.shopId} className="revenue-card">
                             <div className="card-header-row">
                                 <div className="shop-identity">
-                                    <h3>{shop.shopName}</h3>
+                                    <h3>
+                                        {shop.shopName}
+                                        <span className={`visibility-badge ${shop.isVisible ? 'visible' : 'hidden'}`}>
+                                            {shop.isVisible ? 'Live' : 'Hidden'}
+                                        </span>
+                                    </h3>
                                     <span className="all-time-badge">
                                         All-time: {formatCurrency(shop.allTimeRevenue)}
                                     </span>

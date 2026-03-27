@@ -151,6 +151,29 @@
     font-size: 20px;
     font-weight: 800;
     color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visibility-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.visibility-badge.visible {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #dcfce7;
+}
+
+.visibility-badge.hidden {
+    background: #fff7ed;
+    color: #9a3412;
+    border: 1px solid #ffedd5;
 }
 
 .all-time-badge {
