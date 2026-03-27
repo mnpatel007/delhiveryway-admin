@@ -24,22 +24,25 @@ const CommissionsPage = () => {
         try {
             setLoading(true);
             const response = await axiosInstance.get('/admin/revenue');
-            if (response.data.success) {
-                const { summary, shops } = response.data.data;
+            if (response.data && response.data.success) {
+                const { summary = {}, shops = [] } = response.data.data || {};
+                
                 setSummary(summary);
-                setShops(shops);
+                setShops(Array.isArray(shops) ? shops : []);
                 
                 // Initialize selected months to the first available month (most recent)
                 const initialMonths = {};
-                shops.forEach(shop => {
-                    if (shop.monthlyBreakdown && shop.monthlyBreakdown.length > 0) {
-                        initialMonths[shop.shopId] = 0;
-                    }
-                });
+                if (Array.isArray(shops)) {
+                    shops.forEach(shop => {
+                        if (shop && shop.monthlyBreakdown && shop.monthlyBreakdown.length > 0) {
+                            initialMonths[shop.shopId] = 0;
+                        }
+                    });
+                }
                 setSelectedMonths(initialMonths);
                 
             } else {
-                setError(response.data.message || 'Failed to fetch revenue data');
+                setError(response.data?.message || 'Failed to fetch revenue data');
             }
         } catch (err) {
             console.error('Error fetching revenue:', err);
@@ -100,17 +103,17 @@ const CommissionsPage = () => {
                 </div>
             </div>
 
-            {summary && (
+            {summary && Object.keys(summary).length > 0 && (
                 <div className="stats-overview">
                     <div className="stat-card">
                         <span className="label">Managed Revenue</span>
                         <div className="stat-main">
-                            <span className="value">{formatCurrency(summary.totalRevenue)}</span>
+                            <span className="value">{formatCurrency(summary.totalRevenue || 0)}</span>
                             <span className="sub-label">Cumulative Gross</span>
                         </div>
                         <div className="stat-comparison">
                             <div className="comparison-item">
-                                <span className="comp-value">{formatCurrency(summary.currentMonthRevenue)}</span>
+                                <span className="comp-value">{formatCurrency(summary.currentMonthRevenue || 0)}</span>
                                 <span className="comp-label">This Month</span>
                             </div>
                         </div>
@@ -119,12 +122,12 @@ const CommissionsPage = () => {
                     <div className="stat-card">
                         <span className="label">Delivered Orders</span>
                         <div className="stat-main">
-                            <span className="value">{summary.totalOrders.toLocaleString()}</span>
+                            <span className="value">{(summary.totalOrders || 0).toLocaleString()}</span>
                             <span className="sub-label">Success Rate Checked</span>
                         </div>
                         <div className="stat-comparison">
                             <div className="comparison-item">
-                                <span className="comp-value">{summary.currentMonthOrders}</span>
+                                <span className="comp-value">{summary.currentMonthOrders || 0}</span>
                                 <span className="comp-label">This Month</span>
                             </div>
                         </div>
@@ -133,7 +136,7 @@ const CommissionsPage = () => {
                     <div className="stat-card">
                         <span className="label">Partnered Shops</span>
                         <div className="stat-main">
-                            <span className="value">{summary.partnerShops}</span>
+                            <span className="value">{summary.partnerShops || 0}</span>
                             <span className="sub-label">Excluding Test Accounts</span>
                         </div>
                     </div>
@@ -143,9 +146,9 @@ const CommissionsPage = () => {
             {error && <div className="error-message">{error}</div>}
 
             <div className="revenue-grid">
-                {shops.map(shop => {
-                    const mIndex = selectedMonths[shop.shopId];
-                    const selectedData = shop.monthlyBreakdown && shop.monthlyBreakdown[mIndex];
+                {Array.isArray(shops) && shops.length > 0 ? shops.map(shop => {
+                    const mIndex = selectedMonths[shop.shopId] ?? -1;
+                    const selectedData = mIndex !== -1 && shop.monthlyBreakdown && shop.monthlyBreakdown[mIndex];
                     
                     return (
                         <div key={shop.shopId} className="revenue-card">
@@ -227,7 +230,12 @@ const CommissionsPage = () => {
                             )}
                         </div>
                     );
-                })}
+                }) : (
+                    <div className="no-data-overall">
+                        <h3>No eligible shops found for commission tracking.</h3>
+                        <p>Verify that your shops have recorded delivered orders.</p>
+                    </div>
+                )}
             </div>
         </div>
     );
