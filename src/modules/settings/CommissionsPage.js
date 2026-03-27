@@ -17,7 +17,7 @@ const CommissionsPage = () => {
     const fetchRevenueData = async () => {
         try {
             setLoading(true);
-            const response = await axiosInstance.get('/revenue');
+            const response = await axiosInstance.get('/admin/revenue');
             if (response.data.success) {
                 setRevenueData(response.data.data.revenue);
             } else {
