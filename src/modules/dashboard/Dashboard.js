@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'; // MODIFIED: Added useNavi
 import { useAuth } from '../core/context/AuthContext';
 import axiosInstance from '../core/utils/axios';
 import OrderMonitoring from '../orders/components/OrderMonitoring';
+import socketService from '../core/services/socket';
 import Logo from '../core/components/Logo';
 import './Dashboard.css';
 
@@ -72,6 +73,20 @@ const Dashboard = () => {
         fetchStats();
         // Fetch today's shopper stats by default
         fetchShopperStats('today');
+
+        // Socket notifications
+        socketService.connect();
+        socketService.on('newShopperSignup', (data) => {
+            console.log('🔔 New shopper registered socket signal:', data);
+            // Refresh stats to get the latest pending count
+            fetchStats();
+            // Optional: Play a sound or show a more global notification if not on dashboard
+        });
+
+        return () => {
+            socketService.off('newShopperSignup');
+            // We might keep the socket connected for other real-time features
+        };
     }, []);
 
     const handleDateChange = (e) => {
