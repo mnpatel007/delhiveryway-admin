@@ -39,6 +39,8 @@ const ShopsPage = () => {
         feePerKm: 10,
         hasTax: false,
         taxRate: 5,
+        hasPackaging: false,
+        packagingCharges: 10,
         inquiryAvailableTime: 15,
         vendorId: 'admin-created'
     });
@@ -109,6 +111,8 @@ const ShopsPage = () => {
                 deliveryFee: 30,
                 hasTax: false,
                 taxRate: 5,
+                hasPackaging: false,
+                packagingCharges: 10,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -181,6 +185,8 @@ const ShopsPage = () => {
             feePerKm: shop.feePerKm || 10,
             hasTax: shop.hasTax || false,
             taxRate: shop.taxRate || 5,
+            hasPackaging: shop.hasPackaging || false,
+            packagingCharges: shop.packagingCharges || 10,
             inquiryAvailableTime: shop.inquiryAvailableTime || 15,
             vendorId: 'admin-created'
         });
@@ -249,6 +255,8 @@ const ShopsPage = () => {
                 deliveryFee: 30,
                 hasTax: false,
                 taxRate: 5,
+                hasPackaging: false,
+                packagingCharges: 10,
                 vendorId: 'admin-created'
             });
         } catch (err) {
@@ -506,6 +514,35 @@ const ShopsPage = () => {
                                     max="100"
                                     step="0.1"
                                     placeholder="Enter tax rate (e.g., 5 for 5%)"
+                                />
+                            </div>
+                        )}
+                        
+                        <div className="form-group">
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hasPackaging"
+                                    checked={newShop.hasPackaging}
+                                    onChange={handleInputChange}
+                                />
+                                Apply Packaging Charges
+                            </label>
+                        </div>
+
+                        {newShop.hasPackaging && (
+                            <div className="form-group">
+                                <label htmlFor="packagingCharges">Packaging Charges (₹)</label>
+                                <input
+                                    type="number"
+                                    id="packagingCharges"
+                                    name="packagingCharges"
+                                    value={newShop.packagingCharges}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="1000"
+                                    step="1"
+                                    placeholder="Enter packaging charges (e.g., 10)"
                                 />
                             </div>
                         )}
@@ -776,6 +813,35 @@ const ShopsPage = () => {
                                     max="100"
                                     step="0.1"
                                     placeholder="Enter tax rate (e.g., 5 for 5%)"
+                                />
+                            </div>
+                        )}
+
+                        <div className="form-group">
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hasPackaging"
+                                    checked={newShop.hasPackaging}
+                                    onChange={handleInputChange}
+                                />
+                                Apply Packaging Charges
+                            </label>
+                        </div>
+
+                        {newShop.hasPackaging && (
+                            <div className="form-group">
+                                <label htmlFor="packagingCharges">Packaging Charges (₹)</label>
+                                <input
+                                    type="number"
+                                    id="packagingCharges"
+                                    name="packagingCharges"
+                                    value={newShop.packagingCharges}
+                                    onChange={handleInputChange}
+                                    min="0"
+                                    max="1000"
+                                    step="1"
+                                    placeholder="Enter packaging charges (e.g., 10)"
                                 />
                             </div>
                         )}
