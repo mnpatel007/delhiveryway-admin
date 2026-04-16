@@ -22,7 +22,8 @@ const Dashboard = () => {
         dailyInquiries: 0,
         recentOrders: [],
         orderStatusDistribution: [],
-        shopperStats: []
+        shopperStats: [],
+        pendingShoppersCount: 0
     });
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [shopperPeriod, setShopperPeriod] = useState('total');
@@ -49,6 +50,7 @@ const Dashboard = () => {
                         ordersCount: data.stats.totalOrders || 0,
                         usersCount: data.stats.totalUsers || 0,
                         shoppersCount: data.stats.totalShoppers || 0,
+                        pendingShoppersCount: data.stats.pendingShoppersCount || 0,
                         dailyOrders: data.stats.dailyOrders || 0,
                         dailyDeliveredOrders: data.stats.dailyDeliveredOrders || 0,
                         dailyCancelledOrders: data.stats.dailyCancelledOrders || 0,
@@ -248,6 +250,39 @@ const Dashboard = () => {
                 </nav>
 
                 <div className="dashboard-content">
+                    {stats.pendingShoppersCount > 0 && (
+                        <div className="notification-alert" style={{
+                            backgroundColor: '#fff3cd',
+                            border: '1px solid #ffeeba',
+                            color: '#856404',
+                            padding: '1rem',
+                            borderRadius: '8px',
+                            marginBottom: '2rem',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ fontSize: '1.5rem' }}>🔔</span>
+                                <div>
+                                    <strong style={{ display: 'block' }}>Action Required: Pending Shoppers</strong>
+                                    <span>There are {stats.pendingShoppersCount} new personal shoppers waiting for your approval.</span>
+                                </div>
+                            </div>
+                            <Link to="/shoppers" className="action-btn" style={{
+                                backgroundColor: '#856404',
+                                color: 'white',
+                                padding: '8px 16px',
+                                borderRadius: '4px',
+                                textDecoration: 'none',
+                                fontWeight: 'bold'
+                            }}>
+                                Review Now
+                            </Link>
+                        </div>
+                    )}
+
                     <div className="stats-grid">
                         <div className="stat-card">
                             <div className="stat-icon">🏪</div>

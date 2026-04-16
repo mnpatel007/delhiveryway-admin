@@ -64,6 +64,28 @@ const ShoppersPage = () => {
             console.error('Error updating shopper status:', err);
         }
     };
+    
+    const handleVerifyShopper = async (shopperId, isVerified) => {
+        try {
+            const response = await axiosInstance.put(`/admin/shoppers/${shopperId}/verify`,
+                { isVerified }
+            );
+
+            if (response.data.success) {
+                // Update the shopper in the state
+                setShoppers(shoppers.map(shopper =>
+                    shopper._id === shopperId ? { ...shopper, verification: { ...shopper.verification, isVerified } } : shopper
+                ));
+
+                console.log(`✅ Shopper verification updated: ${isVerified ? 'Verified' : 'Unverified'}`);
+            } else {
+                setError(response.data.message || 'Failed to update shopper verification');
+            }
+        } catch (err) {
+            setError('Failed to update shopper verification');
+            console.error('Error updating shopper verification:', err);
+        }
+    };
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -100,6 +122,11 @@ const ShoppersPage = () => {
                                         {shopper.isOnline ? ' Online' : ' Offline'}
                                     </span>
                                 </p>
+                                <p className="shopper-status">Verification:
+                                    <span className={shopper.verification?.isVerified ? 'status-online' : 'status-offline'}>
+                                        {shopper.verification?.isVerified ? ' Verified' : ' Unverified'}
+                                    </span>
+                                </p>
                                 <p className="shopper-date">Joined: {new Date(shopper.createdAt).toLocaleDateString()}</p>
                             </div>
                             <div className="shopper-actions">
@@ -109,6 +136,24 @@ const ShoppersPage = () => {
                                 >
                                     {shopper.isOnline ? 'Set Offline' : 'Set Online'}
                                 </button>
+                                {!shopper.verification?.isVerified && (
+                                    <button
+                                        className="status-btn online"
+                                        style={{ backgroundColor: '#28a745', marginLeft: '5px' }}
+                                        onClick={() => handleVerifyShopper(shopper._id, true)}
+                                    >
+                                        Approve
+                                    </button>
+                                )}
+                                {shopper.verification?.isVerified && (
+                                    <button
+                                        className="status-btn offline"
+                                        style={{ backgroundColor: '#ffc107', color: 'black', marginLeft: '5px' }}
+                                        onClick={() => handleVerifyShopper(shopper._id, false)}
+                                    >
+                                        Revoke Approval
+                                    </button>
+                                )}
                                 <button
                                     className="delete-btn"
                                     onClick={() => handleDeleteShopper(shopper._id)}
