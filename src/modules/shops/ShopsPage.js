@@ -11,6 +11,12 @@ const ShopsPage = () => {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [editingShop, setEditingShop] = useState(null);
+    const [closureStatus, setClosureStatus] = useState({ isClosed: false, closure: null });
+    const [showClosureModal, setShowClosureModal] = useState(false);
+    const [closureMode, setClosureMode] = useState('until_time');
+    const [closureReopenAt, setClosureReopenAt] = useState('');
+    const [closureReason, setClosureReason] = useState('');
+    const [closureSubmitting, setClosureSubmitting] = useState(false);
     const [newShop, setNewShop] = useState({
         name: '',
         description: '',
@@ -50,6 +56,80 @@ const ShopsPage = () => {
     useEffect(() => {
         fetchShops(currentPage);
     }, [currentPage]);
+
+    useEffect(() => {
+        fetchClosureStatus();
+    }, []);
+
+    const fetchClosureStatus = async () => {
+        try {
+            const res = await axiosInstance.get('/admin/shops/closure');
+            if (res.data?.success) {
+                setClosureStatus({
+                    isClosed: !!res.data.data?.isClosed,
+                    closure: res.data.data?.closure || null
+                });
+            }
+        } catch (err) {
+            console.error('Failed to fetch closure status:', err);
+        }
+    };
+
+    const formatLocalDateTimeInput = (date) => {
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
+
+    const openClosureModal = () => {
+        const defaultReopen = new Date(Date.now() + 60 * 60 * 1000);
+        setClosureMode('until_time');
+        setClosureReopenAt(formatLocalDateTimeInput(defaultReopen));
+        setClosureReason('');
+        setShowClosureModal(true);
+    };
+
+    const handleSubmitClosure = async () => {
+        try {
+            setClosureSubmitting(true);
+            const payload = { mode: closureMode, reason: closureReason };
+            if (closureMode === 'until_time') {
+                if (!closureReopenAt) {
+                    alert('Please pick a reopen date and time');
+                    setClosureSubmitting(false);
+                    return;
+                }
+                payload.reopenAt = new Date(closureReopenAt).toISOString();
+            }
+            const res = await axiosInstance.post('/admin/shops/closure', payload);
+            if (res.data?.success) {
+                setClosureStatus({
+                    isClosed: true,
+                    closure: res.data.data?.closure || null
+                });
+                setShowClosureModal(false);
+            } else {
+                alert(res.data?.message || 'Failed to close shops');
+            }
+        } catch (err) {
+            console.error('Close shops error:', err);
+            alert(err.response?.data?.message || 'Failed to close shops');
+        } finally {
+            setClosureSubmitting(false);
+        }
+    };
+
+    const handleReopenAllShops = async () => {
+        if (!window.confirm('Reopen all shops now? They will resume their normal operating hours.')) return;
+        try {
+            const res = await axiosInstance.delete('/admin/shops/closure');
+            if (res.data?.success) {
+                setClosureStatus({ isClosed: false, closure: null });
+            }
+        } catch (err) {
+            console.error('Reopen shops error:', err);
+            alert(err.response?.data?.message || 'Failed to reopen shops');
+        }
+    };
 
     const fetchShops = async (page) => {
         try {
@@ -339,13 +419,138 @@ const ShopsPage = () => {
         <div className="shops-page">
             <div className="shops-header">
                 <h1>Manage Shops</h1>
-                <button
-                    className="create-shop-btn"
-                    onClick={() => setShowCreateForm(!showCreateForm)}
-                >
-                    {showCreateForm ? 'Cancel' : 'Create New Shop'}
-                </button>
+                <div className="shops-header-actions">
+                    {closureStatus.isClosed ? (
+                        <button
+                            className="reopen-shops-btn"
+                            onClick={handleReopenAllShops}
+                        >
+                            Reopen All Shops
+                        </button>
+                    ) : (
+                        <button
+                            className="close-all-shops-btn"
+                            onClick={openClosureModal}
+                        >
+                            All Shops Closed
+                        </button>
+                    )}
+                    <button
+                        className="create-shop-btn"
+                        onClick={() => setShowCreateForm(!showCreateForm)}
+                    >
+                        {showCreateForm ? 'Cancel' : 'Create New Shop'}
+                    </button>
+                </div>
             </div>
+
+            {closureStatus.isClosed && closureStatus.closure && (
+                <div className="closure-banner">
+                    <strong>All shops are currently closed.</strong>{' '}
+                    {closureStatus.closure.mode === 'manual' && 'They will stay closed until you click Reopen All Shops.'}
+                    {closureStatus.closure.mode === 'until_time' && closureStatus.closure.reopenAt && (
+                        <>Reopens at {new Date(closureStatus.closure.reopenAt).toLocaleString()}.</>
+                    )}
+                    {closureStatus.closure.mode === 'next_day' && closureStatus.closure.reopenAt && (
+                        <>Reopens on {new Date(closureStatus.closure.reopenAt).toLocaleDateString()} (resumes normal hours).</>
+                    )}
+                </div>
+            )}
+
+            {showClosureModal && (
+                <div className="closure-modal-overlay" onClick={() => !closureSubmitting && setShowClosureModal(false)}>
+                    <div className="closure-modal" onClick={(e) => e.stopPropagation()}>
+                        <h2>Close All Shops</h2>
+                        <p className="closure-modal-help">
+                            Customers will see all shops as Closed until the selected condition is met.
+                        </p>
+
+                        <div className="closure-options">
+                            <label className="closure-option">
+                                <input
+                                    type="radio"
+                                    name="closureMode"
+                                    value="until_time"
+                                    checked={closureMode === 'until_time'}
+                                    onChange={(e) => setClosureMode(e.target.value)}
+                                />
+                                <div>
+                                    <div className="closure-option-title">Set time to open shops</div>
+                                    <div className="closure-option-desc">Pick a date &amp; time. Shops auto-reopen then.</div>
+                                </div>
+                            </label>
+
+                            <label className="closure-option">
+                                <input
+                                    type="radio"
+                                    name="closureMode"
+                                    value="next_day"
+                                    checked={closureMode === 'next_day'}
+                                    onChange={(e) => setClosureMode(e.target.value)}
+                                />
+                                <div>
+                                    <div className="closure-option-title">Open the next day</div>
+                                    <div className="closure-option-desc">Shops resume normal operating hours starting tomorrow.</div>
+                                </div>
+                            </label>
+
+                            <label className="closure-option">
+                                <input
+                                    type="radio"
+                                    name="closureMode"
+                                    value="manual"
+                                    checked={closureMode === 'manual'}
+                                    onChange={(e) => setClosureMode(e.target.value)}
+                                />
+                                <div>
+                                    <div className="closure-option-title">Don't open until I click Open</div>
+                                    <div className="closure-option-desc">Shops stay closed until you reopen them manually.</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        {closureMode === 'until_time' && (
+                            <div className="form-group">
+                                <label htmlFor="closureReopenAt">Reopen At</label>
+                                <input
+                                    id="closureReopenAt"
+                                    type="datetime-local"
+                                    value={closureReopenAt}
+                                    onChange={(e) => setClosureReopenAt(e.target.value)}
+                                />
+                            </div>
+                        )}
+
+                        <div className="form-group">
+                            <label htmlFor="closureReason">Reason (optional)</label>
+                            <input
+                                id="closureReason"
+                                type="text"
+                                value={closureReason}
+                                onChange={(e) => setClosureReason(e.target.value)}
+                                placeholder="e.g. Holiday, maintenance"
+                            />
+                        </div>
+
+                        <div className="closure-modal-actions">
+                            <button
+                                className="cancel-btn"
+                                onClick={() => setShowClosureModal(false)}
+                                disabled={closureSubmitting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="submit-btn"
+                                onClick={handleSubmitClosure}
+                                disabled={closureSubmitting}
+                            >
+                                {closureSubmitting ? 'Closing...' : 'Close All Shops'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showCreateForm && (
                 <div className="create-shop-form">
