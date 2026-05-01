@@ -13,6 +13,12 @@ const CommissionsPage = () => {
     const [viewMode, setViewMode] = useState('monthly');
     // Selected date for daily view: 'YYYY-MM-DD'
     const [selectedDates, setSelectedDates] = useState({});
+    // Selected month for monthly view: { [shopId]: monthIndex }
+    const [selectedMonths, setSelectedMonths] = useState({});
+    // Per-shop commission percentage: { [shopId]: percentage }
+    const [percentages, setPercentages] = useState({});
+    // Per-shop calculated amount: { [shopId]: amount }
+    const [calculations, setCalculations] = useState({});
 
     useEffect(() => {
         fetchData();
