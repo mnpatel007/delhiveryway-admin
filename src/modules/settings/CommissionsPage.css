@@ -185,11 +185,37 @@
     border-radius: 4px;
 }
 
-.month-selector-wrapper {
+.view-mode-toggle {
+    display: flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+    gap: 4px;
+}
+
+.toggle-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: #64748b;
+}
+
+.toggle-btn.active {
+    background: white;
+    color: #0f172a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.selector-wrapper {
     min-width: 140px;
 }
 
-.month-select {
+.selector-dropdown {
     width: 100%;
     padding: 8px 12px;
     border: 1.5px solid #e2e8f0;
@@ -203,7 +229,7 @@
     transition: border-color 0.2s;
 }
 
-.month-select:focus {
+.selector-dropdown:focus {
     border-color: #3b82f6;
 }
 

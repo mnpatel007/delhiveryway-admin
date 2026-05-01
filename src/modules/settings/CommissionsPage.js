@@ -9,12 +9,10 @@ const CommissionsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    // Per-shop selected month: { [shopId]: monthIndex }
-    const [selectedMonths, setSelectedMonths] = useState({});
-    // Per-shop commission percentage: { [shopId]: percentage }
-    const [percentages, setPercentages] = useState({});
-    // Per-shop calculated amount: { [shopId]: amount }
-    const [calculations, setCalculations] = useState({});
+    // View mode: 'monthly' or 'daily'
+    const [viewMode, setViewMode] = useState('monthly');
+    // Selected date for daily view: 'YYYY-MM-DD'
+    const [selectedDates, setSelectedDates] = useState({});
 
     useEffect(() => {
         fetchData();
@@ -30,16 +28,24 @@ const CommissionsPage = () => {
                 setSummary(summary);
                 setShops(Array.isArray(shops) ? shops : []);
                 
-                // Initialize selected months to the first available month (most recent)
+                // Initialize selected months and dates
                 const initialMonths = {};
+                const initialDates = {};
                 if (Array.isArray(shops)) {
+                    const todayStr = new Date(Date.now() + 5.5 * 60 * 60 * 1000).toISOString().split('T')[0];
                     shops.forEach(shop => {
-                        if (shop && shop.monthlyBreakdown && shop.monthlyBreakdown.length > 0) {
+                        if (shop.monthlyBreakdown && shop.monthlyBreakdown.length > 0) {
                             initialMonths[shop.shopId] = 0;
+                        }
+                        if (shop.dailyBreakdown && shop.dailyBreakdown.length > 0) {
+                            // Default to today if exists, else most recent
+                            const hasToday = shop.dailyBreakdown.find(d => d.date === todayStr);
+                            initialDates[shop.shopId] = hasToday ? todayStr : shop.dailyBreakdown[0].date;
                         }
                     });
                 }
                 setSelectedMonths(initialMonths);
+                setSelectedDates(initialDates);
                 
             } else {
                 setError(response.data?.message || 'Failed to fetch revenue data');
@@ -54,7 +60,11 @@ const CommissionsPage = () => {
 
     const handleMonthChange = (shopId, index) => {
         setSelectedMonths({ ...selectedMonths, [shopId]: parseInt(index) });
-        // Reset calculation when month changes
+        setCalculations({ ...calculations, [shopId]: undefined });
+    };
+
+    const handleDateChange = (shopId, date) => {
+        setSelectedDates({ ...selectedDates, [shopId]: date });
         setCalculations({ ...calculations, [shopId]: undefined });
     };
 
@@ -83,6 +93,19 @@ const CommissionsPage = () => {
         return date.toLocaleString('default', { month: 'long' });
     };
 
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        if (dateStr === today.toISOString().split('T')[0]) return 'Today';
+        if (dateStr === yesterday.toISOString().split('T')[0]) return 'Yesterday';
+
+        return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    };
+
     if (loading) {
         return (
             <div className="commissions-page loading-container">
@@ -100,10 +123,24 @@ const CommissionsPage = () => {
                 </Link>
                 <div className="page-header">
                     <h1>Shop Commissions</h1>
+                    <div className="view-mode-toggle">
+                        <button 
+                            className={`toggle-btn ${viewMode === 'monthly' ? 'active' : ''}`}
+                            onClick={() => setViewMode('monthly')}
+                        >
+                            Monthly
+                        </button>
+                        <button 
+                            className={`toggle-btn ${viewMode === 'daily' ? 'active' : ''}`}
+                            onClick={() => setViewMode('daily')}
+                        >
+                            Daily
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {summary && Object.keys(summary).length > 0 && (
+            {summary && (
                 <div className="stats-overview">
                     <div className="stat-card">
                         <span className="label">Managed Revenue</span>
@@ -115,6 +152,10 @@ const CommissionsPage = () => {
                             <div className="comparison-item">
                                 <span className="comp-value">{formatCurrency(summary.currentMonthRevenue || 0)}</span>
                                 <span className="comp-label">This Month</span>
+                            </div>
+                            <div className="comparison-item">
+                                <span className="comp-value">{formatCurrency(summary.todayRevenue || 0)}</span>
+                                <span className="comp-label">Today</span>
                             </div>
                         </div>
                     </div>
@@ -129,6 +170,10 @@ const CommissionsPage = () => {
                             <div className="comparison-item">
                                 <span className="comp-value">{summary.currentMonthOrders || 0}</span>
                                 <span className="comp-label">This Month</span>
+                            </div>
+                            <div className="comparison-item">
+                                <span className="comp-value">{summary.todayOrders || 0}</span>
+                                <span className="comp-label">Today</span>
                             </div>
                         </div>
                     </div>
@@ -147,8 +192,46 @@ const CommissionsPage = () => {
 
             <div className="revenue-grid">
                 {Array.isArray(shops) && shops.length > 0 ? shops.map(shop => {
-                    const mIndex = selectedMonths[shop.shopId] ?? -1;
-                    const selectedData = mIndex !== -1 && shop.monthlyBreakdown && shop.monthlyBreakdown[mIndex];
+                    let selectedData = null;
+                    let selector = null;
+
+                    if (viewMode === 'monthly') {
+                        const mIndex = selectedMonths[shop.shopId] ?? -1;
+                        selectedData = mIndex !== -1 && shop.monthlyBreakdown && shop.monthlyBreakdown[mIndex];
+                        if (shop.monthlyBreakdown && shop.monthlyBreakdown.length > 0) {
+                            selector = (
+                                <select 
+                                    className="selector-dropdown"
+                                    value={mIndex}
+                                    onChange={(e) => handleMonthChange(shop.shopId, e.target.value)}
+                                >
+                                    {shop.monthlyBreakdown.map((m, idx) => (
+                                        <option key={`${shop.shopId}_${m.month}_${m.year}`} value={idx}>
+                                            {getMonthName(m.month)} {m.year}
+                                        </option>
+                                    ))}
+                                </select>
+                            );
+                        }
+                    } else {
+                        const sDate = selectedDates[shop.shopId];
+                        selectedData = shop.dailyBreakdown && shop.dailyBreakdown.find(d => d.date === sDate);
+                        if (shop.dailyBreakdown && shop.dailyBreakdown.length > 0) {
+                            selector = (
+                                <select 
+                                    className="selector-dropdown"
+                                    value={sDate}
+                                    onChange={(e) => handleDateChange(shop.shopId, e.target.value)}
+                                >
+                                    {shop.dailyBreakdown.map((d) => (
+                                        <option key={`${shop.shopId}_${d.date}`} value={d.date}>
+                                            {formatDate(d.date)}
+                                        </option>
+                                    ))}
+                                </select>
+                            );
+                        }
+                    }
                     
                     return (
                         <div key={shop.shopId} className="revenue-card">
@@ -165,28 +248,16 @@ const CommissionsPage = () => {
                                     </span>
                                 </div>
                                 
-                                {shop.monthlyBreakdown && shop.monthlyBreakdown.length > 0 && (
-                                    <div className="month-selector-wrapper">
-                                        <select 
-                                            className="month-select"
-                                            value={mIndex}
-                                            onChange={(e) => handleMonthChange(shop.shopId, e.target.value)}
-                                        >
-                                            {shop.monthlyBreakdown.map((m, idx) => (
-                                                <option key={`${shop.shopId}_${m.month}_${m.year}`} value={idx}>
-                                                    {getMonthName(m.month)} {m.year}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                )}
+                                <div className="selector-wrapper">
+                                    {selector}
+                                </div>
                             </div>
 
                             {selectedData ? (
                                 <div className="card-stats-display">
                                     <div className="stat-box primary">
                                         <span className="amount">{formatCurrency(selectedData.revenue)}</span>
-                                        <span className="desc">Monthly Revenue</span>
+                                        <span className="desc">{viewMode === 'monthly' ? 'Monthly Revenue' : 'Daily Revenue'}</span>
                                     </div>
                                     <div className="stat-box">
                                         <span className="amount">{selectedData.orders}</span>
@@ -194,7 +265,7 @@ const CommissionsPage = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="no-history">No sales history detected for this shop yet.</div>
+                                <div className="no-history">No sales history detected for this period.</div>
                             )}
 
                             {selectedData && (
@@ -208,7 +279,7 @@ const CommissionsPage = () => {
                                                 type="number"
                                                 placeholder="0.0"
                                                 min="0"
-                                                max="10"
+                                                max="100"
                                                 step="0.1"
                                                 value={percentages[shop.shopId] || ''}
                                                 onChange={(e) => handlePercentageChange(shop.shopId, e.target.value)}
@@ -242,6 +313,7 @@ const CommissionsPage = () => {
                     </div>
                 )}
             </div>
+
         </div>
     );
 };
