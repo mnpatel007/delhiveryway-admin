@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import axiosInstance from '../core/utils/axios';
 import './VendorsPage.css';
 
+// Accounts created through Google carry a placeholder rather than a real
+// number, and showing '0000000000' reads as data when it is the absence of it.
+const PLACEHOLDER_PHONES = ['0000000000', '1111111111', '1234567890', '9999999999'];
+const prettyPhone = (phone) =>
+  !phone || PLACEHOLDER_PHONES.includes(String(phone)) ? 'No phone number' : phone;
+
 const STATUS_LABEL = {
   unverified: 'Email not verified',
   'awaiting-code': 'Needs a code',
@@ -235,7 +241,9 @@ const VendorsPage = () => {
                 </div>
                 <div className="vc-meta">
                   <span>{v.email}</span>
-                  <span>{v.phone}</span>
+                  <span className={prettyPhone(v.phone) === 'No phone number' ? 'vc-nophone' : ''}>
+                    {prettyPhone(v.phone)}
+                  </span>
                   <span>Joined {new Date(v.createdAt).toLocaleDateString('en-IN')}</span>
                   {v.customerOrders > 0 && (
                     <span className="vc-orders">

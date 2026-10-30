@@ -469,3 +469,8 @@
   color: #b45309;
   font-weight: 600;
 }
+
+.vc-nophone {
+  color: #b45309;
+  font-style: italic;
+}
