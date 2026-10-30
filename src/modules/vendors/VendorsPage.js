@@ -122,34 +122,6 @@ const VendorsPage = () => {
     }
   };
 
-  // The whole account. Only for records created in error - it takes their
-  // customer history with it.
-  const deleteAccount = async (vendor) => {
-    const orders = vendor.customerOrders || 0;
-    const warning = orders
-      ? `\n\nWARNING: this account has ${orders} order${orders === 1 ? '' : 's'} against it. Deleting it will leave those orders without a customer. Removing partner access is almost certainly what you want instead.`
-      : '';
-
-    if (
-      !window.confirm(
-        `Permanently delete ${vendor.name}'s account?${warning}\n\nTheir shop is released, not deleted.`
-      )
-    )
-      return;
-
-    // A second, typed confirmation, because this cannot be undone.
-    const typed = window.prompt(`Type DELETE to confirm removing ${vendor.email}.`);
-    if (typed !== 'DELETE') return;
-
-    try {
-      const res = await axiosInstance.delete(`/admin/users/${vendor._id}`);
-      alert(res.data?.message || 'Account deleted.');
-      load();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Could not delete the account.');
-    }
-  };
-
   const counts = vendors.reduce((acc, v) => {
     acc[v.status] = (acc[v.status] || 0) + 1;
     return acc;
@@ -293,18 +265,6 @@ const VendorsPage = () => {
 
                 <button className="btn danger" onClick={() => revokeAccess(v)}>
                   Remove access
-                </button>
-
-                <button
-                  className="btn link-danger"
-                  onClick={() => deleteAccount(v)}
-                  title={
-                    v.customerOrders
-                      ? `${v.customerOrders} order(s) would lose their customer`
-                      : 'No orders on this account'
-                  }
-                >
-                  Delete account
                 </button>
               </div>
             </div>
