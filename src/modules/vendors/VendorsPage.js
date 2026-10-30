@@ -84,7 +84,7 @@ const VendorsPage = () => {
   const unlink = async (vendor) => {
     if (
       !window.confirm(
-        `Disconnect ${vendor.name} from ${vendor.shop?.name}?\n\nThey lose access to the shop immediately and it becomes claimable again.`
+        `Disconnect ${vendor.name} from ${vendor.shop?.name}?\n\nThey keep partner access and can be connected to another shop. The shop becomes claimable again.`
       )
     )
       return;
@@ -94,6 +94,53 @@ const VendorsPage = () => {
       load();
     } catch (err) {
       alert(err.response?.data?.message || 'Could not unlink.');
+    }
+  };
+
+  // Takes the vendor capability away but keeps the person's account, since a
+  // shop owner is usually a customer of ours as well.
+  const revokeAccess = async (vendor) => {
+    const runs = vendor.shop ? ` and disconnect them from ${vendor.shop.name}` : '';
+    if (
+      !window.confirm(
+        `Remove partner access for ${vendor.name}?\n\nThis revokes their shop access${runs}, cancels any outstanding code, and clears their application.\n\nTheir account stays, and they can still sign in and order as a customer.`
+      )
+    )
+      return;
+    try {
+      const res = await axiosInstance.delete(`/admin/vendors/${vendor._id}/access`);
+      alert(res.data?.message || 'Access removed.');
+      load();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Could not remove access.');
+    }
+  };
+
+  // The whole account. Only for records created in error - it takes their
+  // customer history with it.
+  const deleteAccount = async (vendor) => {
+    const orders = vendor.customerOrders || 0;
+    const warning = orders
+      ? `\n\nWARNING: this account has ${orders} order${orders === 1 ? '' : 's'} against it. Deleting it will leave those orders without a customer. Removing partner access is almost certainly what you want instead.`
+      : '';
+
+    if (
+      !window.confirm(
+        `Permanently delete ${vendor.name}'s account?${warning}\n\nTheir shop is released, not deleted.`
+      )
+    )
+      return;
+
+    // A second, typed confirmation, because this cannot be undone.
+    const typed = window.prompt(`Type DELETE to confirm removing ${vendor.email}.`);
+    if (typed !== 'DELETE') return;
+
+    try {
+      const res = await axiosInstance.delete(`/admin/users/${vendor._id}`);
+      alert(res.data?.message || 'Account deleted.');
+      load();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Could not delete the account.');
     }
   };
 
@@ -190,6 +237,11 @@ const VendorsPage = () => {
                   <span>{v.email}</span>
                   <span>{v.phone}</span>
                   <span>Joined {new Date(v.createdAt).toLocaleDateString('en-IN')}</span>
+                  {v.customerOrders > 0 && (
+                    <span className="vc-orders">
+                      {v.customerOrders} order{v.customerOrders === 1 ? '' : 's'} as a customer
+                    </span>
+                  )}
                 </div>
                 <div className="vc-shop">
                   {v.shop ? (
@@ -215,8 +267,8 @@ const VendorsPage = () => {
 
               <div className="vc-actions">
                 {v.shop ? (
-                  <button className="btn danger" onClick={() => unlink(v)}>
-                    Disconnect
+                  <button className="btn ghost" onClick={() => unlink(v)}>
+                    Disconnect shop
                   </button>
                 ) : (
                   <>
@@ -225,11 +277,27 @@ const VendorsPage = () => {
                     </button>
                     {v.pendingCode && (
                       <button className="btn ghost" onClick={() => revokeCode(v)}>
-                        Revoke
+                        Revoke code
                       </button>
                     )}
                   </>
                 )}
+
+                <button className="btn danger" onClick={() => revokeAccess(v)}>
+                  Remove access
+                </button>
+
+                <button
+                  className="btn link-danger"
+                  onClick={() => deleteAccount(v)}
+                  title={
+                    v.customerOrders
+                      ? `${v.customerOrders} order(s) would lose their customer`
+                      : 'No orders on this account'
+                  }
+                >
+                  Delete account
+                </button>
               </div>
             </div>
           ))}

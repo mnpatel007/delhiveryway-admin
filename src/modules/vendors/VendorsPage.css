@@ -450,3 +450,22 @@
     flex: 1;
   }
 }
+
+/* Destructive-but-rare action: present, never prominent. */
+.btn.link-danger {
+  background: none;
+  border-color: transparent;
+  color: #94a3b8;
+  text-decoration: underline;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.btn.link-danger:hover {
+  color: #b91c1c;
+}
+
+.vc-orders {
+  color: #b45309;
+  font-weight: 600;
+}
