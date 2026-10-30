@@ -16,6 +16,7 @@ import DeliveryDiscountsPage from './modules/settings/DeliveryDiscountsPage';
 import CommissionsPage from './modules/settings/CommissionsPage';
 import ConvenienceChargePage from './modules/settings/ConvenienceChargePage';
 import ProfitPage from './modules/settings/ProfitPage';
+import VendorsPage from './modules/vendors/VendorsPage';
 import './App.css';
 
 // Private route component
@@ -133,6 +134,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <ProfitPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/vendors"
+                element={
+                  <PrivateRoute>
+                    <VendorsPage />
                   </PrivateRoute>
                 }
               />

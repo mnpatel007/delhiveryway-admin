@@ -274,6 +274,9 @@ const Dashboard = () => {
           <Link to="/shopper-performance" className="nav-link">
             📊 Shopper Performance
           </Link>
+          <Link to="/vendors" className="nav-link">
+            🏪 Vendors
+          </Link>
           <Link to="/notices" className="nav-link">
             📢 Notices
           </Link>
